@@ -8,18 +8,21 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -31,8 +34,7 @@ public class LibraryLocator implements EntryPoint {
 
 	// set hyperlink in library class? when display in flextable?
 	
-	private VerticalPanel mainPanel = new VerticalPanel(); 
-	private HorizontalPanel displayPanel = new HorizontalPanel(); 
+	private DockPanel mainPanel = new DockPanel(); 
 	private TabPanel mainTab = new TabPanel();
 	
 	// searchTab
@@ -94,15 +96,14 @@ public class LibraryLocator implements EntryPoint {
 	public void onModuleLoad() {
 		
 		// TODO Assemble Main panel.
-		mainPanel.add(displayPanel);
-		mainPanel.add(mainButtonPanel);
+		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
 		
-		displayPanel.add(mainTab); 
-		// TODO add the map on the other side
+		mainPanel.add(mainTab, DockPanel.WEST); 
+		// TODO add the map on the EAST side
 		
-		mainTab.add(searchTab, "Search");   // don't think the string after is very necessary, check later!
-		mainTab.add(favoriteTab, "Favorite");
-		mainTab.add(adminTab, "Admin");
+		mainTab.add(new ScrollPanel(searchTab), "Search");   // don't think the string after is very necessary, check later!
+		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
+		mainTab.add(new ScrollPanel(adminTab), "Admin");
 		// initialize default display tab
 		mainTab.selectTab(2); // 2 is the admin one
 		// style
@@ -195,10 +196,19 @@ public class LibraryLocator implements EntryPoint {
 				addLibrary();
 			}
 		});
+		
+		// Listen for keyboard events in the input box.
+		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					addLibrary();
+				}
+			}
+		});
 
   }
 	/**
-	   * Add Library to FlexTable. Executed when the user clicks the addLibraryButton (NOT doing the keyHandler)
+	   * (admin) Add Library to FlexTable. Executed when the user clicks the addLibraryButton (NOT doing the keyHandler)
 	   */
 	private void addLibrary() {
 		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
