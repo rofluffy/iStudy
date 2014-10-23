@@ -12,9 +12,6 @@ h1 {
 
 /* the tab panel itself*/
 .tabPanel{
-	color: #777777;
-	font-size: 2em;
-	font-style: italic;
 	text-align: center;
 }
 
