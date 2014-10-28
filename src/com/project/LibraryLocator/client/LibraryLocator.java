@@ -3,6 +3,7 @@ package com.project.LibraryLocator.client;
 import java.util.ArrayList;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
+import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -72,7 +74,7 @@ public class LibraryLocator implements EntryPoint {
 	private TextBox inputLibraryCity = new TextBox();
 	private TextBox inputLibraryPostCode = new TextBox();
 	private TextBox inputLibraryLat = new TextBox();
-	private TextBox inputLibraryLong = new TextBox();
+	private TextBox inputLibraryLon = new TextBox();
 	private FlexTable addLibraryTable = new FlexTable();
 	private FlexTable allLibraries = new FlexTable();
 	// Buttons (for admin)
@@ -84,8 +86,10 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
 	private Button socail1 = new Button("Google+");
 	
+	//private final DataParseAsync DataParse = GWT.create(DataParse.class);
 	
-	//private ArrayList<Library> libraries = new ArrayList<Library>();  //list of library object
+	private ArrayList<Library> libraries = new ArrayList<Library>();  //list of library object
+	//private ArrayList<Library> libraries = new DataParseImpl().parseLibray();
 
 	
 //	private Label refleshLabel = new Label();   // not sure about this, do we need it? maybe for hyperlink part...
@@ -149,7 +153,7 @@ public class LibraryLocator implements EntryPoint {
 		addLibraryTable.setWidget(5, 1, inputLibraryCity);
 		addLibraryTable.setWidget(6, 1, inputLibraryPostCode);
 		addLibraryTable.setWidget(7, 1, inputLibraryLat);
-		addLibraryTable.setWidget(8, 1, inputLibraryLong);
+		addLibraryTable.setWidget(8, 1, inputLibraryLon);
 		
 		
 		// TODO Assemble search tab
@@ -205,21 +209,119 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
+		
+		displayLibrary(libraries);
+		//loadLibraries();
 
   }
+	
+//	private void loadLibraries() {
+//		// TODO not using dataparse, rather use libraryService
+//		DataParse.parseLibrary(new AsyncCallback<ArrayList<Library>>() {
+//			@Override
+//			public void onFailure(Throwable error) {
+//				// TODO handleError(error);
+//			}
+//
+//			@Override
+//			public void onSuccess(ArrayList<Library> lolb) {
+//				displayLibrary(lolb);
+//			}
+//		});
+//	}
 	/**
 	   * (admin) Add Library to FlexTable. Executed when the user clicks the addLibraryButton (NOT doing the keyHandler)
 	   */
 	private void addLibrary() {
+		final String newID = inputLibraryID.getText().toUpperCase();
+		final String newName = inputLibraryName.getText();
+		final String newBranch = inputLibraryBranch.getText();
+		final String newPhone = inputLibraryPhone.getText();
+		final String newAddress = inputLibraryAddress.getText();
+		final String newCity = inputLibraryCity.getText();
+		final String newPostCode = inputLibraryPostCode.getText().toUpperCase();
+		final Double newLat = Double.parseDouble(inputLibraryLat.getText());
+		final Double newLon = Double.parseDouble(inputLibraryLon.getText());	
+		
+		final Library newLibrary = new Library(newID, newName, newBranch, newPhone, newAddress, newCity, newPostCode, newLat, newLon);
+		
 		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
 		
-		// TODO move mouse focus to the next empty input box
+		// TODO move mouse focus to the next input box by clicking up and down key
 		
-		// TODO Don't add library if the ID is already exist
+		// TODO check if the input text is valid
+		
+		// TODO clean the input box (refactor?)
+		inputLibraryID.setText("");
+		inputLibraryName.setText("");
+		inputLibraryBranch.setText("");
+		inputLibraryPhone.setText("");
+		inputLibraryAddress.setText("");
+		inputLibraryCity.setText("");
+		inputLibraryPostCode.setText("");
+		inputLibraryLat.setText("");
+		inputLibraryLon.setText("");
+		
+		inputLibraryID.setFocus(true);
+		
+		// Don't add library if the ID is already exist
+		ArrayList<String> loid = new ArrayList<String>();
+		for (Library lb : libraries){
+			loid.add(lb.getId());
+		}
+		
+		if (loid.contains(newID)) {
+			Window.alert("the Library is already exit!");
+			return;
+		}
+		
+		// TODO don't add library if lat and lon is already exist
 		
 		// TODO Add the Library to table (store in app-engien later?)
+		int row = allLibraries.getRowCount();
+		libraries.add(newLibrary);
+		allLibraries.setText(row, 0, newID);
+		allLibraries.setText(row, 1, newName);
+		allLibraries.setText(row, 2, newBranch);
+		allLibraries.setText(row, 3, newPhone);
+		allLibraries.setText(row, 4, newAddress);
+		allLibraries.setText(row, 5, newCity);
+		allLibraries.setText(row, 6, newPostCode);
+		allLibraries.setText(row, 7, newLat.toString());
+		allLibraries.setText(row, 8, newLon.toString());
+		
+		// TODO add the select button (using checkbox?) and deal with the click reaction
+		CheckBox selectButton = new CheckBox();
+		
+		allLibraries.setWidget(row, 9, selectButton);
 		
 		// TODO Don't know if we want to have remove method here?
 		
 	}
+	
+	private void displayLibrary(ArrayList<Library> lolb) {
+		for (Library lb : lolb) {
+			displayLibrary(lb);
+		}
+	}
+
+	private void displayLibrary(final Library lb) {
+		// Add the stock to the table.
+		int row = allLibraries.getRowCount();
+		libraries.add(lb);
+		allLibraries.setText(row, 0, lb.getId());
+		allLibraries.setText(row, 1, lb.getName());
+		allLibraries.setText(row, 2, lb.getBranch());
+		allLibraries.setText(row, 3, lb.getPhone());
+		allLibraries.setText(row, 4, lb.getAdress());
+		allLibraries.setText(row, 5, lb.getCity());
+		allLibraries.setText(row, 6, lb.getPostalCode());
+		allLibraries.setText(row, 7, lb.getLat().toString());
+		allLibraries.setText(row, 8, lb.getLon().toString());
+		
+		CheckBox selectButton = new CheckBox();
+		allLibraries.setWidget(row, 9, selectButton);
+		
+	}
+	
 }
