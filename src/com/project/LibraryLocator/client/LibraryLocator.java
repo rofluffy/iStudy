@@ -3,9 +3,13 @@ package com.project.LibraryLocator.client;
 import java.util.ArrayList;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -13,27 +17,80 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
+
+/*
+//import com.google.maps.gwt.client.MapWidget;
+//import com.google.maps.gwt.client.LargeMapControl;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapOptions;
+import com.google.gwt.maps.client.MapType;
+import com.google.gwt.maps.client.MapTypeOptions;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.Maps;
+
+import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
+*/
+
+import com.google.maps.gwt.client.Marker;
+import com.google.maps.gwt.client.MarkerOptions;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.maps.gwt.client.GoogleMap;
+import com.google.maps.gwt.client.GoogleMap.ZoomChangedHandler;
+import com.google.maps.gwt.client.InfoWindow;
+import com.google.maps.gwt.client.LatLng;
+import com.google.maps.gwt.client.MapOptions;
+import com.google.maps.gwt.client.MapTypeId;
+import com.google.maps.gwt.client.Point;
+
+//
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class LibraryLocator implements EntryPoint {
+	
 
+
+	// panel for login
+	private LoginInfo loginInfo = new LoginInfo();
+	private VerticalPanel loginPanel = new VerticalPanel();
+	private Label loginLabel = new Label(
+	   "Please sign in to your Google Account to access the LibraryLocator application.");
+	private Anchor signInLink = new Anchor("Sign In");
+	
 	// set hyperlink in library class? when display in flextable?
 	
 	private DockPanel mainPanel = new DockPanel(); 
@@ -48,11 +105,16 @@ public class LibraryLocator implements EntryPoint {
 	//private CheckBox selectLibrary = new CheckBox();  // or radioButton? [develop in librariesFlexTable]
 	private ListBox regionList = new ListBox();
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
+	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");  
 	private Button checkallButton = new Button("Check All");  // also able to use in favorite?
 	private Button toMapButton = new Button("To Map");        // also able to use in favorite?
+	private Button checkallButtonfav = new Button("Check All");  // the one in favorite tab
+	private Button toMapButtonfav = new Button("To Map");         // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
+	private Button testing = new Button("testing");
+
 	
 	// favoriteTab
 	// things inside favorite
@@ -85,11 +147,20 @@ public class LibraryLocator implements EntryPoint {
 	// Buttons on mainPanel
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
 	private Button socail1 = new Button("Google+");
-	
+
+	//map
+	private GoogleMap map;
+	  private static final int TILE_SIZE = 256;
+	  private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
+
+	//private ArrayList<Library> libraries = new ArrayList<Library>();  //list of library object
+
 	//private final DataParseAsync DataParse = GWT.create(DataParse.class);
+	//private final LibraryServiceAsync LibraryService = GWT.create(LibraryService.class);
 	
 	private ArrayList<Library> libraries = new ArrayList<Library>();  //list of library object
-	//private ArrayList<Library> libraries = new DataParseImpl().parseLibray();
+	private ArrayList<Library> selectedLb = new ArrayList<Library>();
+
 
 	
 //	private Label refleshLabel = new Label();   // not sure about this, do we need it? maybe for hyperlink part...
@@ -98,13 +169,51 @@ public class LibraryLocator implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+		// Check login status using login service.
+	    LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) {
+	    	  Button button = new Button("loginFail");
+	    	  RootPanel.get("libraryLocator").add(button);
+	      }
+
+	      public void onSuccess(LoginInfo result) {
+	        loginInfo = result;
+	        if(loginInfo.isLoggedIn()) {
+		loadLibraryLocaor();
+	        } else {
+	            loadLogin();
+	          }
+	        }
+	      });
+
+  }
+	
+	  private void loadLogin() {
+		    // Assemble login panel.
+		    signInLink.setHref(loginInfo.getLoginUrl());
+		    loginPanel.add(loginLabel);
+		    loginPanel.add(signInLink);
+		    RootPanel.get("libraryLocator").add(loginPanel);
+		  }
+	
+	  
+	
+	private void loadLibraryLocaor() {
 		// TODO Assemble Main panel.
 		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
+		mainPanel.add(mainTab, DockPanel.WEST);
+	
 		
-		mainPanel.add(mainTab, DockPanel.WEST); 
-		// TODO add the map on the EAST side
+		LatLng myLatLng = LatLng.create(49.269893, -123.253268);
+	    MapOptions myOptions = MapOptions.create();
+	    myOptions.setZoom(8.0);
+	    myOptions.setCenter(myLatLng);
+	    myOptions.setMapTypeId(MapTypeId.ROADMAP);
+	    GoogleMap map = GoogleMap.create(Document.get().getElementById("map"), myOptions);
+	    
 		
+
 		mainTab.add(new ScrollPanel(searchTab), "Search");   // don't think the string after is very necessary, check later!
 		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
 		mainTab.add(new ScrollPanel(adminTab), "Admin");
@@ -176,22 +285,28 @@ public class LibraryLocator implements EntryPoint {
 		
 		// TODO Assemble favorite tab
 		favoriteTab.add(favoriteTable);
+		favoriteTab.add(buttonPanelfav);
+		
 		
 		// TODO create table for displaying libraries (favorite tab)
 		favoriteTable.setText(0, 0, "Library");
 		favoriteTable.setText(0, 1, "Select");
 		
 		// TODO Assemble button panel (remove button?)
-		
+		buttonPanelfav.add(removeFavorite);
+		buttonPanelfav.add(toMapButtonfav);
+		buttonPanelfav.add(checkallButtonfav);
 		
 		// TODO Assemble main button panel
 		mainButtonPanel.add(socail1);
 		
+		
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainPanel);
+
 		
 		// TODO Move cursor focus to ALL input box.
-		inputLibraryID.setFocus(true);
+		inputLibraryID.setFocus(true);  
 		searchInputBox.setFocus(true);
 		
 		// Listen for mouse events on the Add button
@@ -201,7 +316,7 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 		
-		// Listen for keyboard events in the input box.
+		// TODO Listen for keyboard events in the (WHAT!)input box.
 		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
@@ -209,12 +324,14 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
+
 		
 		displayLibrary(libraries);
 		//loadLibraries();
 
   }
 	
+
 //	private void loadLibraries() {
 //		// TODO not using dataparse, rather use libraryService
 //		DataParse.parseLibrary(new AsyncCallback<ArrayList<Library>>() {
@@ -229,6 +346,7 @@ public class LibraryLocator implements EntryPoint {
 //			}
 //		});
 //	}
+	
 	/**
 	   * (admin) Add Library to FlexTable. Executed when the user clicks the addLibraryButton (NOT doing the keyHandler)
 	   */
@@ -245,11 +363,23 @@ public class LibraryLocator implements EntryPoint {
 		
 		final Library newLibrary = new Library(newID, newName, newBranch, newPhone, newAddress, newCity, newPostCode, newLat, newLon);
 		
-		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
-		
 		// TODO move mouse focus to the next input box by clicking up and down key
 		
+		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
 		// TODO check if the input text is valid
+		ArrayList<TextBox> lotb = new ArrayList<TextBox>();
+		lotb.add(inputLibraryID);
+		lotb.add(inputLibraryName);
+		lotb.add(inputLibraryBranch);
+		lotb.add(inputLibraryPhone);
+		lotb.add(inputLibraryAddress);
+		lotb.add(inputLibraryCity);
+		lotb.add(inputLibraryPostCode);
+		lotb.add(inputLibraryLat);
+		lotb.add(inputLibraryLon);
+		for(TextBox tb: lotb){
+			checkValid(tb);
+		}
 		
 		// TODO clean the input box (refactor?)
 		inputLibraryID.setText("");
@@ -292,11 +422,103 @@ public class LibraryLocator implements EntryPoint {
 		
 		// TODO add the select button (using checkbox?) and deal with the click reaction
 		CheckBox selectButton = new CheckBox();
+		selectButton.setValue(false);
+		
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+		        Window.alert("It is " + (checked ? "" : "not ") + "checked");
+		        if (checked == true){
+		        	selectedLb.add(newLibrary);
+		        	System.out.println(selectedLb+"\n");
+		        	//Window.alert(selectedLb.toString());
+		        }else {
+		        	selectedLb.remove(newLibrary);
+		        	System.out.println(selectedLb+"\n");
+		        	//Window.alert(selectedLb.toString());
+		        }
+			}
+		});
 		
 		allLibraries.setWidget(row, 9, selectButton);
 		
 		// TODO Don't know if we want to have remove method here?
 		
+	}
+
+
+	/*
+	private void buildUi() {
+	    // Open a map centered on UBC
+	    LatLng UBC = LatLng.newInstance(49.269893, -123.253268);
+
+	    final MapWidget map = new MapWidget(UBC, 2);
+	    map.setSize("100%", "100%");
+	    // Add some controls for the zoom level
+	    map.addControl(new LargeMapControl());
+
+	    // Add a marker
+	    map.addOverlay(new Marker(UBC));
+
+	    // Add an info window to highlight a point of interest
+	    map.getInfoWindow().open(map.getCenter(),
+	        new InfoWindowContent("This is for testing"));
+
+	    mainPanel.add(map, DockPanel.CENTER);
+
+	    // Add the map to the HTML host page
+	    RootPanel.get("map").add(map);
+	  }
+	  */
+	
+
+
+	
+	private boolean checkValid(TextBox input){
+		
+		// TODO NOT WORKING =DDDDDD
+		
+		System.out.println("runing checkValid!");
+		String name = input.getName();
+		System.out.println("inputBox name:" + name);
+//		if (input.getText() == ""){
+//			Window.alert("'" + input.getTitle() + "' is empty.");
+//			return false;
+//		}
+		
+		switch (name){
+		case "inputLibraryID": case "inputLibraryName": case "inputLibraryBranch": 
+		case "inputLibraryPhone": case "inputLibraryAddress": case "inputLibraryCity":
+			if (!input.getText().matches("^[0-9A-Z\\.]{1,50}$")){
+				System.out.println("checking ID,Name,Branch,Phone,Address,City");
+				Window.alert("'" + input.getTitle() + "' is not valid.");
+				return false;
+			}
+			break;
+		case "inputLibraryPostCode":
+			if (!input.getText().matches("^[0-9A-Z\\.]{6}$")){
+				System.out.println("checking PostCode");
+				Window.alert("'" + input.getTitle() + "' is not valid.");
+				return false;
+			}
+			break;
+		case "inputLibraryLat": 
+			if (!(Double.parseDouble(input.getText()) >= -90.0 || Double.parseDouble(input.getText()) <= 90.0)){
+				System.out.println("checking Lat");
+				Window.alert("'" + input.getTitle() + "' is not valid.");
+				return false;
+			}
+			break;
+		case "inputLibraryLon":
+			if (!(Double.parseDouble(input.getText()) >= -180.0 || Double.parseDouble(input.getText()) <= 180.0)){
+				System.out.println("checking Lon");
+				Window.alert("'" + input.getTitle() + "' is not valid.");
+				return false;
+			}
+			break;	
+		
+		}
+		return true;
 	}
 	
 	private void displayLibrary(ArrayList<Library> lolb) {
@@ -318,10 +540,29 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setText(row, 6, lb.getPostalCode());
 		allLibraries.setText(row, 7, lb.getLat().toString());
 		allLibraries.setText(row, 8, lb.getLon().toString());
-		
+
+		// add the selection button
 		CheckBox selectButton = new CheckBox();
+		selectButton.setValue(false);
+
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				Window.alert("It is " + (checked ? "" : "not ") + "checked");
+				if (checked == true) {
+					selectedLb.add(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				} else {
+					selectedLb.remove(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				}
+			}
+		});
 		allLibraries.setWidget(row, 9, selectButton);
-		
+
 	}
-	
+
 }
+
