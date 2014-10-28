@@ -9,6 +9,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/qingyili/Desktop/310workspace/opencsv-3.0.jar"/>
+	<classpathentry kind="lib" path="D:/ubc/2014-2015/CPSC 310/project/extraRefLibrary/gwt-maps.jar"/>
+	<classpathentry kind="lib" path="D:/ubc/2014-2015/CPSC 310/project/extraRefLibrary/opencsv-3.0.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
