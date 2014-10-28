@@ -3,6 +3,9 @@ package com.project.LibraryLocator.client;
 import java.util.ArrayList;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,6 +14,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -31,7 +35,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class LibraryLocator implements EntryPoint {
+	
 
+
+	// panel for login
+	private LoginInfo loginInfo = new LoginInfo();
+	private VerticalPanel loginPanel = new VerticalPanel();
+	private Label loginLabel = new Label(
+	   "Please sign in to your Google Account to access the LibraryLocator application.");
+	private Anchor signInLink = new Anchor("Sign In");
+	
 	// set hyperlink in library class? when display in flextable?
 	
 	private DockPanel mainPanel = new DockPanel(); 
@@ -94,7 +107,37 @@ public class LibraryLocator implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+		// Check login status using login service.
+	    LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) {
+	    	  Button button = new Button("loginFail");
+	    	  RootPanel.get("libraryLocator").add(button);
+	      }
+
+	      public void onSuccess(LoginInfo result) {
+	        loginInfo = result;
+	        if(loginInfo.isLoggedIn()) {
+		loadLibraryLocaor();
+	        } else {
+	            loadLogin();
+	          }
+	        }
+	      });
+
+  }
+	
+	  private void loadLogin() {
+		    // Assemble login panel.
+		    signInLink.setHref(loginInfo.getLoginUrl());
+		    loginPanel.add(loginLabel);
+		    loginPanel.add(signInLink);
+		    RootPanel.get("libraryLocator").add(loginPanel);
+		  }
+	
+	  
+	
+	private void loadLibraryLocaor() {
 		// TODO Assemble Main panel.
 		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
 		
@@ -183,6 +226,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble main button panel
 		mainButtonPanel.add(socail1);
 		
+		
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainPanel);
 		
@@ -205,8 +249,7 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
-
-  }
+	}
 	/**
 	   * (admin) Add Library to FlexTable. Executed when the user clicks the addLibraryButton (NOT doing the keyHandler)
 	   */
