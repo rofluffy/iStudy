@@ -38,5 +38,9 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void populateTable(){
+		//TODO get arraylist from parser and put into the table 
+	}
 
 }

@@ -14,7 +14,8 @@ import com.project.LibraryLocator.shared.Library;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DataParseImpl extends RemoteServiceServlet implements DataParse {
+public class DataParseImpl extends RemoteServiceServlet implements
+DataParse{
 	private URL libraryData;
 	private CSVReader reader;
 	private Reader lib;

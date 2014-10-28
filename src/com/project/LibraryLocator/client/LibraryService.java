@@ -12,4 +12,6 @@ public interface LibraryService extends RemoteService{
 public void addLibrary(String lid) /* TODO throws NotLoggedInException*/;
 public void removeLibrary(String lid) /* TODO throws NotLoggedInException*/;
 public ArrayList<Library> getLibraries() /* TODO throws NotLoggedInException*/;
+public void  populateTable();//populate table
 }
+
