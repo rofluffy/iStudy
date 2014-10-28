@@ -16,12 +16,9 @@ public class DataParseImpl {
 	private CSVReader reader;
 	private Reader lib;
 	private List<String[]> dataList;
-	
-	
 	public DataParseImpl(){
 		
 	}
-	
 	
 	
 	//return true if data download correctly 
