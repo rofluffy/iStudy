@@ -1,2 +1,3 @@
 # Module librarylocator
 # RPC service class, partial path of RPC policy file
+com.project.LibraryLocator.client.LoginService, 80DFE07CB28A32213947DE53B7D5122D.gwt.rpc
