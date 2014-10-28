@@ -1,0 +1,7 @@
+package com.project.LibraryLocator.client;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+public interface LoginServiceAsync {
+  public void login(String requestUri, AsyncCallback<LoginInfo> async);
+}
