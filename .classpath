@@ -9,7 +9,12 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="D:/Dropbox/BCS/COURSES/2014 Winter/CPSC 310 Intro Software Engineering/Term Project/gwt-maps.jar"/>
 	<classpathentry kind="lib" path="D:/Dropbox/BCS/COURSES/2014 Winter/CPSC 310 Intro Software Engineering/Term Project/opencsv-3.0.jar"/>
+=======
+	<classpathentry kind="lib" path="/Users/luxi/Downloads/opencsv-3.0.jar"/>
+	<classpathentry kind="lib" path="/Users/luxi/Downloads/gwt-maps-3.8.0 2/gwt-maps.jar"/>
+>>>>>>> a9fdd95e0af435c5def55bc8a8fe3a9812b6d0dd
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
