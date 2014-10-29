@@ -18,25 +18,42 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.LibraryService;
 import com.project.LibraryLocator.shared.Library;
 
+public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService {
+	/* this is the service servlet*/
 
-public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService{
-
+	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
+	
 	@Override
 	public void addLibrary(String lid) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public ArrayList<Library> getLibraries() {
 		// TODO Auto-generated method stub
-		return null;
+		System.out.println("getLibraries is runing");
+		new DataParseImpl().parseAll();
+		System.out.println("list of all libraries:" + loAllLibraries);
+		return loAllLibraries;
+		
+	}
+
+	@Override
+	public void populateTable() {
+		// TODO get arraylist from parser and put into the table
+		System.out.println("populateTable is runing");
+		DataParseImpl parseData = new DataParseImpl();
+		parseData.parseAll();
+		loAllLibraries = parseData.parseLibrary();
+		System.out.println("list of all libraries:" + loAllLibraries);
+		
 	}
 
 }

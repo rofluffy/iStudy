@@ -7,6 +7,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.users.User;
+import com.google.maps.gwt.client.LatLng;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Library {
@@ -21,7 +22,7 @@ public class Library {
 	@Persistent
 	private String phone;
 	@Persistent
-	private String adress;
+	private String address;
 	@Persistent
 	private String city;
 	@Persistent
@@ -31,20 +32,20 @@ public class Library {
 	@Persistent
 	private Double lon;
 
-//	@Persistent
-//	private User user;
+//	 @Persistent
+//	 private User user;
 
 	public Library() {
 	}
 
 	public Library(String id, String name, String branch, String phone,
-			String adress, String city, String postalCode, Double lat,
+			String address, String city, String postalCode, Double lat,
 			Double lon) {
 		this.id = id;
 		this.name = name;
 		this.branch = branch;
 		this.phone = phone;
-		this.adress = adress;
+		this.address = address;
 		this.city = city;
 		this.postalCode = postalCode;
 		this.lat = lat;
@@ -52,47 +53,50 @@ public class Library {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getBranch() {
-		return branch;
+		return this.branch;
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return this.address;
 	}
 
 	public String getCity() {
-		return city;
+		return this.city;
 	}
 
 	public String getPostalCode() {
-		return postalCode;
+		return this.postalCode;
 	}
 
 	public Double getLat() {
-		return lat;
+		return this.lat;
 	}
 
 	public Double getLon() {
-		return lon;
-
+		return this.lon;
+	}
+	
+	public LatLng getLatlon(Double lat, Double lon) {
+		return LatLng.create(lat, lon);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((adress == null) ? 0 : adress.hashCode());
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((branch == null) ? 0 : branch.hashCode());
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -114,10 +118,10 @@ public class Library {
 		if (getClass() != obj.getClass())
 			return false;
 		Library other = (Library) obj;
-		if (adress == null) {
-			if (other.adress != null)
+		if (address == null) {
+			if (other.address != null)
 				return false;
-		} else if (!adress.equals(other.adress))
+		} else if (!address.equals(other.address))
 			return false;
 		if (branch == null) {
 			if (other.branch != null)
