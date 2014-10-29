@@ -19,6 +19,8 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 	private List<String[]> dataList;
 
 	public DataParseImpl() {
+		this.downloadData();
+		this.readFile();
 
 	}
 
@@ -69,7 +71,6 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 		System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
-
 	}
 
 }
