@@ -20,6 +20,8 @@ import com.project.LibraryLocator.shared.Library;
 
 
 public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService{
+	private DataParseImpl parse;
+	private ArrayList<Library> allLibrary;
 
 	@Override
 	public void addLibrary(String lid) {
@@ -40,7 +42,9 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 	}
 	
 	public void populateTable(){
-		//TODO get arraylist from parser and put into the table 
+		parse.parseAll();
+		ArrayList<Library> allLibrary = parse.parseLibrary(); 
+		
 	}
 
 }
