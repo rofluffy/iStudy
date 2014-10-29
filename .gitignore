@@ -1,5 +1,5 @@
 *.class
-*.classpath
+.classpath
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -9,7 +9,7 @@
 *.war
 *.ear
 *.DS_Store
-*gwt-unitCache
+gwt-unitCache
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
