@@ -10,6 +10,17 @@ h1 {
   text-align: center;
 }
 
+body {
+background-image: url(IMG_2867.JPG); /*You will specify your image path here.*/
+
+-moz-background-size: cover;
+-webkit-background-size: cover;
+background-size: cover;
+background-position: top center !important;
+background-repeat: no-repeat !important;
+background-attachment: fixed;
+}
+
 /* the tab panel itself*/
 .tabPanel{
 	text-align: center;
