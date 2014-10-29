@@ -18,33 +18,33 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.LibraryService;
 import com.project.LibraryLocator.shared.Library;
 
+public class LibraryServiceImpl extends RemoteServiceServlet implements
+		LibraryService {
+	// private DataParseImpl parse = new DataParseImpl();
+	// private ArrayList<Library> allLibrary =parse.parseLibrary();
+	// private static final Logger LOG =
+	// Logger.getLogger(LibraryServiceImpl.class.getName());
+	// private static final PersistenceManagerFactory PMF =
+	// JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService{
-//	private DataParseImpl parse = new DataParseImpl();
-//	private ArrayList<Library> allLibrary =parse.parseLibrary();
-//	private static final Logger LOG = Logger.getLogger(LibraryServiceImpl.class.getName());
-//	  private static final PersistenceManagerFactory PMF =
-//	      JDOHelper.getPersistenceManagerFactory("transactions-optional");
-	
 	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
-	
 
 	@Override
 	public void addLibrary(String lid) {
-//		PersistenceManager pm = getPersistenceManager();
-//		Library lib = null; 
-//		for(Library l: allLibrary){
-//			if(l.getId() == lid){
-//				lib = l;
-//				break;
-//			}			
-//		}
-//	    try {
-//	      pm.makePersistent(lib);
-//	    } finally {
-//	      pm.close();
-//	    }
-	    
+		// PersistenceManager pm = getPersistenceManager();
+		// Library lib = null;
+		// for(Library l: allLibrary){
+		// if(l.getId() == lid){
+		// lib = l;
+		// break;
+		// }
+		// }
+		// try {
+		// pm.makePersistent(lib);
+		// } finally {
+		// pm.close();
+		// }
+
 	}
 
 	@Override
@@ -55,35 +55,24 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 
 	@Override
 	public ArrayList<Library> getLibraries() {
-		
+
+		System.out.println("getLibraries is runing");
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
 		System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
-	
+
 	}
-	
-	public void populateTable(){
-		
+
+	public void populateTable() {
+
 		// TODO Auto-generated method stub
-//		System.out.println("getLibraries is runing");
-//<<<<<<< HEAD
-//		DataParseImpl dataParse = new DataParseImpl();
-//		dataParse.parseAll();
-//		loAllLibraries = dataParse.parseLibrary();
-//		System.out.println("list of all libraries:" + loAllLibraries);
-//		return loAllLibraries;
-//=======
-//		new DataParseImpl().parseAll();
-//		System.out.println("list of all libraries:" + allLibrary);
-//		//return allLibrary;
-//>>>>>>> 5313e767dc03927af21b084c101fc9732bb51ff4
-		
-		
+
 	}
-//	private PersistenceManager getPersistenceManager() {
-//	    return PMF.getPersistenceManager();
-//	  }
+
+	// private PersistenceManager getPersistenceManager() {
+	// return PMF.getPersistenceManager();
+	// }
 
 }

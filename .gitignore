@@ -1,7 +1,12 @@
 *.class
 .classpath
+.settings/
 
 *.cache.js
+
+# Bilding files and etc#
+bin/
+war/librarylocator/
 
 # Package Files #
 *.jar
