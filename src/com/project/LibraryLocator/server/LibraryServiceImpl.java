@@ -20,12 +20,28 @@ import com.project.LibraryLocator.shared.Library;
 
 
 public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService{
-	private DataParseImpl parse;
-	private ArrayList<Library> allLibrary;
+	private DataParseImpl parse = new DataParseImpl();
+	private ArrayList<Library> allLibrary =parse.parseLibrary();
+	private static final Logger LOG = Logger.getLogger(LibraryServiceImpl.class.getName());
+	  private static final PersistenceManagerFactory PMF =
+	      JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	
 
 	@Override
 	public void addLibrary(String lid) {
-		// TODO Auto-generated method stub
+		PersistenceManager pm = getPersistenceManager();
+		Library lib = null; 
+		for(Library l: allLibrary){
+			if(l.getId() == lid){
+				lib = l;
+				break;
+			}			
+		}
+	    try {
+	      pm.makePersistent(lib);
+	    } finally {
+	      pm.close();
+	    }
 		
 	}
 
@@ -37,14 +53,27 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 
 	@Override
 	public ArrayList<Library> getLibraries() {
-		// TODO Auto-generated method stub
-		return null;
+		PersistenceManager pm = getPersistenceManager();
+	    List<String> id = new ArrayList<String>();
+	    try {
+	      Query q = pm.newQuery(Library.class, "user == u");
+	      q.declareParameters("com.google.appengine.api.users.User u");
+	      q.setOrdering("createDate");
+	      for (Library l : allLibrary) {
+	        id.add(l.getId());
+	      }
+	    } finally {
+	      pm.close();
+	    }
+	    return allLibrary;
 	}
 	
 	public void populateTable(){
-		parse.parseAll();
-		ArrayList<Library> allLibrary = parse.parseLibrary(); 
+		
 		
 	}
+	private PersistenceManager getPersistenceManager() {
+	    return PMF.getPersistenceManager();
+	  }
 
 }

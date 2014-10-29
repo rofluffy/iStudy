@@ -22,6 +22,8 @@ DataParse{
 	private List<String[]> dataList;
 
 	public DataParseImpl() {
+		this.downloadData();
+		this.readFile();
 
 	}
 
@@ -68,11 +70,6 @@ DataParse{
 		return libraryList;
 	}
 
-	@Override
-	public void parseAll() {
-		this.downloadData();
-		this.readFile();
 
-	}
 
 }
