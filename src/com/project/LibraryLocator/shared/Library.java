@@ -1,5 +1,7 @@
 package com.project.LibraryLocator.shared;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -10,7 +12,7 @@ import com.google.appengine.api.users.User;
 import com.google.maps.gwt.client.LatLng;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Library {
+public class Library implements Serializable {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)

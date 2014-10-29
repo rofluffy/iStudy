@@ -153,7 +153,7 @@ public class LibraryLocator implements EntryPoint {
 	private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
 
 	// private final DataParseAsync DataParse = GWT.create(DataParse.class);
-	private final LibraryServiceAsync LibraryService = GWT
+	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
@@ -346,10 +346,10 @@ public class LibraryLocator implements EntryPoint {
 	private void loadLibraries() {
 
 		//System.out.println("populateTable (main class) success");
-		LibraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
+		libraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable error) {
 				// TODO Auto-generated method stub
 				System.out.println("loadLibraries fail");
 

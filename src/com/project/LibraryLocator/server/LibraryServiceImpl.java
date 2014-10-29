@@ -39,7 +39,9 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 	public ArrayList<Library> getLibraries() {
 		// TODO Auto-generated method stub
 		System.out.println("getLibraries is runing");
-		new DataParseImpl().parseAll();
+		DataParseImpl dataParse = new DataParseImpl();
+		dataParse.parseAll();
+		loAllLibraries = dataParse.parseLibrary();
 		System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
 		
