@@ -6,7 +6,8 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
-  <servlet>
+
+<!--   <servlet>
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>com.project.LibraryLocator.server.GreetingServiceImpl</servlet-class>
   </servlet>
@@ -14,7 +15,23 @@
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/librarylocator/greet</url-pattern>
+  </servlet-mapping> -->
+
+
+
+<servlet>
+    <servlet-name>loginService</servlet-name>
+    <servlet-class>com.project.LibraryLocator.server.LoginServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>loginService</servlet-name>
+    <url-pattern>/librarylocator/login</url-pattern>
   </servlet-mapping>
+
+
+
+
   
   <!-- Default page to serve -->
   <welcome-file-list>
