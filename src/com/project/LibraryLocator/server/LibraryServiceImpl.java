@@ -42,13 +42,13 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 	    } finally {
 	      pm.close();
 	    }
-		
+	    
 	}
 
 	@Override
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -69,6 +69,12 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryS
 	}
 	
 	public void populateTable(){
+		
+		// TODO Auto-generated method stub
+		System.out.println("getLibraries is runing");
+		new DataParseImpl().parseAll();
+		System.out.println("list of all libraries:" + allLibrary);
+		//return allLibrary;
 		
 		
 	}
