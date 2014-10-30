@@ -12,7 +12,7 @@ import com.project.LibraryLocator.shared.Library;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DataParseImpl /*extends RemoteServiceServlet*/ {
+public class DataParseImpl {
 	private URL libraryData;
 	private CSVReader reader;
 	private Reader lib;
@@ -48,7 +48,6 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 		reader = new CSVReader(lib);
 		try {
 			dataList = reader.readAll();
-			System.out.println("dataList: "+dataList);
 
 		} catch (IOException e) {
 			System.out.println("Error reading file");
@@ -67,10 +66,13 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 		return libraryList;
 	}
 
+
 	public void parseAll() {
-		System.out.println("parseAll is runing");
+		//System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
+
 	}
+
 
 }

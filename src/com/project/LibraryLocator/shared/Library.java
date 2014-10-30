@@ -8,7 +8,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.google.appengine.api.users.User;
+
+//import com.google.appengine.api.users.User;
 import com.google.maps.gwt.client.LatLng;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
@@ -54,6 +55,18 @@ public class Library implements Serializable {
 		this.lon = lon;
 	}
 
+	public Library(String id, String name, String branch) {
+		// TODO Auto-generated constructor stub
+		this.id = id;
+		this.name = name;
+		this.branch = branch;
+	}
+	
+	public Library(String id) {
+		this();
+		this.id = id;
+	}
+
 	public String getId() {
 		return this.id;
 	}
@@ -90,8 +103,8 @@ public class Library implements Serializable {
 		return this.lon;
 	}
 	
-	public LatLng getLatlon(Double lat, Double lon) {
-		return LatLng.create(lat, lon);
+	public LatLng getLatlon() {
+		return LatLng.create(this.lat, this.lon);
 	}
 
 	@Override

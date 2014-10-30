@@ -1,6 +1,8 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -99,21 +101,16 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel searchPanel = new HorizontalPanel();
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
-	// private CheckBox selectLibrary = new CheckBox(); // or radioButton?
-	// [develop in librariesFlexTable]
-	private ListBox regionList = new ListBox();
+	//private ListBox regionList = new ListBox();
+
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-	private Button checkallButton = new Button("Check All"); // also able to use
-																// in favorite?
-	private Button toMapButton = new Button("To Map"); // also able to use in
-														// favorite?
-	private Button checkallButtonfav = new Button("Check All"); // the one in
-																// favorite tab
-	private Button toMapButtonfav = new Button("To Map"); // the one in favorite
-															// tab
+	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
+	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
+	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
+	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button testing = new Button("testing");
 
@@ -121,12 +118,10 @@ public class LibraryLocator implements EntryPoint {
 	// things inside favorite
 	private VerticalPanel favoriteTab = new VerticalPanel();
 	private FlexTable favoriteTable = new FlexTable();
-	// private CheckBox selectFavorite = new CheckBox(); //do this later
-	// Buttons (for Favorite)
+	// private CheckBox selectFavorite = new CheckBox(); //do this later Buttons (for Favorite)
 	private Button removeFavorite = new Button("Remove");
 
-	// adminTab (testing atleast?), display all library and able to add new
-	// library
+	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
 	private VerticalPanel adminTab = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
@@ -158,10 +153,11 @@ public class LibraryLocator implements EntryPoint {
 	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
 
-	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
-																		// library
-																		// object
-	private ArrayList<Library> selectedLb = new ArrayList<Library>();
+	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
+	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
+	private ArrayList<Library> searchLb = new ArrayList<Library>();
+	
+	private ListBox searchBox = new ListBox();;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -187,7 +183,7 @@ public class LibraryLocator implements EntryPoint {
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						if (loginInfo.isLoggedIn()) {
-							loadLibraryLocaor();
+							loadLibraryLocator();
 						} else {
 							loadLogin();
 						}
@@ -204,7 +200,7 @@ public class LibraryLocator implements EntryPoint {
 		RootPanel.get("libraryLocator").add(loginPanel);
 	}
 
-	private void loadLibraryLocaor() {
+	private void loadLibraryLocator() {
 		// TODO Assemble Main panel.
 		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
 		mainPanel.add(mainTab, DockPanel.WEST);
@@ -275,12 +271,14 @@ public class LibraryLocator implements EntryPoint {
 		searchTab.add(buttonPanel);
 
 		// TODO Assemble search panel
-		searchPanel.add(searchInputBox);
+		searchPanel.add(searchBox);
+		//searchPanel.add(searchInputBox);
 		searchPanel.add(searchButton);
 
 		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
-		librariesFlexTable.setText(0, 1, "Select");
+		librariesFlexTable.setText(0, 1, "Branch");
+		librariesFlexTable.setText(0, 2, "Select");
 
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
@@ -327,30 +325,10 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		//displayLibrary(libraries);
-		//loadData();
 		loadLibraries();
 
 	}
 
-//	private void loadData() {
-//		// TODO Auto-generated method stub
-//		LibraryService.populateTable(new AsyncCallback<Void>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				System.out.println("populateTable (main class) fails");
-//				
-//			}
-//
-//			@Override
-//			public void onSuccess(Void ignore) {
-//				// TODO Auto-generated method stub
-//				loadLibraries();
-//			}
-//		});
-//	}
 
 	private void loadLibraries() {
 
@@ -368,8 +346,10 @@ public class LibraryLocator implements EntryPoint {
 			public void onSuccess(ArrayList<Library> lolb) {
 				// TODO Auto-generated method stub
 				System.out.println("loadLibraries success");
-				displayLibrary(lolb);
-				System.out.println("loadLibraries: " + lolb);
+				libraries = lolb;
+				displayAdminLibrary(lolb);
+				SearchBoxForLibary();
+				System.out.println("loadLibraries: " + libraries);
 			}
 
 		});
@@ -409,7 +389,7 @@ public class LibraryLocator implements EntryPoint {
 		lotb.add(inputLibraryLat);
 		lotb.add(inputLibraryLon);
 		for (TextBox tb : lotb) {
-			checkValid(tb);
+			//checkValid(tb);
 		}
 
 		// TODO clean the input box (refactor?)
@@ -426,17 +406,19 @@ public class LibraryLocator implements EntryPoint {
 		inputLibraryID.setFocus(true);
 
 		// Don't add library if the ID is already exist
+		// Don't add library if lat and lon is already exist
 		ArrayList<String> loid = new ArrayList<String>();
+		ArrayList<LatLng> loLatlng = new ArrayList<LatLng>();
 		for (Library lb : libraries) {
 			loid.add(lb.getId());
+			loLatlng.add(lb.getLatlon());
 		}
 
-		if (loid.contains(newID)) {
+		if (loid.contains(newID) || loLatlng.contains(LatLng.create(newLat, newLon))) {
 			Window.alert("the Library is already exit!");
 			return;
 		}
-
-		// TODO don't add library if lat and lon is already exist
+		
 
 		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
@@ -496,8 +478,10 @@ public class LibraryLocator implements EntryPoint {
 	 * 
 	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
 	 */
+	
 
-	private boolean checkValid(TextBox input) {
+
+/*	private boolean checkValid(TextBox input) {
 
 		// TODO NOT WORKING =DDDDDD
 
@@ -549,18 +533,17 @@ public class LibraryLocator implements EntryPoint {
 
 		}
 		return true;
-	}
+	}*/
 
-	private void displayLibrary(ArrayList<Library> lolb) {
+	private void displayAdminLibrary(ArrayList<Library> lolb) {
 		for (Library lb : lolb) {
-			displayLibrary(lb);
+			displayAdminLibrary(lb);
 		}
 	}
 
-	private void displayLibrary(final Library lb) {
+	private void displayAdminLibrary(final Library lb) {
 		// Add the stock to the table.
 		int row = allLibraries.getRowCount();
-		libraries.add(lb);
 		allLibraries.setText(row, 0, lb.getId());
 		allLibraries.setText(row, 1, lb.getName());
 		allLibraries.setText(row, 2, lb.getBranch());
@@ -593,5 +576,84 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setWidget(row, 9, selectButton);
 
 	}
+	
+	/**
+	 * (search) Add Library to FlexTable. Executed when the user clicks the
+	 * searchButton (NOT doing the keyHandler)
+	 */
+	private void SearchBoxForLibary(){
+		System.out.println("search function is runing");
+		Set<String> allCity = new HashSet<String>();
+		for(Library l : libraries){
+			allCity.add(l.getCity());
+		}
+		System.out.println("allCity:" + allCity);
+		for(String c: allCity){
+			searchBox.addItem(c);
+		}
+		searchBox.setVisibleItemCount(1);
+		
+		searchBox.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event){
+				int index = ((ListBox) event.getSource()).getSelectedIndex();
+				String selectedCity = ((ListBox) event.getSource()).getValue(index);
+				System.out.println("selected city:" + selectedCity);
+					for(Library lb : libraries){
+						if(lb.getCity().matches(selectedCity)){
+							searchLb.add(lb);
+						
+					}
+				}
+			}
+		});
+		
+		searchButton.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				librariesFlexTable.removeAllRows();
+				System.out.println("search selected lb:" + searchLb);
+				displaySearchLibrary(searchLb);
+				searchLb.clear();
+			}
+
+		});
+		
+	}
+	
+	private void displaySearchLibrary(ArrayList<Library> lolb) {
+		for (Library lb : lolb){
+			displaySearchLibrary(lb);
+		}
+		
+	}
+
+	private void displaySearchLibrary(final Library lb) {
+		// TODO Auto-generated method stub
+		int row = librariesFlexTable.getRowCount();
+		//ArrayList<Library> temp = new ArrayList<Library>();
+		//temp.add(lb);
+		librariesFlexTable.setText(row, 0, lb.getName());
+		librariesFlexTable.setText(row, 1, lb.getBranch());
+		
+		CheckBox selectButton = new CheckBox();
+		selectButton.setValue(false);
+
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				Window.alert("It is " + (checked ? "" : "not ") + "checked");
+				if (checked == true) {
+					selectedLb.add(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				} else {
+					selectedLb.remove(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				}
+			}
+		});
+		librariesFlexTable.setWidget(row, 2, selectButton);
+	}
+
 
 }
