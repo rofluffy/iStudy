@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.shared.Library;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -73,6 +72,8 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 		System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
+
+	}
 
 
 }

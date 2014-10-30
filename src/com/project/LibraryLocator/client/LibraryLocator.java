@@ -1,6 +1,8 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -153,12 +155,11 @@ public class LibraryLocator implements EntryPoint {
 	private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
 
 	// private final DataParseAsync DataParse = GWT.create(DataParse.class);
-	private final LibraryServiceAsync LibraryService = GWT
+	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
-																		// library
-																		// object
+																		// libraray 																	// object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>();
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
@@ -346,10 +347,10 @@ public class LibraryLocator implements EntryPoint {
 	private void loadLibraries() {
 
 		//System.out.println("populateTable (main class) success");
-		LibraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
+		libraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable error) {
 				// TODO Auto-generated method stub
 				System.out.println("loadLibraries fail");
 
@@ -487,6 +488,33 @@ public class LibraryLocator implements EntryPoint {
 	 * 
 	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
 	 */
+	
+	private void SerchBoxForLibary(){
+		ListBox searchBox = new ListBox();
+		Set<String> allCity = new HashSet<String>();
+		String selectedCity;
+		for(Library l : libraries){
+			allCity.add(l.getCity());
+		}
+		for(String c: allCity){
+			searchBox.addItem(c);
+		}
+		searchBox.setVisibleItemCount(1);
+		selectedCity = searchBox.getValue(searchBox.getSelectedIndex());
+		
+		for(Library l : libraries){
+			if(l.getCity() == selectedCity){
+				selectedLb.add(l);
+			}
+		}
+		
+		searchButton.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				displayLibrary(selectedLb);
+			}
+		});
+		
+	}
 
 	private boolean checkValid(TextBox input) {
 
