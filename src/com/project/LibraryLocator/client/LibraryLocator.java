@@ -152,6 +152,7 @@ public class LibraryLocator implements EntryPoint {
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>();
+	private ArrayList<Library> searchLb = new ArrayList<Library>();
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -477,13 +478,13 @@ public class LibraryLocator implements EntryPoint {
 		
 		for(Library l : libraries){
 			if(l.getCity() == selectedCity){
-				selectedLb.add(l);
+				searchLb.add(l);
 			}
 		}
 		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
-				displaySearchLibrary(selectedLb);
+				displaySearchLibrary(searchLb);
 			}
 
 		});
