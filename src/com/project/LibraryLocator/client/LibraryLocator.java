@@ -93,6 +93,8 @@ public class LibraryLocator implements EntryPoint {
 	private DockPanel mainPanel = new DockPanel();
 	private TabPanel mainTab = new TabPanel();
 
+	private TabPanel mainAdminTab = new TabPanel();
+
 	// searchTab
 	// things inside the search tab
 	private VerticalPanel searchTab = new VerticalPanel();
@@ -164,6 +166,11 @@ public class LibraryLocator implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+
+		mainAdminTab.add(new Button("login"), "Admin Login");
+		mainAdminTab.add(new ScrollPanel(adminTab),"Admin");
+	
+	    
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		loginService.login(GWT.getHostPageBaseURL(),
@@ -208,9 +215,10 @@ public class LibraryLocator implements EntryPoint {
 
 		mainTab.add(new ScrollPanel(searchTab), "Search"); // don't think the string after is very necessary, check later!
 		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
-		mainTab.add(new ScrollPanel(adminTab), "Admin");
+		//mainTab.add(new ScrollPanel(adminTab), "Admin");
+		
 		// initialize default display tab
-		mainTab.selectTab(2); // 2 is the admin one
+		mainTab.selectTab(0); // 2 is the admin one
 		// style
 		mainTab.getTabBar().addStyleName("tabPanel");
 		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
@@ -295,6 +303,7 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainPanel);
+		RootPanel.get("mainAdminTab").add(mainAdminTab);
 
 		// TODO Move cursor focus to ALL input box.
 		inputLibraryID.setFocus(true);
