@@ -8,20 +8,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.project.LibraryLocator.client.DataParse;
 import com.project.LibraryLocator.shared.Library;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DataParseImpl extends RemoteServiceServlet implements
-DataParse{
+public class DataParseImpl {
 	private URL libraryData;
 	private CSVReader reader;
 	private Reader lib;
 	private List<String[]> dataList;
 
 	public DataParseImpl() {
+		this.downloadData();
+		this.readFile();
 
 	}
 
@@ -56,7 +55,6 @@ DataParse{
 
 	}
 
-	@Override
 	public ArrayList<Library> parseLibrary() {
 		ArrayList<Library> libraryList = new ArrayList<Library>();
 		dataList.remove(0);
@@ -68,11 +66,13 @@ DataParse{
 		return libraryList;
 	}
 
-	@Override
+
 	public void parseAll() {
+		//System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
 
 	}
+
 
 }

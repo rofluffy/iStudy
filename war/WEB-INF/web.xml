@@ -18,15 +18,35 @@
   </servlet-mapping> -->
 
 
-
+ <!-- Servlets -->
 <servlet>
     <servlet-name>loginService</servlet-name>
     <servlet-class>com.project.LibraryLocator.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  
+<servlet>
+    <servlet-name>LibraryService</servlet-name>
+    <servlet-class>com.project.LibraryLocator.server.LibraryServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>FavoriteService</servlet-name>
+    <servlet-class>com.project.LibraryLocator.server.FavoriteServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>loginService</servlet-name>
     <url-pattern>/librarylocator/login</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>LibraryService</servlet-name>
+    <url-pattern>/librarylocator/Library</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>FavoriteService</servlet-name>
+    <url-pattern>/librarylocator/Favorite</url-pattern>
   </servlet-mapping>
 
 
