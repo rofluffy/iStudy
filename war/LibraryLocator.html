@@ -6,8 +6,22 @@
 
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+    
+    #map {
+    position: absolute;
+    left: 420px;
+    top: 170px;
+    z-index: 1;
+    #libraryLocator{
+    z-index: 2;
+    }
+}
+    
+    </style>
+ 
     <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
@@ -23,7 +37,9 @@
     <!-- If you add any GWT meta tags, they must   -->
     <!-- be added before this line.                -->
     <!--                                           -->
+      <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=SENSOR_TRUE_OR_FALSE"></script>
     <script type="text/javascript" language="javascript" src="librarylocator/librarylocator.nocache.js"></script>
+    
   </head>
 
   <!--                                           -->
@@ -31,7 +47,7 @@
   <!-- you can leave the body empty if you want  -->
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
-  <body>
+  <body style=" background:#FFEBCD ; background-image:url(IMG_2867.jpg)" >
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -45,7 +61,8 @@
     </noscript>
 
     <h1>iStudy</h1>
-       <div id="libraryLocator"></div>
+       <div id="libraryLocator"></div>       
+       
 
 <!--     <table align="center"> -->
 <!--       <tr> -->
@@ -59,5 +76,18 @@
 <!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
 <!--       </tr> -->
 <!--     </table> -->
+
+<div id="map" style="width:60%; height:48%"></div>
+
+
+<!-- Admin access box  -->
+<form action="demo_form_action.asp" method="get">
+<fieldset>
+<legend>Admin access</legend>
+Password: <input type="text" size="30"><br>
+<input type="submit" value="Submit">
+</fieldset>
+
+</form>
   </body>
 </html>
