@@ -1,6 +1,8 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -170,7 +172,7 @@ public class LibraryLocator implements EntryPoint {
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						if (loginInfo.isLoggedIn()) {
-							loadLibraryLocaor();
+							loadLibraryLocator();
 						} else {
 							loadLogin();
 						}
@@ -187,7 +189,7 @@ public class LibraryLocator implements EntryPoint {
 		RootPanel.get("libraryLocator").add(loginPanel);
 	}
 
-	private void loadLibraryLocaor() {
+	private void loadLibraryLocator() {
 		// TODO Assemble Main panel.
 		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
 		mainPanel.add(mainTab, DockPanel.WEST);
@@ -459,6 +461,34 @@ public class LibraryLocator implements EntryPoint {
 	 * 
 	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
 	 */
+	
+	private void SerchBoxForLibary(){
+		ListBox searchBox = new ListBox();
+		Set<String> allCity = new HashSet<String>();
+		String selectedCity;
+		for(Library l : libraries){
+			allCity.add(l.getCity());
+		}
+		for(String c: allCity){
+			searchBox.addItem(c);
+		}
+		searchBox.setVisibleItemCount(1);
+		selectedCity = searchBox.getValue(searchBox.getSelectedIndex());
+		
+		for(Library l : libraries){
+			if(l.getCity() == selectedCity){
+				selectedLb.add(l);
+			}
+		}
+		
+		searchButton.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				displaySearchLibrary(selectedLb);
+			}
+
+		});
+		
+	}
 
 /*	private boolean checkValid(TextBox input) {
 
@@ -555,6 +585,16 @@ public class LibraryLocator implements EntryPoint {
 		});
 		allLibraries.setWidget(row, 9, selectButton);
 
+	}
+	
+	/**
+	 * (search) Add Library to FlexTable. Executed when the user clicks the
+	 * searchButton (NOT doing the keyHandler)
+	 */
+	
+	private void displaySearchLibrary(ArrayList<Library> lolb) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

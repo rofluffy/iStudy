@@ -67,10 +67,13 @@ public class DataParseImpl {
 		return libraryList;
 	}
 
+
 	public void parseAll() {
 		System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
+
 	}
+
 
 }
