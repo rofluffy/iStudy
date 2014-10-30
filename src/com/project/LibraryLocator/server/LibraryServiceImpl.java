@@ -18,25 +18,61 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.LibraryService;
 import com.project.LibraryLocator.shared.Library;
 
+public class LibraryServiceImpl extends RemoteServiceServlet implements
+		LibraryService {
+	// private DataParseImpl parse = new DataParseImpl();
+	// private ArrayList<Library> allLibrary =parse.parseLibrary();
+	// private static final Logger LOG =
+	// Logger.getLogger(LibraryServiceImpl.class.getName());
+	// private static final PersistenceManagerFactory PMF =
+	// JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-public class LibraryServiceImpl extends RemoteServiceServlet implements LibraryService{
+	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 
 	@Override
 	public void addLibrary(String lid) {
-		// TODO Auto-generated method stub
-		
+		// PersistenceManager pm = getPersistenceManager();
+		// Library lib = null;
+		// for(Library l: allLibrary){
+		// if(l.getId() == lid){
+		// lib = l;
+		// break;
+		// }
+		// }
+		// try {
+		// pm.makePersistent(lib);
+		// } finally {
+		// pm.close();
+		// }
+
 	}
 
 	@Override
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public ArrayList<Library> getLibraries() {
-		// TODO Auto-generated method stub
-		return null;
+
+		System.out.println("getLibraries is runing");
+		DataParseImpl dataParse = new DataParseImpl();
+		dataParse.parseAll();
+		loAllLibraries = dataParse.parseLibrary();
+		System.out.println("list of all libraries:" + loAllLibraries);
+		return loAllLibraries;
+
 	}
+
+	public void populateTable() {
+
+		// TODO Auto-generated method stub
+
+	}
+
+	// private PersistenceManager getPersistenceManager() {
+	// return PMF.getPersistenceManager();
+	// }
 
 }
