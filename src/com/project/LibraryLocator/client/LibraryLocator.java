@@ -101,7 +101,7 @@ public class LibraryLocator implements EntryPoint {
 	private FlexTable librariesFlexTable = new FlexTable();
 	// private CheckBox selectLibrary = new CheckBox(); // or radioButton?
 	// [develop in librariesFlexTable]
-	private ListBox regionList = new ListBox();
+	//private ListBox regionList = new ListBox();
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
@@ -161,6 +161,7 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
 																		// libraray 																	// object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>();
+	private ListBox searchBox;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -270,6 +271,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble search panel
 		searchPanel.add(searchInputBox);
 		searchPanel.add(searchButton);
+		searchPanel.add(searchBox);
 
 		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
@@ -490,7 +492,7 @@ public class LibraryLocator implements EntryPoint {
 	 */
 	
 	private void SerchBoxForLibary(){
-		ListBox searchBox = new ListBox();
+		searchBox = new ListBox();
 		Set<String> allCity = new HashSet<String>();
 		String selectedCity;
 		for(Library l : libraries){
