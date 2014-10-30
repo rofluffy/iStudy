@@ -97,21 +97,15 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel searchPanel = new HorizontalPanel();
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
-	// private CheckBox selectLibrary = new CheckBox(); // or radioButton?
-	// [develop in librariesFlexTable]
 	private ListBox regionList = new ListBox();
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-	private Button checkallButton = new Button("Check All"); // also able to use
-																// in favorite?
-	private Button toMapButton = new Button("To Map"); // also able to use in
-														// favorite?
-	private Button checkallButtonfav = new Button("Check All"); // the one in
-																// favorite tab
-	private Button toMapButtonfav = new Button("To Map"); // the one in favorite
-															// tab
+	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
+	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
+	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
+	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button testing = new Button("testing");
 
@@ -119,12 +113,10 @@ public class LibraryLocator implements EntryPoint {
 	// things inside favorite
 	private VerticalPanel favoriteTab = new VerticalPanel();
 	private FlexTable favoriteTable = new FlexTable();
-	// private CheckBox selectFavorite = new CheckBox(); //do this later
-	// Buttons (for Favorite)
+	// private CheckBox selectFavorite = new CheckBox(); //do this later Buttons (for Favorite)
 	private Button removeFavorite = new Button("Remove");
 
-	// adminTab (testing atleast?), display all library and able to add new
-	// library
+	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
 	private VerticalPanel adminTab = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
@@ -156,9 +148,7 @@ public class LibraryLocator implements EntryPoint {
 	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
 
-	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
-																		// library
-																		// object
+	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>();
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
@@ -318,30 +308,10 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		//displayLibrary(libraries);
-		//loadData();
 		loadLibraries();
 
 	}
 
-//	private void loadData() {
-//		// TODO Auto-generated method stub
-//		LibraryService.populateTable(new AsyncCallback<Void>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				System.out.println("populateTable (main class) fails");
-//				
-//			}
-//
-//			@Override
-//			public void onSuccess(Void ignore) {
-//				// TODO Auto-generated method stub
-//				loadLibraries();
-//			}
-//		});
-//	}
 
 	private void loadLibraries() {
 
@@ -359,7 +329,7 @@ public class LibraryLocator implements EntryPoint {
 			public void onSuccess(ArrayList<Library> lolb) {
 				// TODO Auto-generated method stub
 				System.out.println("loadLibraries success");
-				displayLibrary(lolb);
+				displayAdminLibrary(lolb);
 				System.out.println("loadLibraries: " + lolb);
 			}
 
@@ -400,7 +370,7 @@ public class LibraryLocator implements EntryPoint {
 		lotb.add(inputLibraryLat);
 		lotb.add(inputLibraryLon);
 		for (TextBox tb : lotb) {
-			checkValid(tb);
+			//checkValid(tb);
 		}
 
 		// TODO clean the input box (refactor?)
@@ -417,17 +387,19 @@ public class LibraryLocator implements EntryPoint {
 		inputLibraryID.setFocus(true);
 
 		// Don't add library if the ID is already exist
+		// Don't add library if lat and lon is already exist
 		ArrayList<String> loid = new ArrayList<String>();
+		ArrayList<LatLng> loLatlng = new ArrayList<LatLng>();
 		for (Library lb : libraries) {
 			loid.add(lb.getId());
+			loLatlng.add(lb.getLatlon());
 		}
 
-		if (loid.contains(newID)) {
+		if (loid.contains(newID) || loLatlng.contains(LatLng.create(newLat, newLon))) {
 			Window.alert("the Library is already exit!");
 			return;
 		}
-
-		// TODO don't add library if lat and lon is already exist
+		
 
 		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
@@ -488,7 +460,7 @@ public class LibraryLocator implements EntryPoint {
 	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
 	 */
 
-	private boolean checkValid(TextBox input) {
+/*	private boolean checkValid(TextBox input) {
 
 		// TODO NOT WORKING =DDDDDD
 
@@ -540,15 +512,15 @@ public class LibraryLocator implements EntryPoint {
 
 		}
 		return true;
-	}
+	}*/
 
-	private void displayLibrary(ArrayList<Library> lolb) {
+	private void displayAdminLibrary(ArrayList<Library> lolb) {
 		for (Library lb : lolb) {
-			displayLibrary(lb);
+			displayAdminLibrary(lb);
 		}
 	}
 
-	private void displayLibrary(final Library lb) {
+	private void displayAdminLibrary(final Library lb) {
 		// Add the stock to the table.
 		int row = allLibraries.getRowCount();
 		libraries.add(lb);

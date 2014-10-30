@@ -12,7 +12,7 @@ import com.project.LibraryLocator.shared.Library;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DataParseImpl /*extends RemoteServiceServlet*/ {
+public class DataParseImpl {
 	private URL libraryData;
 	private CSVReader reader;
 	private Reader lib;
