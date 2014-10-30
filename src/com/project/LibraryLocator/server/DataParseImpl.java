@@ -68,13 +68,11 @@ public class DataParseImpl /*extends RemoteServiceServlet*/ {
 		return libraryList;
 	}
 
-<<<<<<< HEAD
-=======
+
 	public void parseAll() {
 		System.out.println("parseAll is runing");
 		this.downloadData();
 		this.readFile();
->>>>>>> c0f6d4f541ffe11210c13e919b16a256f34507e1
 
 
 }
