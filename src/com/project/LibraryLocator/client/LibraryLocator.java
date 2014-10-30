@@ -99,7 +99,8 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel searchPanel = new HorizontalPanel();
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
-	private ListBox regionList = new ListBox();
+	//private ListBox regionList = new ListBox();
+
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
@@ -151,8 +152,10 @@ public class LibraryLocator implements EntryPoint {
 			.create(LibraryService.class);
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
-	private ArrayList<Library> selectedLb = new ArrayList<Library>();
+	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
+	
+	private ListBox searchBox = new ListBox();;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -260,12 +263,14 @@ public class LibraryLocator implements EntryPoint {
 		searchTab.add(buttonPanel);
 
 		// TODO Assemble search panel
-		searchPanel.add(searchInputBox);
+		searchPanel.add(searchBox);
+		//searchPanel.add(searchInputBox);
 		searchPanel.add(searchButton);
 
 		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
-		librariesFlexTable.setText(0, 1, "Select");
+		librariesFlexTable.setText(0, 1, "Branch");
+		librariesFlexTable.setText(0, 2, "Select");
 
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
@@ -332,8 +337,10 @@ public class LibraryLocator implements EntryPoint {
 			public void onSuccess(ArrayList<Library> lolb) {
 				// TODO Auto-generated method stub
 				System.out.println("loadLibraries success");
+				libraries = lolb;
 				displayAdminLibrary(lolb);
-				System.out.println("loadLibraries: " + lolb);
+				SearchBoxForLibary();
+				System.out.println("loadLibraries: " + libraries);
 			}
 
 		});
@@ -463,33 +470,7 @@ public class LibraryLocator implements EntryPoint {
 	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
 	 */
 	
-	private void SerchBoxForLibary(){
-		ListBox searchBox = new ListBox();
-		Set<String> allCity = new HashSet<String>();
-		String selectedCity;
-		for(Library l : libraries){
-			allCity.add(l.getCity());
-		}
-		for(String c: allCity){
-			searchBox.addItem(c);
-		}
-		searchBox.setVisibleItemCount(1);
-		selectedCity = searchBox.getValue(searchBox.getSelectedIndex());
-		
-		for(Library l : libraries){
-			if(l.getCity() == selectedCity){
-				searchLb.add(l);
-			}
-		}
-		
-		searchButton.addClickHandler(new ClickHandler(){
-			public void onClick(ClickEvent event){
-				displaySearchLibrary(searchLb);
-			}
 
-		});
-		
-	}
 
 /*	private boolean checkValid(TextBox input) {
 
@@ -554,7 +535,6 @@ public class LibraryLocator implements EntryPoint {
 	private void displayAdminLibrary(final Library lb) {
 		// Add the stock to the table.
 		int row = allLibraries.getRowCount();
-		libraries.add(lb);
 		allLibraries.setText(row, 0, lb.getId());
 		allLibraries.setText(row, 1, lb.getName());
 		allLibraries.setText(row, 2, lb.getBranch());
@@ -592,10 +572,79 @@ public class LibraryLocator implements EntryPoint {
 	 * (search) Add Library to FlexTable. Executed when the user clicks the
 	 * searchButton (NOT doing the keyHandler)
 	 */
-	
-	private void displaySearchLibrary(ArrayList<Library> lolb) {
-		// TODO Auto-generated method stub
+	private void SearchBoxForLibary(){
+		System.out.println("search function is runing");
+		Set<String> allCity = new HashSet<String>();
+		for(Library l : libraries){
+			allCity.add(l.getCity());
+		}
+		System.out.println("allCity:" + allCity);
+		for(String c: allCity){
+			searchBox.addItem(c);
+		}
+		searchBox.setVisibleItemCount(1);
+		
+		searchBox.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event){
+				int index = ((ListBox) event.getSource()).getSelectedIndex();
+				String selectedCity = ((ListBox) event.getSource()).getValue(index);
+				System.out.println("selected city:" + selectedCity);
+					for(Library lb : libraries){
+						if(lb.getCity().matches(selectedCity)){
+							searchLb.add(lb);
+						
+					}
+				}
+			}
+		});
+		
+		searchButton.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				librariesFlexTable.removeAllRows();
+				System.out.println("search selected lb:" + searchLb);
+				displaySearchLibrary(searchLb);
+				searchLb.clear();
+			}
+
+		});
 		
 	}
+	
+	private void displaySearchLibrary(ArrayList<Library> lolb) {
+		for (Library lb : lolb){
+			displaySearchLibrary(lb);
+		}
+		
+	}
+
+	private void displaySearchLibrary(final Library lb) {
+		// TODO Auto-generated method stub
+		int row = librariesFlexTable.getRowCount();
+		//ArrayList<Library> temp = new ArrayList<Library>();
+		//temp.add(lb);
+		librariesFlexTable.setText(row, 0, lb.getName());
+		librariesFlexTable.setText(row, 1, lb.getBranch());
+		
+		CheckBox selectButton = new CheckBox();
+		selectButton.setValue(false);
+
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				Window.alert("It is " + (checked ? "" : "not ") + "checked");
+				if (checked == true) {
+					selectedLb.add(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				} else {
+					selectedLb.remove(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				}
+			}
+		});
+		librariesFlexTable.setWidget(row, 2, selectButton);
+	}
+
 
 }
