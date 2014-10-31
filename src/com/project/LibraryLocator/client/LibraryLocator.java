@@ -1,7 +1,10 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
@@ -587,8 +590,12 @@ public class LibraryLocator implements EntryPoint {
 		for(Library l : libraries){
 			allCity.add(l.getCity());
 		}
-		System.out.println("allCity:" + allCity);
-		for(String c: allCity){
+		LinkedList<String>allCitySort = new LinkedList<String>();
+		allCitySort.addAll(allCity);
+		Collections.sort(allCitySort);
+		
+		System.out.println("allCity:" + allCitySort);
+		for(String c: allCitySort){
 			searchBox.addItem(c);
 		}
 		searchBox.setVisibleItemCount(1);
@@ -605,10 +612,13 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
-		
+		//TODO: keep the first row 
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
-				librariesFlexTable.removeAllRows();
+				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
+					librariesFlexTable.removeRow(i);
+				}
+				//librariesFlexTable.removeAllRows();
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				searchLb.clear();
@@ -626,7 +636,7 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void displaySearchLibrary(final Library lb) {
-		// TODO Auto-generated method stub
+		
 		int row = librariesFlexTable.getRowCount();
 		//ArrayList<Library> temp = new ArrayList<Library>();
 		//temp.add(lb);

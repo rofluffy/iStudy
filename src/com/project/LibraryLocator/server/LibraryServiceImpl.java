@@ -29,6 +29,7 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 
 	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 
+	//TODO store is so every user can acess it from the app engine, so we only need to run it once 
 	@Override
 	public void addLibrary(String lid) {
 		// PersistenceManager pm = getPersistenceManager();
