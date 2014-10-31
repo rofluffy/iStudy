@@ -15,9 +15,22 @@
     left: 420px;
     top: 170px;
     z-index: 1;
+    
     #libraryLocator{
+  
+    height:600px;
+    width:100px;
+    float:left;
+    padding:5px; 
     z-index: 2;
     }
+    
+    #mainAdminTab {
+    position: absolute;
+    left: 0px;
+    top: 250px;
+    z-index: 1;
+    
 }
     
     </style>
@@ -41,19 +54,21 @@
     <script type="text/javascript" language="javascript" src="librarylocator/librarylocator.nocache.js"></script>
     
   </head>
+  <link rel="stylesheet" type="text/css" href="LibraryLocator.css" />
 
   <!--                                           -->
   <!-- The body can have arbitrary html, or      -->
   <!-- you can leave the body empty if you want  -->
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
-  <body style=" background:#FFEBCD ; background-image:url(find-books.jpg)" >
+  <body style=" background:#FFEBCD >
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     
     <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
     <noscript>
+    
       <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
         Your web browser must have JavaScript enabled
         in order for this application to display correctly.
@@ -61,7 +76,8 @@
     </noscript>
 
     <h1>iStudy</h1>
-       <div id="libraryLocator"></div>       
+      <div id="libraryLocator" style="width:100%; height:200%"></div>  
+         
        
 
 <!--     <table align="center"> -->
@@ -77,17 +93,12 @@
 <!--       </tr> -->
 <!--     </table> -->
 
-<div id="map" style="width:60%; height:48%"></div>
+<aside><div id="map" style="width:60%; height:48%"></div></aside>
+<footer>
+<div id="mainAdminTab"></div>
+Copyright © istudy.com
+</footer>
 
 
-<!-- Admin access box  -->
-<form action="demo_form_action.asp" method="get">
-<fieldset>
-<legend>Admin access</legend>
-Password: <input type="text" size="30"><br>
-<input type="submit" value="Submit">
-</fieldset>
-
-</form>
   </body>
 </html>
