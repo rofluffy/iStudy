@@ -3,6 +3,7 @@
 .settings/
 
 *.cache.js
+appengin-web.xml
 
 # Bilding files and etc#
 bin/
