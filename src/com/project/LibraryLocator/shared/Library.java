@@ -65,6 +65,10 @@ public class Library implements Serializable {
 	public Library(String id) {
 		this.id = id;
 	}
+	
+	public String getAllData(){
+		return name + " " + branch + "\r\n" + phone + "\r\n " + address + " "+  city + " " +postalCode;
+	}
 
 	public String getId() {
 		return this.id;

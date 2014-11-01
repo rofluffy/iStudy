@@ -329,6 +329,7 @@ public class LibraryLocator implements EntryPoint {
 		});
 
 		loadLibraries();
+		addToDataStore();
 
 	}
 
@@ -356,7 +357,24 @@ public class LibraryLocator implements EntryPoint {
 			}
 
 		});
+	}
+	
+	private void addToDataStore(){
+		libraryService.populateTable(new AsyncCallback<Void>(){
 
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("populateTable Failed");
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Data Store is populated");
+				
+			}
+			
+		});
 	}
 
 	/**
