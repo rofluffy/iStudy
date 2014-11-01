@@ -613,13 +613,12 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
-		//TODO: keep the first row 
+		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
 				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
 					librariesFlexTable.removeRow(i);
 				}
-				//librariesFlexTable.removeAllRows();
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				searchLb.clear();

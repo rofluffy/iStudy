@@ -13,6 +13,9 @@ import javax.jdo.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gwt.storage.client.Storage;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
 // TODO NotLoggedInException
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.LibraryService;
@@ -26,6 +29,9 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
 	// private static final PersistenceManagerFactory PMF =
 	// JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	 private Storage libraryStore = null;
+	 private FlexTable libraryFlexTable = new FlexTable();
+
 
 	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 
@@ -65,10 +71,23 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		return loAllLibraries;
 
 	}
+	
+	
 
 	public void populateTable() {
 
-		// TODO Auto-generated method stub
+
+//		libraryStore = Storage.getLocalStorageIfSupported();
+//		if (libraryStore != null){
+//			int numberOfLibraries= getLibraries().size();
+//			Library data;
+//			
+//			for(int i=0;i<= numberOfLibraries; i++){
+//			data = getLibraries().get(i);
+//			//libraryStore.setItem(i, data, data);
+		//	}
+		//}
+
 
 	}
 
