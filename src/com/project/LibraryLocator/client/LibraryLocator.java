@@ -607,8 +607,7 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("selected city:" + selectedCity);
 					for(Library lb : libraries){
 						if(lb.getCity().matches(selectedCity)){
-							searchLb.add(lb);
-						
+							searchLb.add(lb);						
 					}
 				}
 			}

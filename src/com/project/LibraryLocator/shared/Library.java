@@ -63,7 +63,6 @@ public class Library implements Serializable {
 	}
 	
 	public Library(String id) {
-		this();
 		this.id = id;
 	}
 
