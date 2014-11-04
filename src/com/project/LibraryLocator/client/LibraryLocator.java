@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+
+
+
+
+import javax.jdo.Query;
+
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -176,22 +182,24 @@ public class LibraryLocator implements EntryPoint {
 	    
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
-		loginService.login(GWT.getHostPageBaseURL(),
-				new AsyncCallback<LoginInfo>() {
-					public void onFailure(Throwable error) {
-						Button button = new Button("loginFail");
-						RootPanel.get("libraryLocator").add(button);
-					}
+//		loginService.login(GWT.getHostPageBaseURL(),
+//				new AsyncCallback<LoginInfo>() {
+//					public void onFailure(Throwable error) {
+//						Button button = new Button("loginFail");
+//						//RootPanel.get("libraryLocator").add(button);
+//						RootPanel.get("SocialPanel").add(button);
+//
+//					}
 
-					public void onSuccess(LoginInfo result) {
-						loginInfo = result;
-						if (loginInfo.isLoggedIn()) {
+//					public void onSuccess(LoginInfo result) {
+//						loginInfo = result;
+//						if (loginInfo.isLoggedIn()) {
 							loadLibraryLocator();
-						} else {
-							loadLogin();
-						}
-					}
-				});
+//						} else {
+//							loadLogin();
+//						}
+//					}
+//				});
 
 	}
 
@@ -328,6 +336,7 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
+		addToDataStore();
 		loadLibraries();
 
 	}
@@ -355,8 +364,26 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("loadLibraries: " + libraries);
 			}
 
-		});
 
+		});
+	}
+	
+	private void addToDataStore(){
+		libraryService.populateTable(new AsyncCallback<Void>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("populateTable Failed");
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Data Store is populated");
+				
+			}
+			
+		});
 	}
 
 	/**
@@ -612,12 +639,13 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
-		//TODO: keep the first row 
+		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
 //				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
 //					librariesFlexTable.removeRow(i);
 //				}
+				
 				librariesFlexTable.removeAllRows();
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
