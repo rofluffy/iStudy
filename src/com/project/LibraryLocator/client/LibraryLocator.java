@@ -166,22 +166,24 @@ public class LibraryLocator implements EntryPoint {
 	public void onModuleLoad() {
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
-		loginService.login(GWT.getHostPageBaseURL(),
-				new AsyncCallback<LoginInfo>() {
-					public void onFailure(Throwable error) {
-						Button button = new Button("loginFail");
-						RootPanel.get("libraryLocator").add(button);
-					}
+//		loginService.login(GWT.getHostPageBaseURL(),
+//				new AsyncCallback<LoginInfo>() {
+//					public void onFailure(Throwable error) {
+//						Button button = new Button("loginFail");
+//						//RootPanel.get("libraryLocator").add(button);
+//						RootPanel.get("SocialPanel").add(button);
+//
+//					}
 
-					public void onSuccess(LoginInfo result) {
-						loginInfo = result;
-						if (loginInfo.isLoggedIn()) {
+//					public void onSuccess(LoginInfo result) {
+//						loginInfo = result;
+//						if (loginInfo.isLoggedIn()) {
 							loadLibraryLocator();
-						} else {
-							loadLogin();
-						}
-					}
-				});
+//						} else {
+//							loadLogin();
+//						}
+//					}
+//				});
 
 	}
 
