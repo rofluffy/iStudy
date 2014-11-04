@@ -21,12 +21,10 @@ import com.project.LibraryLocator.shared.Library;
 
 public class LibraryServiceImpl extends RemoteServiceServlet implements
 		LibraryService {
-	// private DataParseImpl parse = new DataParseImpl();
-	// private ArrayList<Library> allLibrary =parse.parseLibrary();
 	// private static final Logger LOG =
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
-	// private static final PersistenceManagerFactory PMF =
-	// JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	 private static final PersistenceManagerFactory PMF =
+	 JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	 private Storage libraryStore=null;
 
 
@@ -57,8 +55,8 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	@Override
-	public ArrayList<Library> getLibraries() {
+	
+	private ArrayList<Library> getLibrariesFromParse() {
 		System.out.println("getLibraries is runing");
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
@@ -66,26 +64,25 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
 	}
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Library> getLibraries() {
+	PersistenceManager pm = getPersistenceManager();
+	Query q = pm.newQuery(Library.class);
+	ArrayList<Library> allLib = (ArrayList<Library>) q.execute();
+	return allLib;
+	}
 	
 
 	public void populateTable() {
-		libraryStore = Storage.getLocalStorageIfSupported();
-		if (libraryStore != null){
-			int numberOfLibraries= getLibraries().size();
-			String data;
-			String key;
-			
-			for(int i=0;i<= numberOfLibraries; i++){
-			data = getLibraries().get(i).getAllData();
-			key= getLibraries().get(i).getId();
-			libraryStore.setItem(key, data);
-			}
-		}
+		getLibrariesFromParse();
+		PersistenceManager pm = getPersistenceManager();
+		pm.makePersistentAll(loAllLibraries);
+	   
 	}
 
-	// private PersistenceManager getPersistenceManager() {
-	// return PMF.getPersistenceManager();
-	// }
+	 private PersistenceManager getPersistenceManager() {
+	 return PMF.getPersistenceManager();
+	 }
 
 }

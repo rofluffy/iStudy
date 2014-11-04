@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+
+
+
+
+import javax.jdo.Query;
+
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -328,8 +334,8 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		loadLibraries();
 		addToDataStore();
+		loadLibraries();
 
 	}
 
@@ -355,6 +361,7 @@ public class LibraryLocator implements EntryPoint {
 				SearchBoxForLibary();
 				System.out.println("loadLibraries: " + libraries);
 			}
+
 
 		});
 	}

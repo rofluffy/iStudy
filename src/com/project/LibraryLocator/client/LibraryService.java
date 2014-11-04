@@ -2,6 +2,8 @@ package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
 
+import javax.jdo.Query;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.project.LibraryLocator.shared.Library;
