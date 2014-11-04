@@ -1,8 +1,17 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
+
+
+
+
+
+import javax.jdo.Query;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -93,6 +102,8 @@ public class LibraryLocator implements EntryPoint {
 	private DockPanel mainPanel = new DockPanel();
 	private TabPanel mainTab = new TabPanel();
 
+	private TabPanel mainAdminTab = new TabPanel();
+
 	// searchTab
 	// things inside the search tab
 	private VerticalPanel searchTab = new VerticalPanel();
@@ -164,6 +175,11 @@ public class LibraryLocator implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+
+		mainAdminTab.add(new Button("login"), "Admin Login");
+		mainAdminTab.add(new ScrollPanel(adminTab),"Admin");
+	
+	    
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 //		loginService.login(GWT.getHostPageBaseURL(),
@@ -210,9 +226,10 @@ public class LibraryLocator implements EntryPoint {
 
 		mainTab.add(new ScrollPanel(searchTab), "Search"); // don't think the string after is very necessary, check later!
 		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
-		mainTab.add(new ScrollPanel(adminTab), "Admin");
+		//mainTab.add(new ScrollPanel(adminTab), "Admin");
+		
 		// initialize default display tab
-		mainTab.selectTab(2); // 2 is the admin one
+		mainTab.selectTab(0); // 2 is the admin one
 		// style
 		mainTab.getTabBar().addStyleName("tabPanel");
 		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
@@ -297,6 +314,7 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainPanel);
+		RootPanel.get("mainAdminTab").add(mainAdminTab);
 
 		// TODO Move cursor focus to ALL input box.
 		inputLibraryID.setFocus(true);
@@ -318,6 +336,7 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
+		addToDataStore();
 		loadLibraries();
 
 	}
@@ -345,8 +364,26 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("loadLibraries: " + libraries);
 			}
 
-		});
 
+		});
+	}
+	
+	private void addToDataStore(){
+		libraryService.populateTable(new AsyncCallback<Void>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("populateTable Failed");
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Data Store is populated");
+				
+			}
+			
+		});
 	}
 
 	/**
@@ -580,8 +617,12 @@ public class LibraryLocator implements EntryPoint {
 		for(Library l : libraries){
 			allCity.add(l.getCity());
 		}
-		System.out.println("allCity:" + allCity);
-		for(String c: allCity){
+		LinkedList<String>allCitySort = new LinkedList<String>();
+		allCitySort.addAll(allCity);
+		Collections.sort(allCitySort);
+		
+		System.out.println("allCity:" + allCitySort);
+		for(String c: allCitySort){
 			searchBox.addItem(c);
 		}
 		searchBox.setVisibleItemCount(1);
@@ -593,8 +634,7 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("selected city:" + selectedCity);
 					for(Library lb : libraries){
 						if(lb.getCity().matches(selectedCity)){
-							searchLb.add(lb);
-						
+							searchLb.add(lb);						
 					}
 				}
 			}
@@ -602,7 +642,9 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
-				librariesFlexTable.removeAllRows();
+				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
+					librariesFlexTable.removeRow(i);
+				}
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				searchLb.clear();
@@ -620,7 +662,7 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void displaySearchLibrary(final Library lb) {
-		// TODO Auto-generated method stub
+		
 		int row = librariesFlexTable.getRowCount();
 		//ArrayList<Library> temp = new ArrayList<Library>();
 		//temp.add(lb);

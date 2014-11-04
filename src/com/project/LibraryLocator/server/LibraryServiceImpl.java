@@ -13,6 +13,7 @@ import javax.jdo.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gwt.storage.client.Storage;
 // TODO NotLoggedInException
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.LibraryService;
@@ -20,15 +21,16 @@ import com.project.LibraryLocator.shared.Library;
 
 public class LibraryServiceImpl extends RemoteServiceServlet implements
 		LibraryService {
-	// private DataParseImpl parse = new DataParseImpl();
-	// private ArrayList<Library> allLibrary =parse.parseLibrary();
 	// private static final Logger LOG =
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
-	// private static final PersistenceManagerFactory PMF =
-	// JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	 private static final PersistenceManagerFactory PMF =
+	 JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	 private Storage libraryStore=null;
+
 
 	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 
+	//TODO store is so every user can acess it from the app engine, so we only need to run it once 
 	@Override
 	public void addLibrary(String lid) {
 		// PersistenceManager pm = getPersistenceManager();
@@ -53,26 +55,34 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	@Override
-	public ArrayList<Library> getLibraries() {
-
+	
+	private ArrayList<Library> getLibrariesFromParse() {
 		System.out.println("getLibraries is runing");
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
 		System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
-
 	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Library> getLibraries() {
+	PersistenceManager pm = getPersistenceManager();
+	Query q = pm.newQuery(Library.class);
+	ArrayList<Library> allLib = (ArrayList<Library>) q.execute();
+	return allLib;
+	}
+	
 
 	public void populateTable() {
-
-		// TODO Auto-generated method stub
-
+		getLibrariesFromParse();
+		PersistenceManager pm = getPersistenceManager();
+		pm.makePersistentAll(loAllLibraries);
+	   
 	}
 
-	// private PersistenceManager getPersistenceManager() {
-	// return PMF.getPersistenceManager();
-	// }
+	 private PersistenceManager getPersistenceManager() {
+	 return PMF.getPersistenceManager();
+	 }
 
 }
