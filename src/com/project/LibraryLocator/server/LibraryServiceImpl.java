@@ -61,7 +61,7 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
-		System.out.println("list of all libraries:" + loAllLibraries);
+		//System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
 	}
 	
@@ -69,8 +69,23 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	public ArrayList<Library> getLibraries() {
 	PersistenceManager pm = getPersistenceManager();
 	Query q = pm.newQuery(Library.class);
-	ArrayList<Library> allLib = (ArrayList<Library>) q.execute();
+	List<Library> result= (List<Library>) q.execute();
+	ArrayList<Library> allLib= new ArrayList<Library>();
+	try{
+	if(!result.isEmpty()){
+		for(Library l: result){
+			allLib.add(l);
+		}
+	}
+	else{
+		System.out.println("Could not get data from database");
+	}
+	}finally{
+		q.closeAll();
+	}
+	System.out.println("list of all libraries:" + allLib);
 	return allLib;
+
 	}
 	
 
