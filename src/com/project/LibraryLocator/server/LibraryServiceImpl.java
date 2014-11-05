@@ -64,7 +64,7 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
 	}
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public ArrayList<Library> getLibraries() {
 	PersistenceManager pm = getPersistenceManager();
