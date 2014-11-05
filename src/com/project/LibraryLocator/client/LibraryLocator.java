@@ -148,6 +148,7 @@ public class LibraryLocator implements EntryPoint {
 	private FlexTable allLibraries = new FlexTable();
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
+	private Button loadLibraryButton = new Button("Load Libraries");
 
 	// Buttons on mainPanel
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
@@ -254,6 +255,7 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
+		addLibraryPanel.add(loadLibraryButton);
 
 		// create the table for adding library attributes
 		addLibraryTable.setText(0, 0, "ID:");
@@ -327,21 +329,48 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		// TODO Listen for keyboard events in the (WHAT!)input box.
+		/*// TODO Listen for keyboard events in the (WHAT!)input box.
 		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					addLibrary();
 				}
 			}
+		});*/
+		
+		// TODO Listen for mouse event on the Load button
+		loadLibraryButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				System.out.println("load library is click");
+				libraries.clear();
+				addToDataStore();
+				//loadLibraries();
+			}
 		});
 
-		addToDataStore();
+		//addToDataStore();
 		loadLibraries();
 
 	}
+	
+	private void addToDataStore(){
+		libraryService.populateTable(new AsyncCallback<Void>(){
 
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("populateTable Failed");
+				
+			}
 
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Data Store is populated");
+				loadLibraries();
+			}
+			
+		});
+	}
+	
 	private void loadLibraries() {
 
 		//System.out.println("populateTable (main class) success");
@@ -365,24 +394,6 @@ public class LibraryLocator implements EntryPoint {
 			}
 
 
-		});
-	}
-	
-	private void addToDataStore(){
-		libraryService.populateTable(new AsyncCallback<Void>(){
-
-			@Override
-			public void onFailure(Throwable caught) {
-				System.out.println("populateTable Failed");
-				
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				System.out.println("Data Store is populated");
-				
-			}
-			
 		});
 	}
 
@@ -629,6 +640,7 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchBox.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event){
+				searchLb.clear();
 				int index = ((ListBox) event.getSource()).getSelectedIndex();
 				String selectedCity = ((ListBox) event.getSource()).getValue(index);
 				System.out.println("selected city:" + selectedCity);
