@@ -1,8 +1,8 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
-import com.project.LibraryLocator.shared.Library;
 
+import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface LibraryServiceAsync {

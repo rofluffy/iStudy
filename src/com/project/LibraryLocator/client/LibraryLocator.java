@@ -1,8 +1,17 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
+
+
+
+
+
+import javax.jdo.Query;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -174,22 +183,24 @@ public class LibraryLocator implements EntryPoint {
 	    
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
-		loginService.login(GWT.getHostPageBaseURL(),
-				new AsyncCallback<LoginInfo>() {
-					public void onFailure(Throwable error) {
-						Button button = new Button("loginFail");
-						RootPanel.get("libraryLocator").add(button);
-					}
+//		loginService.login(GWT.getHostPageBaseURL(),
+//				new AsyncCallback<LoginInfo>() {
+//					public void onFailure(Throwable error) {
+//						Button button = new Button("loginFail");
+//						//RootPanel.get("libraryLocator").add(button);
+//						RootPanel.get("SocialPanel").add(button);
+//
+//					}
 
-					public void onSuccess(LoginInfo result) {
-						loginInfo = result;
-						if (loginInfo.isLoggedIn()) {
+//					public void onSuccess(LoginInfo result) {
+//						loginInfo = result;
+//						if (loginInfo.isLoggedIn()) {
 							loadLibraryLocator();
-						} else {
-							loadLogin();
-						}
-					}
-				});
+//						} else {
+//							loadLogin();
+//						}
+//					}
+//				});
 
 	}
 
@@ -332,7 +343,9 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
+
 		//loadLibraries();
+	addToDataStore();
 
 	}
 
@@ -359,8 +372,26 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("loadLibraries: " + libraries);
 			}
 
-		});
 
+		});
+	}
+	
+	private void addToDataStore(){
+		libraryService.populateTable(new AsyncCallback<Void>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("populateTable Failed");
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("Data Store is populated");
+				
+			}
+			
+		});
 	}
 
 	/**
@@ -594,8 +625,12 @@ public class LibraryLocator implements EntryPoint {
 		for(Library l : libraries){
 			allCity.add(l.getCity());
 		}
-		System.out.println("allCity:" + allCity);
-		for(String c: allCity){
+		LinkedList<String>allCitySort = new LinkedList<String>();
+		allCitySort.addAll(allCity);
+		Collections.sort(allCitySort);
+		
+		System.out.println("allCity:" + allCitySort);
+		for(String c: allCitySort){
 			searchBox.addItem(c);
 		}
 		searchBox.setVisibleItemCount(1);
@@ -607,8 +642,7 @@ public class LibraryLocator implements EntryPoint {
 				System.out.println("selected city:" + selectedCity);
 					for(Library lb : libraries){
 						if(lb.getCity().matches(selectedCity)){
-							searchLb.add(lb);
-						
+							searchLb.add(lb);						
 					}
 				}
 			}
@@ -616,7 +650,9 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
-				librariesFlexTable.removeAllRows();
+				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
+					librariesFlexTable.removeRow(i);
+				}
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				searchLb.clear();
@@ -634,7 +670,7 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void displaySearchLibrary(final Library lb) {
-		// TODO Auto-generated method stub
+		
 		int row = librariesFlexTable.getRowCount();
 		//ArrayList<Library> temp = new ArrayList<Library>();
 		//temp.add(lb);
