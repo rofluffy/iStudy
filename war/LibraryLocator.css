@@ -2,6 +2,16 @@
 
 
 /** Example rules used by the template application (remove for your app) */
+/* 
+  .body {clear: both; margin: 0 auto; width: 800px;}
+img.right figure.right {float: right; margin: 0 0 2em 2em;}
+img.left, figure.left {float: right; margin: 0 0 2em 2em;}   */
+
+header, section, footer,
+aside, nav, article, figure {
+	display: block;
+}
+
 h1 {
   font-size: 2em;
   font-weight: bold;
@@ -10,16 +20,24 @@ h1 {
   text-align: center;
 }
 
-body {
-background-image: url(IMG_2867.JPG); /*You will specify your image path here.*/
 
+ul {
+	list-style: outside disc;
+	margin: 1em 0 1.5em 1.5em;
+}
+ 
+body {
+/* background-image: url(IMG_2867.JPG); You will specify your image path here.
 -moz-background-size: cover;
 -webkit-background-size: cover;
 background-size: cover;
 background-position: top center !important;
 background-repeat: no-repeat !important;
-background-attachment: fixed;
+background-attachment: fixed;  */
+
+
 }
+
 
 /* the tab panel itself*/
 .tabPanel{
@@ -54,3 +72,107 @@ background-attachment: fixed;
 /* #closeButton { */
 /*   margin: 15px 6px 6px; */
 /* } */
+
+/*
+
+	About
+*****************/
+
+a {outline: 0;}
+a img {border: 0px; text-decoration: none;}
+a:link, a:visited {
+	color: #C74350;
+	padding: 0 1px;
+	text-decoration: underline;
+}
+a:hover, a:active {
+	background-color: #C74350;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 1px 1px 1px #333;
+}
+
+     Map
+****************/
+
+#map {
+height: 100%;
+  position: absolute; 
+  top: 0; 
+  bottom: -200px; 
+  left: 0; 
+  right: 0; 
+  z-index: 0;
+}
+ 
+#container { 
+/*   margin: 60px auto 0;
+  padding: 10px;
+  background: #fff;
+  height: auto;
+opacity: .90; Set the opacity for a slightly transparent Google Form 
+   color: white; */
+/*    top: 100px;
+   left: 0px; */
+  z-index: 100;
+  position: relative;
+}
+ 
+
+
+#extras {margin: 0 auto 3em auto; overflow: hidden;} 
+#extras ul {list-style: none; margin: 0;}
+#extras li {border-bottom: 1px solid #fff;}
+#extras h2 {
+	color: #C74350;
+	font-size: 1.429em;
+	margin-bottom: .25em;
+	padding: 0 3px;
+}
+ 
+#extras a:link, #extras a:visited {
+	color: #444;
+	display: block;
+	border-bottom: 1px solid #F4E3E3;
+	text-decoration: none;
+	padding: .3em .25em;
+}
+ 
+/* Social */
+	#extras .social {
+		float: left;
+		width: 175px;
+	}
+ 
+ #content {
+	 background: #fff; */
+ 	margin-bottom: 2em;
+	overflow: hidden;
+	padding: 20px 20px;
+	width: auto;
+	height: auto;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px; 
+	z-index: 0;
+	position:relative;
+}
+
+/*
+	Footer
+*****************/
+#contentinfo {padding-bottom: 2em; text-align: right;}
+
+
+#extras div[class='social'] a {
+	background-repeat: no-repeat;
+	background-position: 3px 6px;
+	padding-left: 25px;
+}
+ 
+/* Icons */
+
+.social a[href*='facebook.com'] {background-image: url(facebook-icon.png);}
+.social a[href*='twitter.com'] {background-image: url(icon-twitter.png);}
+/* .social a[href*='google.com'] {background-image: url(icon-twitter.png);} */
+
