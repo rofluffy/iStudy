@@ -23,14 +23,15 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		LibraryService {
 	// private static final Logger LOG =
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
-	 private static final PersistenceManagerFactory PMF =
-	 JDOHelper.getPersistenceManagerFactory("transactions-optional");
-	 private Storage libraryStore=null;
+	private static final PersistenceManagerFactory PMF = JDOHelper
+			.getPersistenceManagerFactory("transactions-optional");
+	private Storage libraryStore = null;
 
+	private ArrayList<Library> loAllLibraries = new ArrayList<Library>();
+	//public ArrayList<Library> Libraries = new ArrayList<Library>();
 
-	public ArrayList<Library> loAllLibraries = new ArrayList<Library>();
-
-	//TODO store is so every user can acess it from the app engine, so we only need to run it once 
+	// TODO store is so every user can acess it from the app engine, so we only
+	// need to run it once
 	@Override
 	public void addLibrary(String lid) {
 		// PersistenceManager pm = getPersistenceManager();
@@ -55,34 +56,45 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	
 	private ArrayList<Library> getLibrariesFromParse() {
-		System.out.println("getLibraries is runing");
+		System.out.println("getLibraries is runing(Parse)");
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
-		System.out.println("list of all libraries:" + loAllLibraries);
+		System.out.println("list of all libraries(Parse):" + loAllLibraries);
 		return loAllLibraries;
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Library> getLibraries() {
-	PersistenceManager pm = getPersistenceManager();
-	Query q = pm.newQuery(Library.class);
-	ArrayList<Library> allLib = (ArrayList<Library>) q.execute();
-	return allLib;
+		System.out.println("try running get Libraries");
+		PersistenceManager pm = getPersistenceManager();
+		ArrayList<Library> libraries = new ArrayList<Library>();
+		try {
+			Query q = pm.newQuery(Library.class);
+			System.out.println("see what q.execute does:" + q.execute());
+			List<Library> allLib = (List<Library>) q.execute();
+			System.out.println("getLibraries from data:" + allLib);
+			for (Library lb: allLib) {
+				libraries.add(lb);
+			}
+		} finally {
+			pm.close();
+		}
+		return libraries;
+		
 	}
-	
 
 	public void populateTable() {
 		getLibrariesFromParse();
 		PersistenceManager pm = getPersistenceManager();
 		pm.makePersistentAll(loAllLibraries);
-	   
+
 	}
 
-	 private PersistenceManager getPersistenceManager() {
-	 return PMF.getPersistenceManager();
-	 }
+	private PersistenceManager getPersistenceManager() {
+		return PMF.getPersistenceManager();
+	}
 
 }

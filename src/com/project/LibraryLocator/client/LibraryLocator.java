@@ -148,6 +148,7 @@ public class LibraryLocator implements EntryPoint {
 	private FlexTable allLibraries = new FlexTable();
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
+	private Button loadLibraryButton = new Button("Load Libraries");
 
 	// Buttons on mainPanel
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
@@ -166,7 +167,8 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
 	
-	private ListBox searchBox = new ListBox();;
+	private ListBox searchBox = new ListBox();
+	private long start;;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -257,7 +259,8 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
-		
+		addLibraryPanel.add(loadLibraryButton);
+
 
 		// create the table for adding library attributes
 		addLibraryTable.setText(0, 0, "ID:");
@@ -319,7 +322,7 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainTab);
-		RootPanel.get("mainAdminTab").add(mainAdminTab);
+		//RootPanel.get("mainAdminTab").add(mainAdminTab);
 		//RootPanel.get("SocialPanel").add(mainButtonPanel);
 
 		// TODO Move cursor focus to ALL input box.
@@ -334,46 +337,29 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		// TODO Listen for keyboard events in the (WHAT!)input box.
+		/*// TODO Listen for keyboard events in the (WHAT!)input box.
 		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					addLibrary();
 				}
 			}
+		});*/
+		
+		// TODO Listen for mouse event on the Load button
+		loadLibraryButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				System.out.println("load library is click");
+				libraries.clear();
+				addToDataStore();
+				//loadLibraries();
+			}
 		});
 
-
-		//loadLibraries();
-	addToDataStore();
-
-	}
+		//addToDataStore();
+		loadLibraries();
 
 
-	private void loadLibraries() {
-
-		//System.out.println("populateTable (main class) success");
-		libraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
-
-			@Override
-			public void onFailure(Throwable error) {
-				// TODO Auto-generated method stub
-				System.out.println("loadLibraries fail");
-
-			}
-
-			@Override
-			public void onSuccess(ArrayList<Library> lolb) {
-				// TODO Auto-generated method stub
-				System.out.println("loadLibraries success");
-				libraries = lolb;
-				displayAdminLibrary(lolb);
-				SearchBoxForLibary();
-				System.out.println("loadLibraries: " + libraries);
-			}
-
-
-		});
 	}
 	
 	private void addToDataStore(){
@@ -388,9 +374,38 @@ public class LibraryLocator implements EntryPoint {
 			@Override
 			public void onSuccess(Void result) {
 				System.out.println("Data Store is populated");
-				
+				loadLibraries();
 			}
 			
+		});
+	}
+	
+	private void loadLibraries() {
+
+		start = System.currentTimeMillis();
+		//System.out.println("populateTable (main class) success");
+		libraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
+
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+				System.out.println("loadLibraries fail");
+
+			}
+
+			@Override
+			public void onSuccess(ArrayList<Library> lolb) {
+				// TODO Auto-generated method stub
+				
+				System.out.println("loadLibraries success" + (System.currentTimeMillis() - start));
+				libraries = lolb;
+				//displayAdminLibrary(lolb);
+				SearchBoxForLibary();
+				System.out.println("loadLibraries: " + libraries);
+				
+			}
+
+
 		});
 	}
 
@@ -637,6 +652,7 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchBox.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event){
+				searchLb.clear();
 				int index = ((ListBox) event.getSource()).getSelectedIndex();
 				String selectedCity = ((ListBox) event.getSource()).getValue(index);
 				System.out.println("selected city:" + selectedCity);
@@ -650,12 +666,15 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
-				for(int i=1; i< librariesFlexTable.getRowCount(); i++){
+				int row = librariesFlexTable.getRowCount();
+				for(int i=row-1; i>=1; i--){
 					librariesFlexTable.removeRow(i);
-				}
+				}				
+//				while (librariesFlexTable.getRowCount() > 1) {
+//					librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
+//				}
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
-				searchLb.clear();
 			}
 
 		});
