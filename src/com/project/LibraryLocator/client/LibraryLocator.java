@@ -112,7 +112,7 @@ public class LibraryLocator implements EntryPoint {
 	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
 	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
-	private Button testing = new Button("testing");
+	private Button AdminLogin = new Button("Admin");
 
 	// favoriteTab
 	// things inside favorite
@@ -169,6 +169,7 @@ public class LibraryLocator implements EntryPoint {
 
 		mainAdminTab.add(new Button("login"), "Admin Login");
 		mainAdminTab.add(new ScrollPanel(adminTab),"Admin");
+		mainAdminTab.selectTab(0);
 	
 	    
 		// Check login status using login service.
@@ -197,13 +198,14 @@ public class LibraryLocator implements EntryPoint {
 		signInLink.setHref(loginInfo.getLoginUrl());
 		loginPanel.add(loginLabel);
 		loginPanel.add(signInLink);
-		RootPanel.get("libraryLocator").add(loginPanel);
+		
+		RootPanel.get("SocialPanel").add(loginPanel);
 	}
 
 	private void loadLibraryLocator() {
 		// TODO Assemble Main panel.
-		mainPanel.add(mainButtonPanel, DockPanel.SOUTH);
-		mainPanel.add(mainTab, DockPanel.WEST);
+		//mainPanel.add(mainButtonPanel, DockPanel.NORTH);
+		//mainPanel.add(mainTab, DockPanel.WEST);
 
 		LatLng myLatLng = LatLng.create(49.269893, -123.253268);
 		MapOptions myOptions = MapOptions.create();
@@ -212,6 +214,7 @@ public class LibraryLocator implements EntryPoint {
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
 		GoogleMap map = GoogleMap.create(Document.get().getElementById("map"),
 				myOptions);
+		
 
 		mainTab.add(new ScrollPanel(searchTab), "Search"); // don't think the string after is very necessary, check later!
 		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
@@ -243,6 +246,7 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
+		
 
 		// create the table for adding library attributes
 		addLibraryTable.setText(0, 0, "ID:");
@@ -300,14 +304,17 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Assemble main button panel
 		mainButtonPanel.add(socail1);
+		mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
-		RootPanel.get("libraryLocator").add(mainPanel);
+		RootPanel.get("libraryLocator").add(mainTab);
 		RootPanel.get("mainAdminTab").add(mainAdminTab);
+		//RootPanel.get("SocialPanel").add(mainButtonPanel);
 
 		// TODO Move cursor focus to ALL input box.
 		inputLibraryID.setFocus(true);
 		searchInputBox.setFocus(true);
+		
 
 		// Listen for mouse events on the Add button
 		addLibraryButton.addClickHandler(new ClickHandler() {
@@ -325,7 +332,7 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
-		loadLibraries();
+		//loadLibraries();
 
 	}
 
