@@ -186,7 +186,8 @@ public class LibraryLocator implements EntryPoint {
 	    	@Override
 	    	public void onSelection(SelectionEvent<Integer> event) {
 	    	    if (event.getSelectedItem() == 1) {
-	    	    	loadLibraries();
+	    	    	System.out.println("admin tab is selected");
+	    	    	displayAdminLibrary(libraries);
 	    	    }
 	    	  }
 	    });
@@ -411,7 +412,7 @@ public class LibraryLocator implements EntryPoint {
 				
 				System.out.println("loadLibraries success" + (System.currentTimeMillis() - start));
 				libraries = lolb;
-				displayAdminLibrary(lolb);
+				//displayAdminLibrary(lolb);
 				SearchBoxForLibary();
 				System.out.println("loadLibraries: " + libraries);
 				
@@ -540,27 +541,6 @@ public class LibraryLocator implements EntryPoint {
 		
 	}
 
-	/*
-	 * private void buildUi() { // Open a map centered on UBC LatLng UBC =
-	 * LatLng.newInstance(49.269893, -123.253268);
-	 * 
-	 * final MapWidget map = new MapWidget(UBC, 2); map.setSize("100%", "100%");
-	 * // Add some controls for the zoom level map.addControl(new
-	 * LargeMapControl());
-	 * 
-	 * // Add a marker map.addOverlay(new Marker(UBC));
-	 * 
-	 * // Add an info window to highlight a point of interest
-	 * map.getInfoWindow().open(map.getCenter(), new
-	 * InfoWindowContent("This is for testing"));
-	 * 
-	 * mainPanel.add(map, DockPanel.CENTER);
-	 * 
-	 * // Add the map to the HTML host page RootPanel.get("map").add(map); }
-	 */
-	
-
-
 /*	private boolean checkValid(TextBox input) {
 
 		// TODO NOT WORKING =DDDDDD
@@ -663,7 +643,7 @@ public class LibraryLocator implements EntryPoint {
 	 * searchButton (NOT doing the keyHandler)
 	 */
 	private void SearchBoxForLibary(){
-		System.out.println("search function is runing");
+		//System.out.println("search function is runing");
 		Set<String> allCity = new HashSet<String>();
 		for(Library l : libraries){
 			allCity.add(l.getCity());
@@ -672,7 +652,7 @@ public class LibraryLocator implements EntryPoint {
 		allCitySort.addAll(allCity);
 		Collections.sort(allCitySort);
 		
-		System.out.println("allCity:" + allCitySort);
+		//System.out.println("allCity:" + allCitySort);
 		for(String c: allCitySort){
 			searchBox.addItem(c);
 		}
@@ -701,7 +681,7 @@ public class LibraryLocator implements EntryPoint {
 				// while (librariesFlexTable.getRowCount() > 1) {
 				// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
 				// }
-				System.out.println("search selected lb:" + searchLb);
+				//System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				boolean checked = (librariesFlexTable.getRowCount() > 2);
 				numLb.setText("\n There is "
@@ -769,8 +749,6 @@ public class LibraryLocator implements EntryPoint {
 		        });
 		    dialogContents.add(mainAdminTab);
 		    dialogContents.add(closeButton);
-		    
-		    //loadLibraries();
 
 		    // Return the dialog box
 		    return dialogBox;

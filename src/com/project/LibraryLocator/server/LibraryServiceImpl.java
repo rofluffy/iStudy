@@ -49,11 +49,11 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	}
 
 	private ArrayList<Library> getLibrariesFromParse() {
-		System.out.println("getLibraries is runing(Parse)");
+		//System.out.println("getLibraries is runing(Parse)");
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
-		System.out.println("list of all libraries(Parse):" + loAllLibraries);
+		//System.out.println("list of all libraries(Parse):" + loAllLibraries);
 		return loAllLibraries;
 	}
 
@@ -65,9 +65,9 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		ArrayList<Library> libraries = new ArrayList<Library>();
 		try {
 			Query q = pm.newQuery(Library.class);
-			System.out.println("see what q.execute does:" + q.execute());
+			//System.out.println("see what q.execute does:" + q.execute());
 			List<Library> allLib = (List<Library>) q.execute();
-			System.out.println("getLibraries from data:" + allLib);
+			//System.out.println("getLibraries from data:" + allLib);
 			for (Library lb: allLib) {
 				libraries.add(lb);
 			}
