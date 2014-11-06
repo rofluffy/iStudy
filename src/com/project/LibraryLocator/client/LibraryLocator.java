@@ -7,10 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-
-
-
-
 import javax.jdo.Query;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
@@ -26,6 +22,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -47,29 +45,6 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-/*
- //import com.google.maps.gwt.client.MapWidget;
- //import com.google.maps.gwt.client.LargeMapControl;
- import com.google.gwt.user.client.ui.Composite;
- import com.google.gwt.dom.client.Node;
- import com.google.gwt.dom.client.Document;
- import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
- import com.google.gwt.dom.client.Element;
- import com.google.gwt.maps.client.InfoWindowContent;
- import com.google.gwt.maps.client.MapOptions;
- import com.google.gwt.maps.client.MapType;
- import com.google.gwt.maps.client.MapTypeOptions;
- import com.google.gwt.maps.client.MapWidget;
- import com.google.gwt.maps.client.Maps;
-
- import com.google.gwt.maps.client.control.LargeMapControl;
- import com.google.gwt.maps.client.geom.LatLng;
- import com.google.gwt.maps.client.overlay.Marker;
- import com.google.gwt.user.client.Window;
- import com.google.gwt.user.client.ui.FlowPanel;
- */
-
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -111,7 +86,7 @@ public class LibraryLocator implements EntryPoint {
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
 	//private ListBox regionList = new ListBox();
-
+	private Label numLb = new Label("");
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
@@ -206,6 +181,15 @@ public class LibraryLocator implements EntryPoint {
 	          }
 	        });
 	    AdminLogin.addStyleName("adminsubmit");
+	    
+	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
+	    	@Override
+	    	public void onSelection(SelectionEvent<Integer> event) {
+	    	    if (event.getSelectedItem() == 1) {
+	    	    	loadLibraries();
+	    	    }
+	    	  }
+	    });
 	    
 	    
 		// Check login status using login service.
@@ -311,6 +295,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble search tab
 		searchTab.add(searchPanel);
 		searchTab.add(librariesFlexTable);
+		searchTab.add(numLb);
 		searchTab.add(buttonPanel);
 
 		// TODO Assemble search panel
@@ -392,8 +377,9 @@ public class LibraryLocator implements EntryPoint {
 		libraryService.populateTable(new AsyncCallback<Void>(){
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable error) {
 				System.out.println("populateTable Failed");
+				// TODO handle error
 				
 			}
 
@@ -425,7 +411,7 @@ public class LibraryLocator implements EntryPoint {
 				
 				System.out.println("loadLibraries success" + (System.currentTimeMillis() - start));
 				libraries = lolb;
-				//displayAdminLibrary(lolb);
+				displayAdminLibrary(lolb);
 				SearchBoxForLibary();
 				System.out.println("loadLibraries: " + libraries);
 				
@@ -452,8 +438,6 @@ public class LibraryLocator implements EntryPoint {
 
 		final Library newLibrary = new Library(newID, newName, newBranch,
 				newPhone, newAddress, newCity, newPostCode, newLat, newLon);
-
-		// TODO move mouse focus to the next input box by clicking up and down key
 
 		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
 		// TODO check if the input text is valid
@@ -524,11 +508,9 @@ public class LibraryLocator implements EntryPoint {
 				if (checked == true) {
 					selectedLb.add(newLibrary);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				} else {
 					selectedLb.remove(newLibrary);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				}
 			}
 		});
@@ -536,7 +518,26 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setWidget(row, 9, selectButton);
 
 		// TODO Don't know if we want to have remove method here?
+		
+		addLibrary(newLibrary);
 
+	}
+	
+	private void addLibrary(final Library lib) {
+		libraryService.addLibrary(lib, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(Void ignore) {
+				// TODO Auto-generated method stub
+				displayAdminLibrary(lib);
+			}
+		});
+		
 	}
 
 	/*
@@ -614,6 +615,7 @@ public class LibraryLocator implements EntryPoint {
 		return true;
 	}*/
 
+
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
@@ -690,17 +692,22 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 		
-		searchButton.addClickHandler(new ClickHandler(){
-			public void onClick(ClickEvent event){
+		searchButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
 				int row = librariesFlexTable.getRowCount();
-				for(int i=row-1; i>=1; i--){
+				for (int i = row - 1; i >= 1; i--) {
 					librariesFlexTable.removeRow(i);
-				}				
-//				while (librariesFlexTable.getRowCount() > 1) {
-//					librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
-//				}
+				}
+				// while (librariesFlexTable.getRowCount() > 1) {
+				// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
+				// }
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
+				boolean checked = (librariesFlexTable.getRowCount() > 2);
+				numLb.setText("\n There is "
+						+ (librariesFlexTable.getRowCount() - 1)
+						+ (checked ? " libraries " : " library ")
+						+ "in this city.");
 			}
 
 		});
@@ -752,19 +759,7 @@ public class LibraryLocator implements EntryPoint {
 		    VerticalPanel dialogContents = new VerticalPanel();
 		    dialogContents.setSpacing(4);
 		    dialogBox.setWidget(dialogContents);
-
-		    // Add some text to the top of the dialog
-		    //HTML details = new HTML(constants.cwDialogBoxDetails());
-		    //dialogContents.add(details);
-		    //dialogContents.setCellHorizontalAlignment(
-		      //details, HasHorizontalAlignment.ALIGN_CENTER);
-
-		    // Add an image to the dialog
-		    //Image image = new Image(Showcase.images.jimmy());
-		    //dialogContents.add(image);
-		    //dialogContents.setCellHorizontalAlignment(
-		    //image, HasHorizontalAlignment.ALIGN_CENTER);
-
+		    
 		    // Add a close button at the bottom of the dialog
 		    Button closeButton = new Button(
 		        "close", new ClickHandler() {
@@ -774,6 +769,8 @@ public class LibraryLocator implements EntryPoint {
 		        });
 		    dialogContents.add(mainAdminTab);
 		    dialogContents.add(closeButton);
+		    
+		    //loadLibraries();
 
 		    // Return the dialog box
 		    return dialogBox;

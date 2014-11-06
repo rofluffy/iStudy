@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface LibraryServiceAsync {
 	//ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 
-	public void addLibrary(String lid, AsyncCallback<Void> async);
+	public void addLibrary(Library lb, AsyncCallback<Void> async);
 
 	public void removeLibrary(String lid, AsyncCallback<Void> async);
 
