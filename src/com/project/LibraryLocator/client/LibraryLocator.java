@@ -7,11 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-
-
-
-
-
 import javax.jdo.Query;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
@@ -27,6 +22,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -48,29 +45,6 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-/*
- //import com.google.maps.gwt.client.MapWidget;
- //import com.google.maps.gwt.client.LargeMapControl;
- import com.google.gwt.user.client.ui.Composite;
- import com.google.gwt.dom.client.Node;
- import com.google.gwt.dom.client.Document;
- import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
- import com.google.gwt.dom.client.Element;
- import com.google.gwt.maps.client.InfoWindowContent;
- import com.google.gwt.maps.client.MapOptions;
- import com.google.gwt.maps.client.MapType;
- import com.google.gwt.maps.client.MapTypeOptions;
- import com.google.gwt.maps.client.MapWidget;
- import com.google.gwt.maps.client.Maps;
-
- import com.google.gwt.maps.client.control.LargeMapControl;
- import com.google.gwt.maps.client.geom.LatLng;
- import com.google.gwt.maps.client.overlay.Marker;
- import com.google.gwt.user.client.Window;
- import com.google.gwt.user.client.ui.FlowPanel;
- */
-
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -207,6 +181,15 @@ public class LibraryLocator implements EntryPoint {
 	          }
 	        });
 	    AdminLogin.addStyleName("adminsubmit");
+	    
+	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
+	    	@Override
+	    	public void onSelection(SelectionEvent<Integer> event) {
+	    	    if (event.getSelectedItem() == 1) {
+	    	    	loadLibraries();
+	    	    }
+	    	  }
+	    });
 	    
 	    
 		// Check login status using login service.
@@ -428,7 +411,7 @@ public class LibraryLocator implements EntryPoint {
 				
 				System.out.println("loadLibraries success" + (System.currentTimeMillis() - start));
 				libraries = lolb;
-				//displayAdminLibrary(lolb);
+				displayAdminLibrary(lolb);
 				SearchBoxForLibary();
 				System.out.println("loadLibraries: " + libraries);
 				
@@ -776,19 +759,7 @@ public class LibraryLocator implements EntryPoint {
 		    VerticalPanel dialogContents = new VerticalPanel();
 		    dialogContents.setSpacing(4);
 		    dialogBox.setWidget(dialogContents);
-
-		    // Add some text to the top of the dialog
-		    //HTML details = new HTML(constants.cwDialogBoxDetails());
-		    //dialogContents.add(details);
-		    //dialogContents.setCellHorizontalAlignment(
-		      //details, HasHorizontalAlignment.ALIGN_CENTER);
-
-		    // Add an image to the dialog
-		    //Image image = new Image(Showcase.images.jimmy());
-		    //dialogContents.add(image);
-		    //dialogContents.setCellHorizontalAlignment(
-		    //image, HasHorizontalAlignment.ALIGN_CENTER);
-
+		    
 		    // Add a close button at the bottom of the dialog
 		    Button closeButton = new Button(
 		        "close", new ClickHandler() {
@@ -798,6 +769,8 @@ public class LibraryLocator implements EntryPoint {
 		        });
 		    dialogContents.add(mainAdminTab);
 		    dialogContents.add(closeButton);
+		    
+		    //loadLibraries();
 
 		    // Return the dialog box
 		    return dialogBox;
