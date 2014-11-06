@@ -122,7 +122,8 @@ public class LibraryLocator implements EntryPoint {
 	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
 	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
-	private Button AdminLogin = new Button("Admin");
+	private Button AdminLogin = new Button("Admin Access");
+	private Button adminSubmit = new Button("submit");
 
 	// favoriteTab
 	// things inside favorite
@@ -134,7 +135,9 @@ public class LibraryLocator implements EntryPoint {
 	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
 	private VerticalPanel adminTab = new VerticalPanel();
+	private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
+	private TextBox inputAdmin = new TextBox();
 	private TextBox inputLibraryID = new TextBox(); //
 	private TextBox inputLibraryName = new TextBox(); // need input box for
 														// every attributes?
@@ -178,11 +181,33 @@ public class LibraryLocator implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-
-		mainAdminTab.add(new Button("login"), "Admin Login");
-		mainAdminTab.add(new ScrollPanel(adminTab),"Admin");
+		adminLoginPanel.insert(inputAdmin,0);
+		adminLoginPanel.insert(adminSubmit,1);
+		mainAdminTab.add(adminLoginPanel,"Admin Login");
+		mainAdminTab.add(new ScrollPanel(adminTab),"Database");
 		mainAdminTab.selectTab(0);
 	
+		//create a new dialogBox for admin
+		final AdminDialog dialogBox = createDialogBox();
+	    dialogBox.setGlassEnabled(true);
+	    dialogBox.setAnimationEnabled(true);
+
+	    // Create a button to show the dialog Box
+	    AdminLogin.addClickHandler(new ClickHandler() {
+	          public void onClick(ClickEvent sender) {
+	            dialogBox.isAutoHideEnabled();
+	            dialogBox.isGlassEnabled();
+	            dialogBox.center();
+	            dialogBox.show();
+	            //dialogBox.isAutoHideEnabled(); no difference
+	          dialogBox.setAutoHideEnabled(true);
+	          dialogBox.setAnimationEnabled(true);
+	          dialogBox.setGlassEnabled(true);
+	         
+	          }
+	        });
+	    AdminLogin.addStyleName("adminsubmit");
+	    
 	    
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -294,6 +319,7 @@ public class LibraryLocator implements EntryPoint {
 		searchPanel.add(searchBox);
 		//searchPanel.add(searchInputBox);
 		searchPanel.add(searchButton);
+		//searchPanel.add(loadLibraryButton); //TODO remove laterss
 
 		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
@@ -319,12 +345,12 @@ public class LibraryLocator implements EntryPoint {
 		buttonPanelfav.add(checkallButtonfav);
 
 		// TODO Assemble main button panel
-		mainButtonPanel.add(socail1);
-		mainButtonPanel.add(AdminLogin);
+		//mainButtonPanel.add(socail1);
+		//mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("libraryLocator").add(mainTab);
-		//RootPanel.get("mainAdminTab").add(mainAdminTab);
+		RootPanel.get("dialogboxAdmin").add(AdminLogin);
 		//RootPanel.get("SocialPanel").add(mainButtonPanel);
 
 		// TODO Move cursor focus to ALL input box.
@@ -740,6 +766,42 @@ public class LibraryLocator implements EntryPoint {
 		});
 		librariesFlexTable.setWidget(row, 2, selectButton);
 	}
+	
+	//dialogbox for AdminTab
+	 private AdminDialog createDialogBox() {
+		    // Create a dialog box and set the caption text
+		    final AdminDialog dialogBox = new AdminDialog();
+
+		    // Create a table to layout the content
+		    VerticalPanel dialogContents = new VerticalPanel();
+		    dialogContents.setSpacing(4);
+		    dialogBox.setWidget(dialogContents);
+
+		    // Add some text to the top of the dialog
+		    //HTML details = new HTML(constants.cwDialogBoxDetails());
+		    //dialogContents.add(details);
+		    //dialogContents.setCellHorizontalAlignment(
+		      //details, HasHorizontalAlignment.ALIGN_CENTER);
+
+		    // Add an image to the dialog
+		    //Image image = new Image(Showcase.images.jimmy());
+		    //dialogContents.add(image);
+		    //dialogContents.setCellHorizontalAlignment(
+		    //image, HasHorizontalAlignment.ALIGN_CENTER);
+
+		    // Add a close button at the bottom of the dialog
+		    Button closeButton = new Button(
+		        "close", new ClickHandler() {
+		          public void onClick(ClickEvent event) {
+		            dialogBox.hide();
+		          }
+		        });
+		    dialogContents.add(mainAdminTab);
+		    dialogContents.add(closeButton);
+
+		    // Return the dialog box
+		    return dialogBox;
+		  }
 
 
 }
