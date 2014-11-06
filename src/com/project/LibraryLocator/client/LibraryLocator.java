@@ -11,6 +11,7 @@ import java.util.Set;
 
 
 
+
 import javax.jdo.Query;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
@@ -111,7 +112,7 @@ public class LibraryLocator implements EntryPoint {
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
 	//private ListBox regionList = new ListBox();
-
+	private Label numLb = new Label("");
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	// Buttons (for search)
@@ -286,6 +287,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble search tab
 		searchTab.add(searchPanel);
 		searchTab.add(librariesFlexTable);
+		searchTab.add(numLb);
 		searchTab.add(buttonPanel);
 
 		// TODO Assemble search panel
@@ -366,8 +368,9 @@ public class LibraryLocator implements EntryPoint {
 		libraryService.populateTable(new AsyncCallback<Void>(){
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(Throwable error) {
 				System.out.println("populateTable Failed");
+				// TODO handle error
 				
 			}
 
@@ -426,8 +429,6 @@ public class LibraryLocator implements EntryPoint {
 
 		final Library newLibrary = new Library(newID, newName, newBranch,
 				newPhone, newAddress, newCity, newPostCode, newLat, newLon);
-
-		// TODO move mouse focus to the next input box by clicking up and down key
 
 		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
 		// TODO check if the input text is valid
@@ -498,11 +499,9 @@ public class LibraryLocator implements EntryPoint {
 				if (checked == true) {
 					selectedLb.add(newLibrary);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				} else {
 					selectedLb.remove(newLibrary);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				}
 			}
 		});
@@ -510,7 +509,26 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setWidget(row, 9, selectButton);
 
 		// TODO Don't know if we want to have remove method here?
+		
+		addLibrary(newLibrary);
 
+	}
+	
+	private void addLibrary(final Library lib) {
+		libraryService.addLibrary(lib, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(Void ignore) {
+				// TODO Auto-generated method stub
+				displayAdminLibrary(lib);
+			}
+		});
+		
 	}
 
 	/*
@@ -588,6 +606,7 @@ public class LibraryLocator implements EntryPoint {
 		return true;
 	}*/
 
+
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
@@ -664,17 +683,22 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 		
-		searchButton.addClickHandler(new ClickHandler(){
-			public void onClick(ClickEvent event){
+		searchButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
 				int row = librariesFlexTable.getRowCount();
-				for(int i=row-1; i>=1; i--){
+				for (int i = row - 1; i >= 1; i--) {
 					librariesFlexTable.removeRow(i);
-				}				
-//				while (librariesFlexTable.getRowCount() > 1) {
-//					librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
-//				}
+				}
+				// while (librariesFlexTable.getRowCount() > 1) {
+				// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
+				// }
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
+				boolean checked = (librariesFlexTable.getRowCount() > 2);
+				numLb.setText("\n There is "
+						+ (librariesFlexTable.getRowCount() - 1)
+						+ (checked ? " libraries " : " library ")
+						+ "in this city.");
 			}
 
 		});
