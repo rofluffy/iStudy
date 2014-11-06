@@ -38,7 +38,13 @@ background-attachment: fixed;  */
 
 }
 
-
+.adminsubmit{
+	 outline: 5px solid #E7F3FF;
+	background: #E7F3FF; 
+	margin: 10px;
+  color: white;
+}
+ 
 /* the tab panel itself*/
 .tabPanel{
 	text-align: center;
