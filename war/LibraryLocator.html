@@ -91,11 +91,15 @@
     </noscript>
    
 <div id="container" style="height:auto; width:450px;  background: #fff;
-left:-370px;
-top:-40px; z-index:1;
+/* left:-370px;
+top:-40px;  */
+z-index:1;
 outline: 5px solid #E7F3FF;
 margin: 60px auto 0;
   padding: 10px;
+  
+   left:(RootPanel.get().getOffsetWidth() -this.getOffsetWidth())px; 
+    top: (RootPanel.get().getOffsetHeight()-this.getOffsetHeight())px;
 ">
 
 
@@ -113,8 +117,8 @@ margin: 60px auto 0;
 <!-- 			<li><a href="http://www.google.com" rel="me">Google</a></li>
  -->		</ul>
 	</div>
-	
-	<!-- /.social -->
+
+<!-- /.social -->
 </section>
 
 <!-- /#extras -->
@@ -127,10 +131,15 @@ margin: 60px auto 0;
 	<!-- /#about -->
 
 </footer>
+
+
+
 <!-- /#contentinfo -->
 Copyright © Paopao.com
 
  </div>
+ 
+ 
  
   <div id="map" style="height:100%;
   width:100%;

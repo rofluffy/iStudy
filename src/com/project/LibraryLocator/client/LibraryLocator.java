@@ -643,7 +643,7 @@ public class LibraryLocator implements EntryPoint {
 	 * searchButton (NOT doing the keyHandler)
 	 */
 	private void SearchBoxForLibary(){
-		//System.out.println("search function is runing");
+		System.out.println("search function is runing");
 		Set<String> allCity = new HashSet<String>();
 		for(Library l : libraries){
 			allCity.add(l.getCity());
@@ -652,7 +652,7 @@ public class LibraryLocator implements EntryPoint {
 		allCitySort.addAll(allCity);
 		Collections.sort(allCitySort);
 		
-		//System.out.println("allCity:" + allCitySort);
+		System.out.println("allCity:" + allCitySort);
 		for(String c: allCitySort){
 			searchBox.addItem(c);
 		}
@@ -681,7 +681,7 @@ public class LibraryLocator implements EntryPoint {
 				// while (librariesFlexTable.getRowCount() > 1) {
 				// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
 				// }
-				//System.out.println("search selected lb:" + searchLb);
+				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				boolean checked = (librariesFlexTable.getRowCount() > 2);
 				numLb.setText("\n There is "
