@@ -17,6 +17,8 @@ import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -35,6 +37,7 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -74,7 +77,8 @@ public class LibraryLocator implements EntryPoint {
 
 	// set hyperlink in library class? when display in flextable?
 
-	private DockPanel mainPanel = new DockPanel();
+	//private DockPanel mainPanel = new DockPanel();
+	private HorizontalPanel headerPanel = new HorizontalPanel();
 	private TabPanel mainTab = new TabPanel();
 
 	private TabPanel mainAdminTab = new TabPanel();
@@ -85,7 +89,7 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel searchPanel = new HorizontalPanel();
 	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
 	private FlexTable librariesFlexTable = new FlexTable();
-	//private ListBox regionList = new ListBox();
+	private ListBox searchBox = new ListBox();
 	private Label numLb = new Label("");
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
@@ -98,6 +102,7 @@ public class LibraryLocator implements EntryPoint {
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button AdminLogin = new Button("Admin Access");
 	private Button adminSubmit = new Button("submit");
+	private Button footerButton = new Button("testing");
 
 	// favoriteTab
 	// things inside favorite
@@ -145,7 +150,6 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
 	
-	private ListBox searchBox = new ListBox();
 	private long start;;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
@@ -180,6 +184,11 @@ public class LibraryLocator implements EntryPoint {
 	         
 	          }
 	        });
+	    headerPanel.add(AdminLogin);
+	    headerPanel.setCellHorizontalAlignment(AdminLogin, HasHorizontalAlignment.ALIGN_RIGHT);
+	    
+	    //mainButtonPanel.add(footerButton);
+	    
 	    AdminLogin.addStyleName("adminsubmit");
 	    
 	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -222,7 +231,7 @@ public class LibraryLocator implements EntryPoint {
 		loginPanel.add(loginLabel);
 		loginPanel.add(signInLink);
 		
-		RootPanel.get("SocialPanel").add(loginPanel);
+		//RootPanel.get("SocialPanel").add(loginPanel);
 	}
 
 	private void loadLibraryLocator() {
@@ -333,8 +342,11 @@ public class LibraryLocator implements EntryPoint {
 		//mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
+		//RootPanel.get("Header").add(headerPanel);
+		//RootPanel.get("Footer").add(mainButtonPanel);
 		RootPanel.get("libraryLocator").add(mainTab);
-		RootPanel.get("dialogboxAdmin").add(AdminLogin);
+		
+		//RootPanel.get("dialogboxAdmin").add(AdminLogin);
 		//RootPanel.get("SocialPanel").add(mainButtonPanel);
 
 		// TODO Move cursor focus to ALL input box.
@@ -640,10 +652,13 @@ public class LibraryLocator implements EntryPoint {
 	
 	/**
 	 * (search) Add Library to FlexTable. Executed when the user clicks the
-	 * searchButton (NOT doing the keyHandler)
+	 * searchButton or hit enter
 	 */
 	private void SearchBoxForLibary(){
 		System.out.println("search function is runing");
+		//System.out.println("search function is runing");
+		searchBox.setFocus(true);
+		searchBox.addItem("----Please Selet a City----");
 		Set<String> allCity = new HashSet<String>();
 		for(Library l : libraries){
 			allCity.add(l.getCity());
@@ -658,17 +673,19 @@ public class LibraryLocator implements EntryPoint {
 		}
 		searchBox.setVisibleItemCount(1);
 		
-		searchBox.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event){
+		searchBox.addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
 				searchLb.clear();
 				int index = ((ListBox) event.getSource()).getSelectedIndex();
-				String selectedCity = ((ListBox) event.getSource()).getValue(index);
+				String selectedCity = ((ListBox) event.getSource())
+						.getValue(index);
 				System.out.println("selected city:" + selectedCity);
-					for(Library lb : libraries){
-						if(lb.getCity().matches(selectedCity)){
-							searchLb.add(lb);						
+				for (Library lb : libraries) {
+					if (lb.getCity().matches(selectedCity)) {
+						searchLb.add(lb);
 					}
 				}
+				searchButton.setFocus(true);
 			}
 		});
 		
@@ -688,6 +705,7 @@ public class LibraryLocator implements EntryPoint {
 						+ (librariesFlexTable.getRowCount() - 1)
 						+ (checked ? " libraries " : " library ")
 						+ "in this city.");
+				searchBox.setFocus(true);
 			}
 
 		});

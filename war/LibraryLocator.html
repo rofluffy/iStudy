@@ -5,12 +5,12 @@
 <!-- with a "Quirks Mode" doctype is not supported. -->
 
 <html>
-  <head>
+<head>
 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <style type="text/css">
-    
-     /* #map{
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style type="text/css">
+
+/* #map{
    position: relative;
    
     left: 150px;
@@ -26,7 +26,7 @@
     z-index: 0;
     }  
      */
-    /*
+/*
     #mainAdminTab {
     position: absolute;
     left: 0px;
@@ -39,133 +39,110 @@
     top: 650px;
     z-index: 1;
     } */
-    
-}
-    
-    </style>
- 
-    <!--                                                               -->
-    <!-- Consider inlining CSS to reduce the number of requested files -->
-    <!--                                                               -->
-    <link type="text/css" rel="stylesheet" href="LibraryLocator.css">
 
-    <!--                                           -->
-    <!-- Any title is fine                         -->
-    <!--                                           -->
-    <title>iStudy</title>
-    
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
-    
-    
-      <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=SENSOR_TRUE_OR_FALSE"></script>
-    <script type="text/javascript" language="javascript" src="librarylocator/librarylocator.nocache.js"></script>
-    
-  </head>
+</style>
+
+<!--                                                               -->
+<!-- Consider inlining CSS to reduce the number of requested files -->
+<!--                                                               -->
+<link type="text/css" rel="stylesheet" href="LibraryLocator.css">
+
+<!--                                           -->
+<!-- Any title is fine                         -->
+<!--                                           -->
+<title>iStudy</title>
+
+<!--                                           -->
+<!-- This script loads your compiled module.   -->
+<!-- If you add any GWT meta tags, they must   -->
+<!-- be added before this line.                -->
+<!--                                           -->
+
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?sensor=SENSOR_TRUE_OR_FALSE"></script>
+<script type="text/javascript" language="javascript"
+	src="librarylocator/librarylocator.nocache.js"></script>
+
+</head>
 <!--           <div id="SocialPanel" style="width:100%; height:100%; float:right;"></div>  
- -->  
-  <link rel="stylesheet" type="text/css" href="LibraryLocator.css" />
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                           -->
+ -->
+<link rel="stylesheet" type="text/css" href="LibraryLocator.css" />
 
-  <body>
-  
+<!--                                           -->
+<!-- The body can have arbitrary html, or      -->
+<!-- you can leave the body empty if you want  -->
+<!-- to create a completely dynamic UI.        -->
+<!--                                           -->
 
-    <!-- OPTIONAL: include this if you want history support -->
-    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    
-    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-    <noscript>    
-    
-      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
-      </div>
-    </noscript>
-   
-<div id="container" style="height:auto; width:450px;  background: #fff;
-/* left:-370px;
-top:-40px;  */
-z-index:1;
-outline: 5px solid #E7F3FF;
-margin: 60px auto 0;
-  padding: 10px;
-  
-   left:(RootPanel.get().getOffsetWidth() -this.getOffsetWidth())px; 
-    top: (RootPanel.get().getOffsetHeight()-this.getOffsetHeight())px;
-">
+<body>
+	<!-- OPTIONAL: include this if you want history support -->
+	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+
+	<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+	<noscript>
+
+		<div
+			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+			Your web browser must have JavaScript enabled in order for this
+			application to display correctly.</div>
+	</noscript>
 
 
-<!--       <h1 style="float: left;">Map</h1>
- -->   
-<div id="libraryLocator" ></div>
-  <div id="dialogboxAdmin" style=" z-index:3;  padding: 10px;
-  " ></div>
-<section id="extras">
-	<div class="social" >
-		<h2>social</h2>
-		<ul>
-			<li><a href="http://www.twitter.com" rel="me">Twitter</a></li>
-			<li><a href="http://www.facebook.com" rel="me">Facebook</a></li>
-<!-- 			<li><a href="http://www.google.com" rel="me">Google</a></li>
- -->		</ul>
+	<div id="container"
+		style="height: auto; width: 450px; background: #fff; left: -370px; top: -40px; z-index: 1; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px;">
+		<div id="libraryLocator"></div>
+		<div id="dialogboxAdmin" style="z-index: 3; padding: 10px;"></div>
+
+		<!-- /#extras -->
+		<footer id="contentinfo">
+			<address id="about" class="vcard body">
+				<!-- /.primary -->
+				<span class="bio" style="float: left;">iStudy LibraryLocator
+					is a website that offers BC library-searching service to the
+					public. It was founded by Paopao.</span>
+
+			</address>
+			<!-- /#about -->
+
+		</footer>
+		<!-- /#contentinfo -->
+		Copyright © Paopao.com
+
 	</div>
 
-<!-- /.social -->
-</section>
-
-<!-- /#extras -->
-<footer id="contentinfo">
-	<address id="about" class="vcard body">
-	<!-- /.primary -->
-		<span class="bio" style="float:left;">iStudy LibraryLocator is a website that offers BC library-searching service to the public. It was founded by Paopao.</span>
- 
-	</address>
-	<!-- /#about -->
-
-</footer>
+	<div id="map"
+		style="height: 100%; width: 100%; position: absolute; top: 0; bottom: 0px; left: 0; right: 0; z-index: 0;"></div>
 
 
 
-<!-- /#contentinfo -->
-Copyright © Paopao.com
+	<!--     <table align="center"> -->
+	<!--       <tr> -->
+	<!--         <td colspan="2" style="font-weight:bold;">Please enter your name:</td>         -->
+	<!--       </tr> -->
+	<!--       <tr> -->
+	<!--         <td id="nameFieldContainer"></td> -->
+	<!--         <td id="sendButtonContainer"></td> -->
+	<!--       </tr> -->
+	<!--       <tr> -->
+	<!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
+	<!--       </tr> -->
+	<!--     </table> -->
 
- </div>
- 
- 
- 
-  <div id="map" style="height:100%;
-  width:100%;
-  position: absolute; 
-  top: 0; 
-  bottom: 0px; 
-  left: 0; 
-  right: 0; 
-  z-index: 0;"></div>
-  
-  
- 
-<!--     <table align="center"> -->
-<!--       <tr> -->
-<!--         <td colspan="2" style="font-weight:bold;">Please enter your name:</td>         -->
-<!--       </tr> -->
-<!--       <tr> -->
-<!--         <td id="nameFieldContainer"></td> -->
-<!--         <td id="sendButtonContainer"></td> -->
-<!--       </tr> -->
-<!--       <tr> -->
-<!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
-<!--       </tr> -->
-<!--     </table> -->
+	<section id="extras"  style="z-index:100; position:relative;left:0px; top:150px;">
+			<div class="social">
+				<h2>Share</h2>
+				<ul>
+					<li><a href="http://www.twitter.com" rel="me">Twitter</a></li>
+					<li><a href="https://developers.facebook.com/docs/plugins/" rel="me">Facebook</a></li>
+					<!-- 			<li><a href="http://www.google.com" rel="me">Google</a></li>
+ -->
+				</ul>
+			</div>
+			<!-- /.social -->
+		</section>
 
+</body>
 
-  </body>
-  
 </html>

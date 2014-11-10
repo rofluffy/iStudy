@@ -45,6 +45,7 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
+		PersistenceManager pm = getPersistenceManager();
 
 	}
 
