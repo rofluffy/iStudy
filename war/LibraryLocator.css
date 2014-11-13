@@ -2,16 +2,12 @@
 
 
 /** Example rules used by the template application (remove for your app) */
-/* 
-  .body {clear: both; margin: 0 auto; width: 800px;}
-img.right figure.right {float: right; margin: 0 0 2em 2em;}
-img.left, figure.left {float: right; margin: 0 0 2em 2em;}   */
+ 
 
-
-header, section, footer,
+ header, section, footer,
 aside, nav, article, figure {
 	display: block;
-}
+} 
 
 h1 {
   font-size: 2em;
@@ -27,6 +23,22 @@ ul {
 	margin: 1em 0 1.5em 1.5em;
 }
  
+/* Anchors */
+a {outline: 0;}
+a img {border: 0px; text-decoration: none;}
+a:link, a:visited {
+	color: #C74350;
+	padding: 0 1px;
+	text-decoration: underline;
+}
+a:hover, a:active {
+	background-color: #C74350;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 1px 1px 1px #333;
+}
+
+
 body {
 /* background-image: url(IMG_2867.JPG); You will specify your image path here.
 -moz-background-size: cover;
@@ -81,22 +93,73 @@ background-attachment: fixed;  */
 /* } */
 
 
-	About
-*****************/
+#banner {
+	margin: 0 auto;
+	padding: 2.5em 0 0 0;
+}
+ 
+	/* Banner */
+	#banner h1 {font-size: 3.571em; line-height: .6;}
+	#banner h1 a:link, #banner h1 a:visited {
+		color: #000305;
+		display: block;
+		font-weight: bold;
+		margin: 0 0 .6em .2em;
+		text-decoration: none;
+		width: 427px;
+	}
+	#banner h1 a:hover, #banner h1 a:active {
+		background: none;
+		color: #C74350;
+		text-shadow: none;
+	}
+ 
+	#banner h1 strong {font-size: 0.36em; font-weight: normal;}
+	/* Main Nav */
+	#banner nav {
+ 	background: #E7F3FF;
+       /*  background: #F4E3E3;  */
+ 		font-size: 1.143em;
+		height: 40px;
+		line-height: 30px;
+		margin: 0 auto 2em auto;
+		padding: 0;
+		text-align: center;
+		width: 1440px;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	}
+	
+	#banner nav ul {list-style: none; margin: 0 auto; width: 1440px;}
+	#banner nav li {float: left; display: inline; margin: 0;}
+	
+	#banner nav a:link, #banner nav a:visited {
+		color: #fff;
+		display: inline-block;
+		height: 30px;
+		padding: 5px 1.5em;
+		text-decoration: none;
+	}
+	#banner nav a:hover, #banner nav a:active,
+	#banner nav .active a:link, #banner nav .active a:visited {
+		background: #C74451;
+		color: #fff;
+		text-shadow: none !important;
+	}
+	
+	#banner nav li:first-child a {
+		border-top-left-radius: 5px;
+		-moz-border-radius-topleft: 5px;
+		-webkit-border-top-left-radius: 5px;
+		
+		border-bottom-left-radius: 5px;
+		-moz-border-radius-bottomleft: 5px;
+		-webkit-border-bottom-left-radius: 5px;
+	}
+	
 
-a {outline: 0;}
-a img {border: 0px; text-decoration: none;}
-a:link, a:visited {
-	color: #C74350;
-	padding: 0 1px;
-	text-decoration: underline;
-}
-a:hover, a:active {
-	background-color: #C74350;
-	color: #fff;
-	text-decoration: none;
-	text-shadow: 1px 1px 1px #333;
-}
+
 
      Map
 ****************/
@@ -126,14 +189,14 @@ opacity: .90; Set the opacity for a slightly transparent Google Form
  
 
 
-#extras { padding: 10px; height:auto; width:auto;margin:10px auto 0;  z-index:100; position:relative;
+#extras { padding: 10px; height:auto; width:auto;margin:10px auto 0;
   } 
 #extras ul {list-style: none; margin: 0;}
 #extras li {border-bottom: 1px solid #fff;}
 #extras h2 {
 	
-/* 	color: #C74350;
- */	font-size: 1.429em;
+ 	color: #C74350;
+ 	font-size: 1.429em;
 	margin-bottom: .25em;
 	padding: 0 3px;
 }
@@ -153,7 +216,7 @@ opacity: .90; Set the opacity for a slightly transparent Google Form
 	}
  
  #content {
-	 background: #fff; */
+	 background: #fff; 
  	margin-bottom: 2em;
 	overflow: hidden;
 	padding: 20px 20px;
