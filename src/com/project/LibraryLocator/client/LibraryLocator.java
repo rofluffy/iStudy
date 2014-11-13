@@ -14,7 +14,6 @@ import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -32,6 +31,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.dom.client.Document;
-
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.maps.gwt.client.ControlPosition;
 import com.google.maps.gwt.client.GoogleMap;
@@ -825,8 +824,11 @@ public class LibraryLocator implements EntryPoint {
 		int row = librariesFlexTable.getRowCount();
 		//ArrayList<Library> temp = new ArrayList<Library>();
 		//temp.add(lb);
-		librariesFlexTable.setText(row, 0, lb.getName());
+		//librariesFlexTable.setText(row, 0, lb.getName());
+		Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
+		librariesFlexTable.setWidget(row, 0, l);
 		librariesFlexTable.setText(row, 1, lb.getBranch());
+		//Window.open(l.getHTML(), "_blank", "");
 		
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
@@ -848,7 +850,6 @@ public class LibraryLocator implements EntryPoint {
 		});
 		librariesFlexTable.setWidget(row, 2, selectButton);
 	}
-	
 	
 	
 	//dialogbox for AdminTab

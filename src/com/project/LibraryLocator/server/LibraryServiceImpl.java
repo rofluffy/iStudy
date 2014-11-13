@@ -46,6 +46,16 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
 		PersistenceManager pm = getPersistenceManager();
+		try{
+			Query q= pm.newQuery(Library.class, "id == lid");
+			List<Library> lb= (List<Library>) q.execute();
+			for(Library l :loAllLibraries){
+				if(l.getId()==lid)
+					pm.deletePersistent(lb);
+			}
+		}finally {
+			pm.close();
+		}
 
 	}
 
