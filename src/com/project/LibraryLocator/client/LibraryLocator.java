@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.jdo.Query;
 
+import com.project.LibraryLocator.shared.FavoriteObj;
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -53,13 +54,18 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.maps.gwt.client.ControlPosition;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.GoogleMap.ZoomChangedHandler;
 import com.google.maps.gwt.client.InfoWindow;
 import com.google.maps.gwt.client.LatLng;
 import com.google.maps.gwt.client.MapOptions;
 import com.google.maps.gwt.client.MapTypeId;
+import com.google.maps.gwt.client.PanControlOptions;
 import com.google.maps.gwt.client.Point;
+import com.google.maps.gwt.client.ScaleControlOptions;
+import com.google.maps.gwt.client.StreetViewControlOptions;
+import com.google.maps.gwt.client.ZoomControlOptions;
 
 //
 /**
@@ -91,13 +97,11 @@ public class LibraryLocator implements EntryPoint {
 	private ListBox searchBox = new ListBox();
 	private Label numLb = new Label("");
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
-	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
+	private HorizontalPanel pagePanel = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
 	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
-	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
-	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button AdminLogin = new Button("Admin Access");
 	private Button adminSubmit = new Button("submit");
@@ -106,8 +110,12 @@ public class LibraryLocator implements EntryPoint {
 	// things inside favorite
 	private VerticalPanel favoriteTab = new VerticalPanel();
 	private FlexTable favoriteTable = new FlexTable();
-	// private CheckBox selectFavorite = new CheckBox(); //do this later Buttons (for Favorite)
+	private Label removeFavLabel = new Label();
+	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
+	//Buttons
 	private Button removeFavorite = new Button("Remove");
+	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
+	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 
 	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
@@ -140,15 +148,20 @@ public class LibraryLocator implements EntryPoint {
 	private static final int TILE_SIZE = 256;
 	private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
 
-	// private final DataParseAsync DataParse = GWT.create(DataParse.class);
+	// Service classes
 	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
+	private final FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
+	private ArrayList<FavoriteObj> favorites = new ArrayList<FavoriteObj>(); // list of favorites REFACTOR to favorite tab?
+	private ArrayList<FavoriteObj> selectedFav = new ArrayList<FavoriteObj>(); // favorite's selected list
 	
-	private long start;;
+	int pageSize = 20;
+	
+	private long start;
 
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
@@ -183,6 +196,8 @@ public class LibraryLocator implements EntryPoint {
 	          }
 	        });
 	    headerPanel.add(AdminLogin);
+	    //headerPanel.add(loadLibraryButton);
+	    //loadLibraryButton.addStyleName("adminsubmit");
 	    AdminLogin.addStyleName("adminsubmit");
 	    
 	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -235,9 +250,18 @@ public class LibraryLocator implements EntryPoint {
 
 		LatLng myLatLng = LatLng.create(49.269893, -123.253268);
 		MapOptions myOptions = MapOptions.create();
+		PanControlOptions panOptions = PanControlOptions.create();
+		ZoomControlOptions zoomOptions = ZoomControlOptions.create();
+		StreetViewControlOptions streetViewOptions = StreetViewControlOptions.create();
+		panOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
+		streetViewOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
+		zoomOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
 		myOptions.setZoom(8.0);
 		myOptions.setCenter(myLatLng);
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
+		myOptions.setStreetViewControlOptions(streetViewOptions);
+		myOptions.setPanControlOptions(panOptions);
+		myOptions.setZoomControlOptions(zoomOptions);
 		GoogleMap map = GoogleMap.create(Document.get().getElementById("map"),
 				myOptions);
 		
@@ -304,9 +328,7 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Assemble search panel
 		searchPanel.add(searchBox);
-		//searchPanel.add(searchInputBox);
 		searchPanel.add(searchButton);
-		//searchPanel.add(loadLibraryButton); //TODO remove laterss
 
 		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
@@ -320,11 +342,13 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Assemble favorite tab
 		favoriteTab.add(favoriteTable);
+		favoriteTab.add(removeFavLabel);
 		favoriteTab.add(buttonPanelfav);
 
 		// TODO create table for displaying libraries (favorite tab)
 		favoriteTable.setText(0, 0, "Library");
-		favoriteTable.setText(0, 1, "Select");
+		favoriteTable.setText(0, 1, "Branch");
+		favoriteTable.setText(0, 2, "Select");
 
 		// TODO Assemble button panel (remove button?)
 		buttonPanelfav.add(removeFavorite);
@@ -374,8 +398,7 @@ public class LibraryLocator implements EntryPoint {
 
 		//addToDataStore();
 		loadLibraries();
-
-
+		FavoriteFunc();
 	}
 	
 	private void addToDataStore(){
@@ -545,61 +568,23 @@ public class LibraryLocator implements EntryPoint {
 		
 	}
 
-/*	private boolean checkValid(TextBox input) {
 
-		// TODO NOT WORKING =DDDDDD
-
-		System.out.println("runing checkValid!");
-		String name = input.getName();
-		System.out.println("inputBox name:" + name);
-		// if (input.getText() == ""){
-		// Window.alert("'" + input.getTitle() + "' is empty.");
-		// return false;
-		// }
-
-		switch (name) {
-		case "inputLibraryID":
-		case "inputLibraryName":
-		case "inputLibraryBranch":
-		case "inputLibraryPhone":
-		case "inputLibraryAddress":
-		case "inputLibraryCity":
-			if (!input.getText().matches("^[0-9A-Z\\.]{1,50}$")) {
-				System.out
-						.println("checking ID,Name,Branch,Phone,Address,City");
-				Window.alert("'" + input.getTitle() + "' is not valid.");
-				return false;
-			}
-			break;
-		case "inputLibraryPostCode":
-			if (!input.getText().matches("^[0-9A-Z\\.]{6}$")) {
-				System.out.println("checking PostCode");
-				Window.alert("'" + input.getTitle() + "' is not valid.");
-				return false;
-			}
-			break;
-		case "inputLibraryLat":
-			if (!(Double.parseDouble(input.getText()) >= -90.0 || Double
-					.parseDouble(input.getText()) <= 90.0)) {
-				System.out.println("checking Lat");
-				Window.alert("'" + input.getTitle() + "' is not valid.");
-				return false;
-			}
-			break;
-		case "inputLibraryLon":
-			if (!(Double.parseDouble(input.getText()) >= -180.0 || Double
-					.parseDouble(input.getText()) <= 180.0)) {
-				System.out.println("checking Lon");
-				Window.alert("'" + input.getTitle() + "' is not valid.");
-				return false;
-			}
-			break;
-
+/*	private void displayLb(ArrayList<Library> lolb){
+		ArrayList<Library> temp = libraries;
+		int pageNum = 0;
+		if ((temp.size()%pageSize) != 0){
+			pageNum = temp.size()/pageSize + 1;   //20 lb per page
+		}else {
+			pageNum = temp.size()/pageSize;
 		}
-		return true;
+		for(int i = 0; i < temp.size(); i++){
+			for(int j = 0; j <pageSize; j++){
+				
+			}
+		}
+		
 	}*/
-
-
+	
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
@@ -682,13 +667,7 @@ public class LibraryLocator implements EntryPoint {
 		
 		searchButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				int row = librariesFlexTable.getRowCount();
-				for (int i = row - 1; i >= 1; i--) {
-					librariesFlexTable.removeRow(i);
-				}
-				// while (librariesFlexTable.getRowCount() > 1) {
-				// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
-				// }
+				cleanTable(librariesFlexTable);
 				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				boolean checked = (librariesFlexTable.getRowCount() > 2);
@@ -699,6 +678,36 @@ public class LibraryLocator implements EntryPoint {
 				searchBox.setFocus(true);
 			}
 
+		});
+		
+		addFavoriteButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				getFavoriteLb();
+				ArrayList<FavoriteObj> lof = new ArrayList<FavoriteObj>();
+				for(Library lb : selectedLb){
+					FavoriteObj temp = new FavoriteObj(lb.getId(), lb.getName(), lb.getBranch());
+					if (!favorites.contains(temp)){
+						lof.add(temp);
+					}
+				}
+				favoriteService.addFavorites(lof, new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable error) {
+						// TODO Handle error
+						System.out.println("add favorite fails");
+						
+					}
+
+					@Override
+					public void onSuccess(Void ignore) {
+						// TODO Auto-generated method stub
+						System.out.println("add favorite success");
+						
+					}
+					
+				});
+			}
 		});
 		
 	}
@@ -739,6 +748,8 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.setWidget(row, 2, selectButton);
 	}
 	
+	
+	
 	//dialogbox for AdminTab
 	 private AdminDialog createDialogBox() {
 		    // Create a dialog box and set the caption text
@@ -762,6 +773,126 @@ public class LibraryLocator implements EntryPoint {
 		    // Return the dialog box
 		    return dialogBox;
 		  }
+	 
+	/**
+	 * (favorite) Add Library to FlexTable. Executed when the user opens the
+	 * favorite tab
+	 */
+	 private void FavoriteFunc(){
+		 
+		mainTab.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				// TODO Auto-generated method stub
+				if (event.getSelectedItem() == 1) {
+					System.out.println("favorite tab is selected");
+					refleshFav();
+				}
+			}
+		});
+
+		removeFavorite.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				removeFav(selectedFav);
+			}
+		});
+				
+	 }
+	 
+	private void removeFav(final ArrayList<FavoriteObj> favs) {
+		favoriteService.removeFavorites(favs, new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Handle error
+				System.out.println("remove favorite fails");
+			}
+
+			@Override
+			public void onSuccess(Void ignore) {
+				// TODO Auto-generated method stub
+				System.out.println("remove favorite success");
+				int removeNum = favs.size();
+				selectedFav.clear();
+				removeFavLabel.setText("You have removed " + removeNum
+						+ " favorites.");
+				refleshFav();
+			}
+		});
+	}
+	
+	private void refleshFav(){
+		cleanTable(favoriteTable);
+		getFavoriteLb();
+		displayFavorites(favorites);
+	}
+	 
+	 private void getFavoriteLb(){
+		 favoriteService.getFavorite(new AsyncCallback<ArrayList<FavoriteObj>>() {
+
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Handle error
+				System.out.println("get favorite fails");
+				
+			}
+
+			@Override
+			public void onSuccess(ArrayList<FavoriteObj> lof) {
+				// TODO Auto-generated method stub
+				favorites = lof;
+				System.out.println("get favorite success:" + favorites);
+				//displayFavorites(favorites);
+			}
+			 
+		 });
+	 }
+	 
+	 private void displayFavorites(ArrayList<FavoriteObj> lofav){
+		 System.out.println("display Favorites is running");
+		 for(FavoriteObj fav : lofav){
+			 displayFavorite(fav);
+		 }
+	 }
+	 
+	 private void displayFavorite(final FavoriteObj fav) {
+		 int row = favoriteTable.getRowCount();
+		 favoriteTable.setText(row, 0, fav.getName());
+		 favoriteTable.setText(row, 1, fav.getBranch());
+		 
+		 CheckBox selectButton = new CheckBox();
+			selectButton.setValue(false);
+
+			selectButton.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					boolean checked = ((CheckBox) event.getSource()).getValue();
+					Window.alert("It is " + (checked ? "" : "not ") + "checked");
+					if (checked == true) {
+						selectedFav.add(fav);
+						System.out.println("selectedFav: "+ selectedFav + "\n");
+						// Window.alert(selectedLb.toString());
+					} else {
+						selectedFav.remove(fav);
+						System.out.println("selectedFav: "+ selectedFav + "\n");
+						// Window.alert(selectedLb.toString());
+					}
+				}
+			});
+			favoriteTable.setWidget(row, 2, selectButton);	 
+		 
+	 }
+	 
+	private void cleanTable(FlexTable table) {
+		int row = table.getRowCount();
+		for (int i = row - 1; i >= 1; i--) {
+			table.removeRow(i);
+		}
+		// while (librariesFlexTable.getRowCount() > 1) {
+		// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
+		// }
+	}
 
 
 }

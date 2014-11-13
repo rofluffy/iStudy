@@ -1,6 +1,7 @@
 package com.project.LibraryLocator.server;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,30 +15,40 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.FavoriteService;
+import com.project.LibraryLocator.shared.FavoriteObj;
 
+@SuppressWarnings("serial")
 public class FavoriteServiceImpl extends RemoteServiceServlet implements
 		FavoriteService {
 
 	private static final Logger LOG = Logger
 			.getLogger(FavoriteServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
-			.getPersistenceManagerFactory("transactions-optional");
+			.getPersistenceManagerFactory("transactions-optional"); 
 
-	@Override
-	public void addFavorite(String lid) {
+	private void addFavorite(FavoriteObj fobj) {
 		// TODO add multiple favorites
+		System.out.println("add favorite is running");
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			pm.makePersistent(new Favorite(getUser(), lid));
+			pm.makePersistent(new Favorite(getUser(), fobj.getId(), fobj.getName(), fobj.getBranch()));
 		} finally {
 			pm.close();
 		}
 
 	}
-
+	
 	@Override
-	public void removeFavorite(String lid) {
+	public void addFavorites(ArrayList<FavoriteObj> favs) {
+		System.out.println("add favorites is running");
+		for(FavoriteObj f : favs){
+			addFavorite(f);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void removeFavorite(FavoriteObj f) {
 		// TODO remove multiple favorites
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -45,9 +56,9 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 			long deleteCount = 0;
 			Query q = pm.newQuery(Favorite.class, "user == u");
 			q.declareParameters("com.google.appengine.api.users.User u");
-			ArrayList<Favorite> favorites = (ArrayList<Favorite>) q.execute(getUser());
+			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
 			for (Favorite fav : favorites) {
-				if (lid.equals(fav.getId())) {
+				if ((f.getId()).equals(fav.getId())) {
 					deleteCount++;
 					pm.deletePersistent(fav);
 				}
@@ -62,25 +73,36 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 		}
 
 	}
-
+	
 	@Override
-	public ArrayList<Favorite> getFavorite() {
+	public void removeFavorites(ArrayList<FavoriteObj> favs) {
+		System.out.println("remove favorites is running");
+		for(FavoriteObj f : favs){
+			removeFavorite(f);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<FavoriteObj> getFavorite() {
 		// TODO Test require
+		System.out.println("get favorite obj is running");
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
-		ArrayList<Favorite> favs = new ArrayList<Favorite>();
+		List<FavoriteObj> favs = new ArrayList<FavoriteObj>();
 		try {
 			Query q = pm.newQuery(Favorite.class, "user == u");
 			q.declareParameters("com.google.appengine.api.users.User u");
 			q.setOrdering("createDate");
-			ArrayList<Favorite> favorites = (ArrayList<Favorite>) q.execute(getUser());
+			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
 			for (Favorite fav : favorites) {
-				favs.add(fav);
+				FavoriteObj fobj = new FavoriteObj(fav.getId(), fav.getName(), fav.getBranch());
+				favs.add(fobj);
 			}
 		} finally {
 			pm.close();
-		}    
-		return favs;
+		}
+		return (ArrayList<FavoriteObj>) favs;
 	}
 
 	private void checkLoggedIn() {

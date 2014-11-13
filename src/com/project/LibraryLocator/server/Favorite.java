@@ -26,6 +26,7 @@ public class Favorite extends Library {
 	public Favorite(User user, String id, String name, String branch) {
 		super(id, name, branch);
 		this.user = user;
+		
 	}
 	
 	public Favorite(User user, String id) {
