@@ -1,12 +1,15 @@
 package com.project.LibraryLocator.shared;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+
 
 
 //import com.google.appengine.api.users.User;
@@ -62,13 +65,46 @@ public class Library implements Serializable {
 		this.branch = branch;
 	}
 	
+	public boolean checkVaildPostalCode(String postalCode){
+		boolean rt= true;
+		char[] pc1= postalCode.replaceAll(" ", "").toCharArray();
+		if(pc1.length==5){
+			rt= false;
+		}
+		int pos1=0;
+		int pos2=pos1 +1;
+		while(pos2< pc1.length){
+			Character c1=pc1[pos1];
+			Character c2=pc1[pos2];
+			if(!Character.isLetter(c1))
+				rt = false;
+			if(!Character.isDigit(c2))
+				rt = false;
+			pos1=pos1+2;
+			pos2=pos1+1;
+		}
+		return rt;
+	}
+	public boolean checkValidLat(Double l){
+		boolean rt = true;
+		double ll = Math.abs(l);
+		if((ll>90)|(ll<0))
+			rt =false;
+		return rt;
+	}
+	
+	public boolean checkValidLng(Double l){
+		boolean rt = true;
+		double ll = Math.abs(l);
+		if((ll>180)|(ll<0))
+			rt =false;
+		return rt;
+	}
+	
 	public Library(String id) {
 		this.id = id;
 	}
 	
-	public String getAllData(){
-		return name + " " + branch + "\r\n" + phone + "\r\n " + address + " "+  city + " " +postalCode;
-	}
 
 	public String getId() {
 		return this.id;

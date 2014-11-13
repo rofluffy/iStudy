@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.project.LibraryLocator.server.Favorite;
+import com.project.LibraryLocator.shared.FavoriteObj;
 
 public interface FavoriteServiceAsync {
 
-	void addFavorite(String lid, AsyncCallback<Void> callback);
+	void addFavorites(ArrayList<FavoriteObj> favs, AsyncCallback<Void> callback);
 	
-	void removeFavorite(String lid, AsyncCallback<Void> callback);
+	void removeFavorites(ArrayList<FavoriteObj> favs, AsyncCallback<Void> callback);
 
-	void getFavorite(AsyncCallback<ArrayList<Favorite>> callback);
+	void getFavorite(AsyncCallback<ArrayList<FavoriteObj>> callback);
 
 }

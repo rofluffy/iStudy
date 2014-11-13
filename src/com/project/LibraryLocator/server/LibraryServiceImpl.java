@@ -54,9 +54,11 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		DataParseImpl dataParse = new DataParseImpl();
 		dataParse.parseAll();
 		loAllLibraries = dataParse.parseLibrary();
-		//System.out.println("list of all libraries(Parse):" + loAllLibraries);
+
+		//System.out.println("list of all libraries:" + loAllLibraries);
 		return loAllLibraries;
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
