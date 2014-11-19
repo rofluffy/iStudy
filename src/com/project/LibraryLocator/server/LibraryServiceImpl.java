@@ -25,7 +25,6 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
-	private Storage libraryStore = null;
 
 	private ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 	//public ArrayList<Library> Libraries = new ArrayList<Library>();
