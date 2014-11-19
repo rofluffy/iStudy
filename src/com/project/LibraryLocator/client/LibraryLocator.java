@@ -822,23 +822,13 @@ public class LibraryLocator implements EntryPoint {
 	private void displaySearchLibrary(final Library lb) {
 		
 		int row = librariesFlexTable.getRowCount();
-		//ArrayList<Library> temp = new ArrayList<Library>();
-		//temp.add(lb);
-		//librariesFlexTable.setText(row, 0, lb.getName());
-		final Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
-		librariesFlexTable.setWidget(row, 0, l);
+		TabFactory tf = new SearchTab();
+		librariesFlexTable.setWidget(row, 0, tf.nameHyprLink(lb));
 		librariesFlexTable.setText(row, 1, lb.getBranch());
-		//Window.open(l.getHTML(), "_blank", "");
 		
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
-		ClickHandler handler = new ClickHandler() {
-		    public void onClick(ClickEvent event) {
-		        Window.open("http://lmgtfy.com/?q=" +lb.getName(), lb.getName(),"");
-		    }
-		};
-	
-		l.addDomHandler(handler, ClickEvent.getType());
+
 
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
