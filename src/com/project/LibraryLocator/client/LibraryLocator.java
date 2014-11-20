@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.dom.client.Document;
@@ -93,7 +94,7 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel pagePanel = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
+	private Button checkallButton = new Button("Check All"); // also able to use in favorite
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button AdminLogin = new Button("Admin Access");
@@ -155,12 +156,14 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
 	private ArrayList<Library> favorites = new ArrayList<Library>(); // list of favorites REFACTOR to favorite tab?
 	private ArrayList<Library> selectedFav = new ArrayList<Library>(); // favorite's selected list
+	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
 	
 	int pageSize = 20;
 	
 	private long start;
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
+
 
 	/**
 	 * This is the entry point method.
@@ -748,6 +751,8 @@ public class LibraryLocator implements EntryPoint {
 		searchBox.addChangeHandler(new ChangeHandler() {
 			public void onChange(ChangeEvent event) {
 				searchLb.clear();
+				selectedLb.clear();
+				libCheckBox.clear();
 				int index = ((ListBox) event.getSource()).getSelectedIndex();
 				String selectedCity = ((ListBox) event.getSource())
 						.getValue(index);
@@ -813,10 +818,11 @@ public class LibraryLocator implements EntryPoint {
 	}
 	
 	private void displaySearchLibrary(ArrayList<Library> lolb) {
+		checkAll();
 		for (Library lb : lolb){
 			displaySearchLibrary(lb);
 		}
-		
+
 	}
 
 	private void displaySearchLibrary(final Library lb) {
@@ -828,8 +834,8 @@ public class LibraryLocator implements EntryPoint {
 		
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
-
-
+		libCheckBox.add(selectButton);
+		
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
@@ -845,8 +851,10 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
+		
 		librariesFlexTable.setWidget(row, 2, selectButton);
 	}
+	
 	
 	
 	//dialogbox for AdminTab
@@ -1021,6 +1029,37 @@ public class LibraryLocator implements EntryPoint {
 		// while (librariesFlexTable.getRowCount() > 1) {
 		// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
 		// }
+	}
+	private void checkAll(){
+		
+		checkallButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean allChecked = true;
+				for(CheckBox c: libCheckBox){
+					if (c.getValue()== false){
+						allChecked = false;
+					}
+				}
+				if (!allChecked){
+				for(CheckBox c: libCheckBox){
+					c.setValue(true);
+					checkallButton.setText("Uncheck All");
+				}
+				selectedLb.addAll(searchLb);
+				}
+				if(allChecked){
+					for(CheckBox c: libCheckBox){
+						c.setValue(false);
+					}
+					selectedLb.clear();	
+					checkallButton.setText("Check All");
+				}
+				}
+		});
+	}
+	// for testing puroposes 
+	public FlexTable getFlexTable(){
+		return librariesFlexTable;
 	}
 
 
