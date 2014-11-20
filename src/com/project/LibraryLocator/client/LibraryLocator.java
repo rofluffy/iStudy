@@ -1057,10 +1057,7 @@ public class LibraryLocator implements EntryPoint {
 				}
 		});
 	}
-	// for testing puroposes 
-	public FlexTable getFlexTable(){
-		return librariesFlexTable;
-	}
+
 
 
 }
