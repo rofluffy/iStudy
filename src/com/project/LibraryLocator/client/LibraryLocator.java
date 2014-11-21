@@ -68,11 +68,15 @@ public class LibraryLocator implements EntryPoint {
 
 	// panel for login and logout
 	static LoginInfo loginInfo = new LoginInfo();
+	// panel for login and logout
 	private VerticalPanel loginPanel = new VerticalPanel();
+	// label and link for login
 	private Label loginLabel = new Label(
-			"Please sign in to your Google Account to access the LibraryLocator application.");
-	private Label logoutLabel = new Label("Logout");
+			"Please sign in to your Google Account to access your Favorite library list.");
 	private Anchor signInLink = new Anchor("Sign In");
+	// label and link for logout
+	private Label logoutLabel = new Label(
+			"Logout here if you want to stop using this amazing app, but seriously, why would you?");
 	private Anchor signOutLink = new Anchor("Sign Out");
 
 	// set hyperlink in library class? when display in flextable?
@@ -114,7 +118,7 @@ public class LibraryLocator implements EntryPoint {
 
 	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
-	private VerticalPanel adminTab = new VerticalPanel();
+	static VerticalPanel adminTab = new VerticalPanel();
 	private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
 	private TextBox inputAdmin = new TextBox();
@@ -184,11 +188,6 @@ public class LibraryLocator implements EntryPoint {
 		DataPanel.setWidth("1100px");
 		mainAdminTab.add(DataPanel,"Database");
 		mainAdminTab.selectTab(0);
-//		mainAdminTab.setHeight("300px");
-//		Element element = document.getElementById("admin");
-//		element.onclick = function() {
-//		  // onclick stuff
-//		}
 //	
 		//create a new dialogBox for admin
 		final AdminDialog dialogBox = createDialogBox();
@@ -236,42 +235,56 @@ public class LibraryLocator implements EntryPoint {
 	    // load libraries anyway
 	    loadLibraries();
 	    
-		// Check login status using login service.
-/*		LoginServiceAsync loginService = GWT.create(LoginService.class);
-		loginService.login(GWT.getHostPageBaseURL(),
-				new AsyncCallback<LoginInfo>() {
-					public void onFailure(Throwable error) {
-						//TODO Handle error
+	 // Check login status using login service.
+ 		LoginServiceAsync loginService = GWT.create(LoginService.class);
+ 		loginService.login(GWT.getHostPageBaseURL(),
+ 				new AsyncCallback<LoginInfo>() {
+ 					public void onFailure(Throwable error) {
+ 						//TODO Handle error
 
-					}
+ 					}
 
-					public void onSuccess(LoginInfo result) {
-						loginInfo = result;
-						if (loginInfo.isLoggedIn()) {
-							// TODO deal with this later
-						} else {
-							loadLogin();
-						}
-					}
-				});		*/			
+ 					public void onSuccess(LoginInfo result) {
+ 						loginInfo = result;
+ 						if (loginInfo.isLoggedIn()) {
+ 							// TODO deal with this later
+ 							
+ 							//loadLibraryLocator();
+ 							loadLogout();
+ 							
+ 						} else {
+ 							loadLogin();
+ 							//loadLibraryLocator();
+ 						}
+ 					}
+ 				});							
 
 	}
 
 	private void loadLogin() {
 		// Assemble login panel.
-		if (loginInfo.isLoggedIn()) {
-			// if already logged in, show logout button and link
-			signOutLink.setHref(loginInfo.getLogoutUrl());
-			loginPanel.add(logoutLabel);
-			loginPanel.add(signOutLink);
-		} else {
+//		if (loginInfo.isLoggedIn()) {
+//			// if already logged in, show logout button and link
+//			signOutLink.setHref(loginInfo.getLogoutUrl());
+//			loginPanel.add(logoutLabel);
+//			loginPanel.add(signOutLink);
+//		} else {
 			signInLink.setHref(loginInfo.getLoginUrl());
 			loginPanel.add(loginLabel);
 			loginPanel.add(signInLink);
-		}
+//		}
 		
 		RootPanel.get("login").add(loginPanel);
 	}
+	
+	private void loadLogout() {
+		signOutLink.setHref(loginInfo.getLogoutUrl());
+		// replace login label and link with logout label and link
+		loginPanel.add(logoutLabel);
+		loginPanel.add(signOutLink);
+		// still load loginPanel, which now shows the logout label and link
+		RootPanel.get("login").add(loginPanel);
+}
 
 	private void loadLibraryLocator() {
 		// TODO Assemble Main panel.

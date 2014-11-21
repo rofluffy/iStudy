@@ -1,6 +1,7 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.maps.gwt.client.LatLng;
@@ -20,7 +22,7 @@ public class AdminTab extends TabFactory {
 	// adminTab (testing atleast?), display all library and able to add new
 	// library
 	// things inside admin page
-	VerticalPanel adminTab = new VerticalPanel();
+	//VerticalPanel adminTab = new VerticalPanel();
 	//private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
 	//private TextBox inputAdmin = new TextBox();
@@ -36,9 +38,18 @@ public class AdminTab extends TabFactory {
 	private TextBox inputLibraryLon = new TextBox();
 	private FlexTable addLibraryTable = new FlexTable();
 	private FlexTable allLibraries = new FlexTable();
+	private HorizontalPanel pagePanel = new HorizontalPanel();
+	private Label pageMessage = new Label();
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
 	private Button loadLibraryButton = new Button("Load Libraries");
+	private int pageIndex = 0;
+	private Button prev = new Button("<<<");
+	private Button next = new Button(">>>");
+	private ArrayList<Button> loPage = new ArrayList<Button>();
+	
+	int pageSize = 20;
+	ArrayList<Library> subListLb = new ArrayList<Library>();
 
 	public AdminTab() {
 	}
@@ -46,14 +57,17 @@ public class AdminTab extends TabFactory {
 	@Override
 	void buildTab(){
 		// Assemble admin Tab
-		adminTab.add(allLibraries);
-		adminTab.add(addLibraryPanel);
+		LibraryLocator.adminTab.add(pagePanel);
+		LibraryLocator.adminTab.add(allLibraries);
+		LibraryLocator.adminTab.add(addLibraryPanel);
 
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
 		addLibraryPanel.add(loadLibraryButton);
+		buildTable();
 		buildAddPanel();
+		buildPagePanel();
 	}
 
 	@Override
@@ -108,18 +122,107 @@ public class AdminTab extends TabFactory {
 		loadLibraryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				System.out.println("load library is click");
-				libraries.clear();
+				tabLibraries.clear();
 				//addToDataStore();
 				// loadLibraries();
 			}
 		});
 				
 	}
+	
+	private void buildPagePanel(){
+		// Assemble page Panel
+				pagePanel.add(pageMessage);
+				pagePanel.add(prev);
+				loPage = createLoPage(tabLibraries);
+				System.out.println("pagesize:" + loPage);
+				for(int i = 0; i < loPage.size(); i++){
+					pagePanel.add(loPage.get(i));
+				}
+				pagePanel.add(next);
+				prev.addClickHandler(new ClickHandler(){
+
+					@Override
+					public void onClick(ClickEvent event) {
+						// TODO Auto-generated method stub
+						if (pageIndex == 0){
+							pageMessage.setText("It's already the front page =)");
+						}else{
+							pageIndex -= pageSize;
+							System.out.println("PageIndex is " + pageIndex);
+							subListLb = createSub(tabLibraries);
+							cleanTable(allLibraries);
+							displayLibrary(subListLb);
+							pageMessage.setText("");
+						}
+					}			
+				});
+				next.addClickHandler(new ClickHandler(){
+
+					@Override
+					public void onClick(ClickEvent event) {
+						// TODO Auto-generated method stub
+						if ((pageIndex + pageSize) >= tabLibraries.size()-1){
+							pageMessage.setText("It's already the last page =)");
+						}else{
+							pageIndex += pageSize;
+							System.out.println("PageIndex is " + pageIndex);
+							subListLb = createSub(tabLibraries);
+							cleanTable(allLibraries);
+							displayLibrary(subListLb);
+							pageMessage.setText("");
+						}
+					}
+					
+				});
+	}
 
 	@Override
 	void buildFunc() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	private ArrayList<Library> createSub(ArrayList<Library> lolb){
+		ArrayList<Library> returnLb = new ArrayList<Library>();
+		boolean check = (lolb.size()%pageSize != 0) && (pageIndex + pageSize >= lolb.size());
+    	List<Library> temp = lolb.subList(pageIndex, pageIndex + (check? lolb.size()%pageSize : pageSize));
+    	for (Library lb : temp){
+    		returnLb.add(lb);
+    	}
+		return returnLb;
+	}
+	
+	private ArrayList<Button> createLoPage(ArrayList<Library> lolb){
+		int temp;
+		System.out.println(tabLibraries.size());
+		if (lolb.size() % pageSize != 0){
+			temp = lolb.size()/pageSize + 1;
+		}else{
+			temp = lolb.size()/pageSize;
+		}
+		ArrayList<Button> lob = new ArrayList<Button>();
+		for(int i = 1; i <= temp; i++){
+			Button b = new Button(String.valueOf(i));
+			final int tempI = i;
+			b.addClickHandler(new ClickHandler(){
+
+				@Override
+				public void onClick(ClickEvent event) {
+					// TODO Auto-generated method stub
+					System.out.println("Page " + tempI + " is clicked");
+					pageIndex = (tempI -1)*pageSize;
+					System.out.println("PageIndex is " + pageIndex);
+					subListLb = createSub(tabLibraries);
+					cleanTable(allLibraries);
+					displayLibrary(subListLb);
+					pageMessage.setText("");
+				}
+				
+			});
+			lob.add(b);
+		}
+		return lob;
 	}
 	
 	/**
@@ -173,7 +276,7 @@ public class AdminTab extends TabFactory {
 		// Don't add library if lat and lon is already exist
 		ArrayList<String> loid = new ArrayList<String>();
 		ArrayList<LatLng> loLatlng = new ArrayList<LatLng>();
-		for (Library lb : libraries) {
+		for (Library lb : tabLibraries) {
 			loid.add(lb.getId());
 			loLatlng.add(lb.getLatlon());
 		}
@@ -186,7 +289,7 @@ public class AdminTab extends TabFactory {
 
 		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
-		libraries.add(newLibrary);
+		tabLibraries.add(newLibrary);
 		allLibraries.setText(row, 0, newID);
 		allLibraries.setText(row, 1, newName);
 		allLibraries.setText(row, 2, newBranch);
@@ -285,6 +388,13 @@ public class AdminTab extends TabFactory {
 //			}
 //		});
 		allLibraries.setWidget(row, 9, selectButton);
+
+	}
+	
+	@Override
+	void run() {
+		// TODO Auto-generated method stub
+		buildTab();
 
 	}
 
