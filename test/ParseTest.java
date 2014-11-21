@@ -24,7 +24,6 @@ public class ParseTest {
 		assertEquals(L1,parse.parseLibrary().get(0));
 		assertEquals(247, parse.parseLibrary().size());
 	}
-	
 	@Test 
 	public void testVaildPostalCode(){
 		assertTrue(L1.checkVaildPostalCode(P1));
@@ -32,7 +31,6 @@ public class ParseTest {
 		assertTrue(L1.checkVaildPostalCode(P3));
 		assertFalse(L1.checkVaildPostalCode(P4));
 	}
-	
 	@Test 
 	public void testValidLat(){
 		assertTrue(L1.checkValidLat(D1));

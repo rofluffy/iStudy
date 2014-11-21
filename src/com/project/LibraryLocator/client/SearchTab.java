@@ -12,11 +12,13 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -238,11 +240,21 @@ public class SearchTab extends TabFactory {
 		int row = librariesFlexTable.getRowCount();
 		//ArrayList<Library> temp = new ArrayList<Library>();
 		//temp.add(lb);
-		librariesFlexTable.setText(row, 0, lb.getName());
+		//librariesFlexTable.setText(row, 0, lb.getName());
+		final Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
+		librariesFlexTable.setWidget(row, 0, super.nameHyprLink(lb));
 		librariesFlexTable.setText(row, 1, lb.getBranch());
+		//Window.open(l.getHTML(), "_blank", "");
 		
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
+		ClickHandler handler = new ClickHandler() {
+		    public void onClick(ClickEvent event) {
+		        Window.open("http://lmgtfy.com/?q=" +lb.getName(), lb.getName(),"");
+		    }
+		};
+	
+		l.addDomHandler(handler, ClickEvent.getType());
 
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -260,7 +272,6 @@ public class SearchTab extends TabFactory {
 			}
 		});
 		librariesFlexTable.setWidget(row, 2, selectButton);
-
 	}
 
 }
