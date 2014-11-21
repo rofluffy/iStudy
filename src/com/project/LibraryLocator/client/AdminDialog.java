@@ -19,7 +19,7 @@ public class AdminDialog extends DialogBox {
     public void center() {
 
       this.setPopupPosition(
-          9*(RootPanel.get().getOffsetWidth() -this.getOffsetWidth())/25,
+          9*(RootPanel.get().getOffsetWidth() -this.getOffsetWidth())/100,
           (RootPanel.get().getOffsetHeight()-this.getOffsetHeight())/2
       );
 
