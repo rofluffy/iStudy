@@ -51,11 +51,16 @@ background-attachment: fixed;  */
 
 }
 
-.adminsubmit{
-	 outline: 5px solid #E7F3FF;
+
+hidden{
+	/*  outline: 5px solid #E7F3FF;
 	background: #E7F3FF; 
-	margin: 10px;
-  color: lightblue;
+	margin: 10px; */
+/*   color: lightblue;
+ */  /* height: 0px;
+  width: 0px; */
+   	display:none;
+   
 }
  
 /* the tab panel itself*/
@@ -107,6 +112,7 @@ background-attachment: fixed;  */
 		margin: 0 0 .6em .2em;
 		text-decoration: none;
 		width: 427px;
+		
 	}
 	#banner h1 a:hover, #banner h1 a:active {
 		background: none;
@@ -214,7 +220,7 @@ opacity: .90; Set the opacity for a slightly transparent Google Form
 		float: left;
 		width: 175px;
 	}
- 
+/*  
  #content {
 	 background: #fff; 
  	margin-bottom: 2em;
@@ -227,7 +233,7 @@ opacity: .90; Set the opacity for a slightly transparent Google Form
 	-webkit-border-radius: 10px; 
 	z-index: 0;
 	position:relative;
-}
+} */
 
 /*
 	Footer

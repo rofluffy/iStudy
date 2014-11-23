@@ -8,13 +8,13 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import javax.jdo.Query;
+import javax.swing.text.html.HTML;
 
 import com.project.LibraryLocator.shared.FavoriteObj;
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.dom.client.Document;
-
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.maps.gwt.client.ControlPosition;
 import com.google.maps.gwt.client.GoogleMap;
@@ -95,7 +95,8 @@ public class LibraryLocator implements EntryPoint {
 	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
 	private Button addFavoriteButton = new Button("Add Favorite");
-	private Button AdminLogin = new Button("Admin Access");
+//	private Button AdminLogin = new Button("Admin Access");
+	private AdminLogin adminlogin = new AdminLogin("Admin");
 	private Button adminSubmit = new Button("submit");
 	private Button footerButton = new Button("testing");
 
@@ -193,36 +194,32 @@ public class LibraryLocator implements EntryPoint {
 //		  // onclick stuff
 //		}
 //	
-		//create a new dialogBox for admin
-		final AdminDialog dialogBox = createDialogBox();
-	    dialogBox.setGlassEnabled(true);
-	    dialogBox.setAnimationEnabled(true);
+	
+	   
+	    
+        //Element htmlEl = adminlogin.getElement(); 
+        adminlogin.addStyleName("adminsubmit");
+        //adminlogin.setVisible(false);
+
 
 	    // Create a button to show the dialog Box
-	    AdminLogin.addClickHandler(new ClickHandler() {
-	          public void onClick(ClickEvent sender) {
-	            dialogBox.isAutoHideEnabled();
-	            dialogBox.isGlassEnabled();
-	            dialogBox.center();
-	            dialogBox.show();
-	            //dialogBox.isAutoHideEnabled(); no difference
-	          dialogBox.setAutoHideEnabled(true);
-	          dialogBox.setAnimationEnabled(true);
-	          dialogBox.setGlassEnabled(true);
-	         
-	          }
-	        });
-	    headerPanel.add(AdminLogin);
-
-	    //DOM.getElementById("admin").appendChild(headerPanel);
+        
+//	    adminlogin.addClickHandler(new ClickHandler() {
+//	          public void onClick(ClickEvent sender) {
+//	            dialogBox.isAutoHideEnabled();
+//	            dialogBox.isGlassEnabled();
+//	            dialogBox.center();
+//	            dialogBox.show();
+//	            //dialogBox.isAutoHideEnabled(); no difference
+//	          dialogBox.setAutoHideEnabled(true);
+//	          dialogBox.setAnimationEnabled(true);
+//	          dialogBox.setGlassEnabled(true);
+//	         
+//	          }
+//	        });
+//	    
+//	    headerPanel.add(adminlogin);
 	    
-	    //mainButtonPanel.add(footerButton);
-	    
-
-	    //headerPanel.add(loadLibraryButton);
-	    //loadLibraryButton.addStyleName("adminsubmit");
-
-	    AdminLogin.addStyleName("adminsubmit");
 	    
 	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
 	    	@Override
@@ -323,7 +320,7 @@ public class LibraryLocator implements EntryPoint {
 		// style
 		mainTab.getTabBar().addStyleName("tabPanel");
 		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
-		SearchPanel.setHeight("115px");
+		SearchPanel.setHeight("300px");
 		// Assemble admin Tab
 		adminTab.add(allLibraries);
 		adminTab.add(addLibraryPanel);
@@ -410,7 +407,7 @@ public class LibraryLocator implements EntryPoint {
 		//mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
-		RootPanel.get("dialogboxAdmin").add(headerPanel);
+		RootPanel.get("dialogboxAdmin").add(createDialogBox());
 		//RootPanel.get("Footer").add(mainButtonPanel);
 		RootPanel.get("libraryLocator").add(mainTab);
 		
@@ -429,13 +426,12 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 		
+		//Listen for mouse events on the ToMap button
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
 				for (Library lb : selectedLb) {
-					mapSelectedLibrary(lb);
-				
 					
-				
+					mapSelectedLibrary(lb);
 				}
 				
 			}
@@ -862,14 +858,24 @@ public class LibraryLocator implements EntryPoint {
 		    dialogBox.setWidget(dialogContents);
 		    
 		    // Add a close button at the bottom of the dialog
-		    Button closeButton = new Button(
-		        "close", new ClickHandler() {
-		          public void onClick(ClickEvent event) {
-		            dialogBox.hide();
-		          }
-		        });
+//		    Button closeButton = new Button(
+//		        "close", new ClickHandler() {
+//		          public void onClick(ClickEvent event) {
+//		            dialogBox.hide();
+//		          }
+//		        });
 		    dialogContents.add(mainAdminTab);
-		    dialogContents.add(closeButton);
+		    //dialogContents.add(closeButton); don't need a close button now
+		    
+		    dialogBox.setGlassEnabled(true);
+		    dialogBox.setAnimationEnabled(true);
+		    dialogBox.isAutoHideEnabled();
+	        dialogBox.isGlassEnabled();
+	        dialogBox.center();
+	        //dialogBox.isAutoHideEnabled(); no difference
+	      dialogBox.setAutoHideEnabled(true);
+	      dialogBox.setAnimationEnabled(true);
+	      dialogBox.setGlassEnabled(true);
 
 		    // Return the dialog box
 		    return dialogBox;

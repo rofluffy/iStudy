@@ -9,8 +9,6 @@
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <style type="text/css">
-
-<<<<<<< HEAD
 /* #map{
    position: relative;
    
@@ -41,8 +39,6 @@
     z-index: 1;
     } */
 
-=======
->>>>>>> e941616e033a27b6eda1bf2d6ae7e33f2e956daa
 </style>
 
 <!--                                                               -->
@@ -85,6 +81,23 @@ var toggle = function() {
   else
     mydiv2.style.display = 'block'
   }
+  
+  function showcontainer(){
+  document.getElementById("container").style.visibility="visible";
+  document.getElementById("dialogboxAdmin").style.visibility="hidden";
+  }
+  
+  function showdialogboxAdmin(){
+  document.getElementById("container").style.visibility="hidden";
+  document.getElementById("dialogboxAdmin").style.visibility="visible";
+  }
+  
+  function showlogin(){
+  document.getElementById("container").style.visibility="hidden";
+  document.getElementById("dialogboxAdmin").style.visibility="hidden";
+  }
+  
+
 </script>
 
 </head>
@@ -114,42 +127,26 @@ var toggle = function() {
 			application to display correctly.</div>
 	</noscript>
 	
-	<header id="banner" style="z-index:0; position:relative;"> 
-	<nav><ul>
-		<li class="active"><a href="#">Map</a></li>
-		<li><a href="#">Login</a></li>
-		<li><a  id="admin" onclick="hideadmin()" href="#">Admin</a></li>
+	<header id="banner"  style="z-index:0; position:relative;"> 
+	<nav><ul  class="tabs" data-tab>
+		<li class="active"><a href="#mappanel" onclick="showcontainer()">Search</a></li>
+		<li><a href="#loginpanel" onclick="showlogin()">Login</a></li>
+		<li><a href="#adminpanel" onclick="showdialogboxAdmin()">Admin</a></li>
 	</ul></nav>
-	
- 
-</header><!-- /#banner -->
+	</header><!-- /#banner -->
 
-
-	<div id="container"
-
-		style="height: auto; width: 450px; background:#fff ; left: 10px; top: 0px ; z-index: 0;position:absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px;float:left;">
+  
+<div id="container"
+		style="height: auto; width: 450px; background:#fff ;z-index:0; left: 0px; top: -10px; position:absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px;float:left;">
 		<div id="libraryLocator"></div>
-
-
-		<!-- /#extras -->
-	 	<footer id="contentinfo">
-			<address id="about" class="vcard body">
-				
-				<span class="bio" >Please double click the marker on the map for more info about the libraries
-					</span>
-
-			</address>
-
-
-		</footer> 
-				<input type='button'  value='hide/show' onclick="toggle();"></input>
-		
-		<div id="Header" ></div>
-		<!-- /#contentinfo -->
-		Copyright © Paopao.com
-
+		<input type='button'  value='HIDE/SHOW' onclick="toggle();"></input>
+		<!-- 		Copyright © Paopao.com   -->
 	</div>
-	<div id="map"
+	
+  		<div id="dialogboxAdmin" style="z-index: 3;  padding: 10px; position: absolute; left:0px;top:35px;visibility:hidden;"></div>
+  
+
+<div id="map"
 		style="height: 100%; width: 100%; position: absolute; top: 0; bottom: 0px; left: 0; right: 0; z-index: -1;"></div>
 
 
@@ -168,7 +165,7 @@ var toggle = function() {
 	<!--     </table> -->
 	
 
-	<section id="extras"  style="z-index:0; position:absolute;float:bottom;   left:0px; top:500px; ">
+	<section id="extras"  style="z-index:0; position:absolute;float:bottom; left:0px; top:500px; ">
 			<div class="social">
 				<h2>Share</h2>
 				<ul>
@@ -183,8 +180,6 @@ var toggle = function() {
 		
 		<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
     <input type="submit" name="button1" value="Button 1" style="z-index=1; position:absolute;"/> -->
-		<div id="dialogboxAdmin" style="z-index: 3; padding: 10px;position: absolute; left:/*180*/280px;top:-10px;"></div>
-
 
 </body>
 
