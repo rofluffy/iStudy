@@ -12,11 +12,11 @@ public interface LibraryService extends RemoteService {
 
 	//ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 	
-	public void addLibrary(Library lb) /* TODO throws NotLoggedInException */;
+	public void addLibrary(Library lb);
 
-	public void removeLibrary(String lid) /* TODO throws NotLoggedInException */;
+	public void removeLibrary(String lid);
 
-	public ArrayList<Library> getLibraries() /* TODO throws NotLoggedInException */;
+	public ArrayList<Library> getLibraries();
 
 	public void populateTable();// populate table
 }

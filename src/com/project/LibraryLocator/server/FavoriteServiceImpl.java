@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
-
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.project.LibraryLocator.client.FavoriteService;
-import com.project.LibraryLocator.shared.FavoriteObj;
+import com.project.LibraryLocator.client.NotLoggedInException;
 
 @SuppressWarnings("serial")
 public class FavoriteServiceImpl extends RemoteServiceServlet implements
@@ -26,13 +24,13 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional"); 
 
-	private void addFavorite(FavoriteObj fobj) {
+	private void addFavorite(String id) throws NotLoggedInException{
 		// TODO add multiple favorites
 		System.out.println("add favorite is running");
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			pm.makePersistent(new Favorite(getUser(), fobj.getId(), fobj.getName(), fobj.getBranch()));
+			pm.makePersistent(new Favorite(getUser(), id));
 		} finally {
 			pm.close();
 		}
@@ -40,15 +38,15 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 	}
 	
 	@Override
-	public void addFavorites(ArrayList<FavoriteObj> favs) {
+	public void addFavorites(ArrayList<String> loid) throws NotLoggedInException{
 		System.out.println("add favorites is running");
-		for(FavoriteObj f : favs){
-			addFavorite(f);
+		for(String id : loid){
+			addFavorite(id);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void removeFavorite(FavoriteObj f) {
+	private void removeFavorite(String id) throws NotLoggedInException{
 		// TODO remove multiple favorites
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -58,7 +56,7 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 			q.declareParameters("com.google.appengine.api.users.User u");
 			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
 			for (Favorite fav : favorites) {
-				if ((f.getId()).equals(fav.getId())) {
+				if (id.equals(fav.getId())) {
 					deleteCount++;
 					pm.deletePersistent(fav);
 				}
@@ -75,37 +73,36 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 	}
 	
 	@Override
-	public void removeFavorites(ArrayList<FavoriteObj> favs) {
+	public void removeFavorites(ArrayList<String> loid) throws NotLoggedInException{
 		System.out.println("remove favorites is running");
-		for(FavoriteObj f : favs){
-			removeFavorite(f);
+		for(String id : loid){
+			removeFavorite(id);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ArrayList<FavoriteObj> getFavorite() {
+	public ArrayList<String> getFavorite() throws NotLoggedInException{
 		// TODO Test require
 		System.out.println("get favorite obj is running");
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
-		List<FavoriteObj> favs = new ArrayList<FavoriteObj>();
+		List<String> loid = new ArrayList<String>();
 		try {
 			Query q = pm.newQuery(Favorite.class, "user == u");
 			q.declareParameters("com.google.appengine.api.users.User u");
 			q.setOrdering("createDate");
 			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
 			for (Favorite fav : favorites) {
-				FavoriteObj fobj = new FavoriteObj(fav.getId(), fav.getName(), fav.getBranch());
-				favs.add(fobj);
+				loid.add(fav.getId());
 			}
 		} finally {
 			pm.close();
 		}
-		return (ArrayList<FavoriteObj>) favs;
+		return (ArrayList<String>) loid;
 	}
 
-	private void checkLoggedIn() {
+	private void checkLoggedIn() throws NotLoggedInException{
 		// TODO Auto-generated method stub
 		if (getUser() == null) {
 			//throw new NotLoggedInException("Not logged in.");

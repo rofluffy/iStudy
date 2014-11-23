@@ -25,7 +25,6 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	// Logger.getLogger(LibraryServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
-	private Storage libraryStore = null;
 
 	private ArrayList<Library> loAllLibraries = new ArrayList<Library>();
 	//public ArrayList<Library> Libraries = new ArrayList<Library>();
@@ -46,6 +45,16 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	public void removeLibrary(String lid) {
 		// TODO Auto-generated method stub
 		PersistenceManager pm = getPersistenceManager();
+		try{
+			Query q= pm.newQuery(Library.class, "id == lid");
+			List<Library> lb= (List<Library>) q.execute();
+			for(Library l :loAllLibraries){
+				if(l.getId()==lid)
+					pm.deletePersistent(lb);
+			}
+		}finally {
+			pm.close();
+		}
 
 	}
 

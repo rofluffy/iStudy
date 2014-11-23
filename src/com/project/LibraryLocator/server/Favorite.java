@@ -12,8 +12,11 @@ import com.google.appengine.api.users.User;
 import com.project.LibraryLocator.shared.Library;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Favorite extends Library {
+public class Favorite {
 
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private String id;
 	@Persistent
 	private User user;
 	@Persistent
@@ -23,15 +26,13 @@ public class Favorite extends Library {
 		this.createDate = new Date();
 	}
 
-	public Favorite(User user, String id, String name, String branch) {
-		super(id, name, branch);
-		this.user = user;
-		
-	}
-	
 	public Favorite(User user, String id) {
-		super(id);
+		this.id = id;
 		this.user = user;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public User getUser() {
@@ -40,6 +41,10 @@ public class Favorite extends Library {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Date getCreateDate() {
