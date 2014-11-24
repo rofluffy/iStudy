@@ -92,13 +92,13 @@ public class SearchTab extends TabFactory {
 
 	@Override
 	void buildFunc() {
-		System.out.println("search function is runing:" + tabLibraries);
+		System.out.println("search function is runing:" + libraries);
 		// System.out.println("search function is runing");
 		searchBox.setFocus(true);
 		searchBox.addItem("----Please Selet a City----");
 		Set<String> allCity = new HashSet<String>();
-		for (Library l : tabLibraries) {
-			allCity.add(l.getCity());
+		for (Library lb : libraries) {			
+			allCity.add(lb.getCity());
 		}
 		LinkedList<String> allCitySort = new LinkedList<String>();
 		allCitySort.addAll(allCity);
@@ -118,7 +118,7 @@ public class SearchTab extends TabFactory {
 				String selectedCity = ((ListBox) event.getSource())
 						.getValue(index);
 				System.out.println("selected city:" + selectedCity);
-				for (Library lb : tabLibraries) {
+				for (Library lb : libraries) {
 					if (lb.getCity().matches(selectedCity)) {
 						searchLb.add(lb);
 					}

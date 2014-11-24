@@ -122,7 +122,7 @@ public class AdminTab extends TabFactory {
 		loadLibraryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				System.out.println("load library is click");
-				tabLibraries.clear();
+				libraries.clear();
 				//addToDataStore();
 				// loadLibraries();
 			}
@@ -134,7 +134,7 @@ public class AdminTab extends TabFactory {
 		// Assemble page Panel
 				pagePanel.add(pageMessage);
 				pagePanel.add(prev);
-				loPage = createLoPage(tabLibraries);
+				loPage = createLoPage(libraries);
 				System.out.println("pagesize:" + loPage);
 				for(int i = 0; i < loPage.size(); i++){
 					pagePanel.add(loPage.get(i));
@@ -150,7 +150,7 @@ public class AdminTab extends TabFactory {
 						}else{
 							pageIndex -= pageSize;
 							System.out.println("PageIndex is " + pageIndex);
-							subListLb = createSub(tabLibraries);
+							subListLb = createSub(libraries);
 							cleanTable(allLibraries);
 							displayLibrary(subListLb);
 							pageMessage.setText("");
@@ -162,12 +162,12 @@ public class AdminTab extends TabFactory {
 					@Override
 					public void onClick(ClickEvent event) {
 						// TODO Auto-generated method stub
-						if ((pageIndex + pageSize) >= tabLibraries.size()-1){
+						if ((pageIndex + pageSize) >= libraries.size()-1){
 							pageMessage.setText("It's already the last page =)");
 						}else{
 							pageIndex += pageSize;
 							System.out.println("PageIndex is " + pageIndex);
-							subListLb = createSub(tabLibraries);
+							subListLb = createSub(libraries);
 							cleanTable(allLibraries);
 							displayLibrary(subListLb);
 							pageMessage.setText("");
@@ -195,7 +195,7 @@ public class AdminTab extends TabFactory {
 	
 	private ArrayList<Button> createLoPage(ArrayList<Library> lolb){
 		int temp;
-		System.out.println(tabLibraries.size());
+		System.out.println(libraries.size());
 		if (lolb.size() % pageSize != 0){
 			temp = lolb.size()/pageSize + 1;
 		}else{
@@ -213,7 +213,7 @@ public class AdminTab extends TabFactory {
 					System.out.println("Page " + tempI + " is clicked");
 					pageIndex = (tempI -1)*pageSize;
 					System.out.println("PageIndex is " + pageIndex);
-					subListLb = createSub(tabLibraries);
+					subListLb = createSub(libraries);
 					cleanTable(allLibraries);
 					displayLibrary(subListLb);
 					pageMessage.setText("");
@@ -276,7 +276,7 @@ public class AdminTab extends TabFactory {
 		// Don't add library if lat and lon is already exist
 		ArrayList<String> loid = new ArrayList<String>();
 		ArrayList<LatLng> loLatlng = new ArrayList<LatLng>();
-		for (Library lb : tabLibraries) {
+		for (Library lb : libraries) {
 			loid.add(lb.getId());
 			loLatlng.add(lb.getLatlon());
 		}
@@ -289,7 +289,7 @@ public class AdminTab extends TabFactory {
 
 		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
-		tabLibraries.add(newLibrary);
+		libraries.add(newLibrary);
 		allLibraries.setText(row, 0, newID);
 		allLibraries.setText(row, 1, newName);
 		allLibraries.setText(row, 2, newBranch);
