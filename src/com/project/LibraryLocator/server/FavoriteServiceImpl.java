@@ -30,7 +30,7 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			pm.makePersistent(new Favorite(getUser(), id));
+			pm.makePersistent(new Favorite(getUser(), id, id+getUser()));
 		} finally {
 			pm.close();
 		}
@@ -105,7 +105,7 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 	private void checkLoggedIn() throws NotLoggedInException{
 		// TODO Auto-generated method stub
 		if (getUser() == null) {
-			//throw new NotLoggedInException("Not logged in.");
+			throw new NotLoggedInException("Not logged in.");
 		}
 
 	}

@@ -13,11 +13,7 @@ import com.project.LibraryLocator.shared.Library;
 
 public abstract class TabFactory {
 	// Service classes
-	protected final LibraryServiceAsync libraryService = GWT
-			.create(LibraryService.class);
-	protected final FavoriteServiceAsync favoriteService = GWT
-			.create(FavoriteService.class);
-	ArrayList<Library> libraries;
+	ArrayList<Library> tabLibraries;
 	ArrayList<Library> selectedLb;
 
 	public TabFactory() {
@@ -63,5 +59,7 @@ public abstract class TabFactory {
 		l.addDomHandler(handler, ClickEvent.getType());
 		return l;
 	}
+	
+	abstract void run();
 
 }

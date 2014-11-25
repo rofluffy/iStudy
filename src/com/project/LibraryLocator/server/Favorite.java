@@ -16,6 +16,8 @@ public class Favorite {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private String key;
+	@Persistent
 	private String id;
 	@Persistent
 	private User user;
@@ -26,9 +28,10 @@ public class Favorite {
 		this.createDate = new Date();
 	}
 
-	public Favorite(User user, String id) {
+	public Favorite(User user, String id, String key) {
 		this.id = id;
 		this.user = user;
+		this.key = id + user;
 	}
 
 	public String getId() {
@@ -37,6 +40,14 @@ public class Favorite {
 
 	public User getUser() {
 		return user;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public void setUser(User user) {

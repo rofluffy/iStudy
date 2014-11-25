@@ -92,13 +92,13 @@ public class SearchTab extends TabFactory {
 
 	@Override
 	void buildFunc() {
-		System.out.println("search function is runing:" + libraries);
+		System.out.println("search function is runing:" + tabLibraries);
 		// System.out.println("search function is runing");
 		searchBox.setFocus(true);
 		searchBox.addItem("----Please Selet a City----");
 		Set<String> allCity = new HashSet<String>();
-		for (Library l : libraries) {
-			allCity.add(l.getCity());
+		for (Library lb : tabLibraries) {			
+			allCity.add(lb.getCity());
 		}
 		LinkedList<String> allCitySort = new LinkedList<String>();
 		allCitySort.addAll(allCity);
@@ -118,7 +118,7 @@ public class SearchTab extends TabFactory {
 				String selectedCity = ((ListBox) event.getSource())
 						.getValue(index);
 				System.out.println("selected city:" + selectedCity);
-				for (Library lb : libraries) {
+				for (Library lb : tabLibraries) {
 					if (lb.getCity().matches(selectedCity)) {
 						searchLb.add(lb);
 					}
@@ -142,7 +142,7 @@ public class SearchTab extends TabFactory {
 
 		});
 
-		addFavoriteButton.addClickHandler(new ClickHandler() {
+		/*addFavoriteButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ArrayList<String> loid = new ArrayList<String>();
 				for (Library lb : selectedLb) {
@@ -174,7 +174,7 @@ public class SearchTab extends TabFactory {
 
 				});
 			}
-		});
+		});*/
 		
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
@@ -272,6 +272,12 @@ public class SearchTab extends TabFactory {
 			}
 		});
 		librariesFlexTable.setWidget(row, 2, selectButton);
+	}
+	
+	@Override
+	void run() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
