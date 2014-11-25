@@ -39,7 +39,6 @@
     top: 650px;
     z-index: 1;
     } */
-
 </style>
 
 <!--                                                               -->
@@ -58,12 +57,23 @@
 <!-- be added before this line.                -->
 <!--                                           -->
 
+<div id="fb-root"></div>
+
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
 <script type="text/javascript"
 	src="http://maps.googleapis.com/maps/api/js?sensor=SENSOR_TRUE_OR_FALSE"></script>
 <script type="text/javascript" language="javascript"
 	src="librarylocator/librarylocator.nocache.js"></script>
-	
-	<script>
+
+<script>
 	function hideadmin(){
 	document.getElementById("admin").style.visibility="hidden";
 	}
@@ -110,38 +120,40 @@ var toggle = function() {
 			Your web browser must have JavaScript enabled in order for this
 			application to display correctly.</div>
 	</noscript>
-	
-	<header id="banner" style="z-index:0; position:relative;"> 
-	<nav><ul>
-		<li class="active"><a href="#">Map</a></li>
-		<li><a href="#">Login</a></li>
-		<li><a  id="admin" onclick="hideadmin()" href="#">Admin</a></li>
-	</ul></nav>
-	
- 
-</header><!-- /#banner -->
+
+	<header id="banner" style="z-index: 0; position: relative;">
+		<nav>
+			<ul>
+				<li class="active"><a href="#">Map</a></li>
+				<li><a href="#">Login</a></li>
+				<li><a id="admin" onclick="hideadmin()" href="#">Admin</a></li>
+			</ul>
+		</nav>
+
+
+	</header>
+	<!-- /#banner -->
 
 
 	<div id="container"
-
-		style="height: auto; width: 450px; background:#fff ; left: 10px; top: 0px ; z-index: 0;position:absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px;float:left;">
+		style="height: auto; width: 450px; background: #fff; left: 10px; top: 0px; z-index: 0; position: absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px; float: left;">
 		<div id="libraryLocator"></div>
 
 
 		<!-- /#extras -->
-	 	<footer id="contentinfo">
+		<footer id="contentinfo">
 			<address id="about" class="vcard body">
-				
-				<span class="bio" >Please double click the marker on the map for more info about the libraries
-					</span>
+
+				<span class="bio">Please double click the marker on the map
+					for more info about the libraries </span>
 
 			</address>
 
 
-		</footer> 
-				<input type='button'  value='hide/show' onclick="toggle();"></input>
-		
-		<div id="Header" ></div>
+		</footer>
+		<input type='button' value='hide/show' onclick="toggle();"></input>
+
+		<div id="Header"></div>
 		<!-- /#contentinfo -->
 		Copyright © Paopao.com
 
@@ -163,25 +175,37 @@ var toggle = function() {
 	<!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
 	<!--       </tr> -->
 	<!--     </table> -->
-	
 
-	<section id="extras"  style="z-index:0; position:absolute;float:bottom;   left:0px; top:500px; ">
-			<div class="social">
-				<h2>Share</h2>
-				<ul>
-					<li><a href="http://www.twitter.com" rel="me">Twitter</a></li>
-					<li><a onclick="facebook()" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F1-dot-ixxuul3.appspot.com%2F2012%2F12%2Fooooooooo%2F&t=xxxxxx" rel="me">Facebook</a></li>
-					<!-- 			<li><a href="http://www.google.com" rel="me">Google</a></li>
- -->
-				</ul>
-			</div>
-			<!-- /.social -->
-		</section>
-		
-		<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
+
+	<section id="extras"
+		style="z-index: 0; position: absolute; float: bottom; left: 0px; top: 500px;">
+		<div class="social" style="left: 100px;">
+			<h2>Share</h2>
+			<ul>
+				<li><a class="twitter-share-button"
+					href="https://twitter.com/share"> Tweet </a> <script
+						type="text/javascript">
+						window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];
+						if(d.getElementById(id)){return}js=d.createElement(s);
+						js.id=id;js.src="https://platform.twitter.com/widgets.js";
+						fjs.parentNode.insertBefore(js,fjs);
+						return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
+						</script></li>
+				<li><a class="fb-like" href="http://gacktc.appspot.com/"
+					data-layout="standard" data-action="like" data-show-faces="true"
+					data-share="true"> </a></li>
+			</ul>
+		</div>
+
+
+	</section>
+
+	<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
     <input type="submit" name="button1" value="Button 1" style="z-index=1; position:absolute;"/> -->
-		<div id="dialogboxAdmin" style="z-index: 5; padding: 10px;position: absolute; left:/*180*/280px;top:-10px;"></div>
-		<div id="login" style="z-index: 4; padding: 10px;position: absolute; left:/*180*/480px;top:-10px;"></div>
+	<div id="dialogboxAdmin"
+		style="z-index: 5; padding: 10px; position: absolute; left: /*180*/ 280px; top: -10px;"></div>
+	<div id="login"
+		style="z-index: 4; padding: 10px; position: absolute; left: /*180*/ 480px; top: -10px;"></div>
 
 
 </body>

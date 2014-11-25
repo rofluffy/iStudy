@@ -156,15 +156,15 @@ public class LibraryLocator implements EntryPoint {
 	static InfoWindowOptions infowindowOpts = InfoWindowOptions.create();
 
 
-	// Service classes
-	private final LibraryServiceAsync libraryService = GWT
-			.create(LibraryService.class);
-	private final FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
-
+	// Service classes	
+	private LibraryServiceAsync libraryService = GWT.create(LibraryService.class);
+	private FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
+	
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
 	private ArrayList<Library> favorites = new ArrayList<Library>(); // list of favorites REFACTOR to favorite tab?
+	private ArrayList<Library> clientFav = new ArrayList<Library>();
 	private ArrayList<Library> selectedFav = new ArrayList<Library>(); // favorite's selected list
 	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
 	
@@ -234,6 +234,8 @@ public class LibraryLocator implements EntryPoint {
 	    
 	    // load libraries anyway
 	    loadLibraries();
+	    // TODO load favorite when login
+	    //getFavoriteLb();
 	    
 	 // Check login status using login service.
  		LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -250,6 +252,7 @@ public class LibraryLocator implements EntryPoint {
  							// TODO deal with this later
  							
  							//loadLibraryLocator();
+ 							getFavoriteLb();
  							loadLogout();
  							
  						} else {
@@ -758,7 +761,7 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onSuccess(Void ignore) {
-				// TODO Auto-generated method stub
+				// display new lb when adding success
 				displayAdminLibrary(lib);
 			}
 		});
@@ -882,16 +885,10 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void onSuccess(Void ignore) {
-						// TODO Auto-generated method stub
-						Timer t = new Timer(){
-
-							@Override
-							public void run() {
-								System.out.println("add favorite success");
-							}
-							
-						};
-						t.schedule(3000);
+						// when the database adding is success
+						for(Library lb : selectedLb){
+							clientFav.add(lb);
+						}
 						
 					}
 					
@@ -974,7 +971,7 @@ public class LibraryLocator implements EntryPoint {
 		mainTab.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
-				// TODO Auto-generated method stub
+				// when the fav tab is clicked
 				if (event.getSelectedItem() == 1) {
 					System.out.println("favorite tab is selected");
 					removeFavLabel.setText("");
@@ -986,12 +983,23 @@ public class LibraryLocator implements EntryPoint {
 		removeFavorite.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				ArrayList<String> loid = new ArrayList<String>();
+				
 				for (Library lb : selectedFav){
 					loid.add(lb.getId());
 				}
+				// remove the library in clientFav	
+				for(int i=0; i<clientFav.size(); i++){
+					for(int j=0; j<selectedFav.size(); j++){
+						if(clientFav.get(i).equals(selectedFav.get(j))){
+							clientFav.remove(i);
+						}
+					}
+				}
+				
 				removeFav(loid);
+				System.out.println("client side fav:" + clientFav);
+				refleshFav();
 			}
 		});
 				
@@ -1008,30 +1016,19 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onSuccess(Void ignore) {
-				// TODO Auto-generated method stub
 				System.out.println("remove favorite success");
 				int removeNum = loid.size();
 				selectedFav.clear();
 				removeFavLabel.setText("You have removed " + removeNum
 						+ " favorites.");
-				refleshFav();
+				//refleshFav();
 			}
 		});
 	}
 	
 	private void refleshFav(){
 		cleanTable(favoriteTable);
-		Timer t = new Timer(){
-
-			@Override
-			public void run() {
-				getFavoriteLb();
-			}
-			
-		};
-		// delay 1 sec
-		t.schedule(1000);
-		//displayFavorites(favorites);
+		displayFavorites(clientFav);
 	}
 	 
 	 private void getFavoriteLb(){
@@ -1046,7 +1043,6 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onSuccess(final ArrayList<String> loid) {
-				 //TODO Auto-generated method stub
 				Timer t = new Timer(){
 
 					@Override
@@ -1059,13 +1055,16 @@ public class LibraryLocator implements EntryPoint {
 								}
 							}
 						}
-						System.out.println("get favorite success:" + favorites);
-						displayFavorites(favorites);
+						System.out.println("get favorite success: (num)" + favorites.size() + favorites);
+						clientFav = favorites;
+						System.out.println("client favorite success: (num)" + clientFav.size() + clientFav);
+						//displayFavorites(favorites);
+						//displayFavorites(clientFav);
 					}
 					
 				};
-				// delay 3 sec
-				t.schedule(3000);
+				// delay 2 sec
+				t.schedule(2000);
 			}
 			 
 		 });
@@ -1114,6 +1113,7 @@ public class LibraryLocator implements EntryPoint {
 		// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
 		// }
 	}
+	
 	private void checkAll(){
 		
 		checkallButton.addClickHandler(new ClickHandler() {
