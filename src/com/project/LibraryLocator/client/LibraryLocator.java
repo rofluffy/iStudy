@@ -971,6 +971,7 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void run() {
+						favCheckBox.clear();
 						favorites.clear();
 						for(String id : loid){
 							for(Library lb : libraries){
@@ -979,7 +980,7 @@ public class LibraryLocator implements EntryPoint {
 								}
 							}
 						}
-						System.out.println("get favorite success:" + favorites);
+						System.out.println("get favorite success:" + favorites + "favrite is size " +favorites.size());
 						displayFavorites(favorites);
 					}
 
@@ -1010,7 +1011,7 @@ public class LibraryLocator implements EntryPoint {
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
-				Window.alert("It is " + (checked ? "" : "not ") + "checked");
+				//Window.alert("It is " + (checked ? "" : "not ") + "checked");
 				if (checked == true) {
 					selectedFav.add(fav);
 					System.out.println("selectedFav: "+ selectedFav + "\n");
@@ -1018,6 +1019,7 @@ public class LibraryLocator implements EntryPoint {
 				} else {
 					selectedFav.remove(fav);
 					System.out.println("selectedFav: "+ selectedFav + "\n");
+					checkAllButtonFav.setText("Check all");
 					// Window.alert(selectedLb.toString());
 				}
 			}
@@ -1090,7 +1092,8 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private boolean isAllChecked(ArrayList<CheckBox> listOfCheckBox) {
-		for(CheckBox c: libCheckBox){
+		System.out.println("numebr of checkbox in list " +listOfCheckBox.size());
+		for(CheckBox c: listOfCheckBox){
 			if (c.getValue()== false){
 				return false;
 			}
