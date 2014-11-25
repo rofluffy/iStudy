@@ -95,7 +95,8 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel pagePanel = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-	private Button checkallButton = new Button("Check All"); // also able to use in favorite?
+
+	private Button checkAllButton = new Button("Check All"); 
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
 	private Button addFavoriteButton = new Button("Add Favorite");
 	private Button AdminLogin = new Button("Admin Access");
@@ -110,7 +111,7 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
 	//Buttons
 	private Button removeFavorite = new Button("Remove");
-	private Button checkallButtonfav = new Button("Check All"); // the one in favorite tab
+	private Button checkAllButtonFav = new Button("Check All"); // the one in favorite tab
 	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
 
 	// adminTab (testing atleast?), display all library and able to add new library
@@ -158,13 +159,12 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> favorites = new ArrayList<Library>(); // list of favorites REFACTOR to favorite tab?
 	private ArrayList<Library> selectedFav = new ArrayList<Library>(); // favorite's selected list
 	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
-
+	private ArrayList<CheckBox> favCheckBox = new ArrayList<CheckBox>();
 	int pageSize = 20;
-
 	private long start;
 	// private Label refleshLabel = new Label(); // not sure about this, do we
 	// need it? maybe for hyperlink part...
-	private ArrayList<CheckBox> favCheckBox;
+
 
 
 	/**
@@ -227,6 +227,8 @@ public class LibraryLocator implements EntryPoint {
 
 		// load libraries anyway
 		loadLibraries();
+		checkAll();
+		checkAllFav();
 
 		// Check login status using login service.
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -234,6 +236,7 @@ public class LibraryLocator implements EntryPoint {
 				new AsyncCallback<LoginInfo>() {
 			public void onFailure(Throwable error) {
 				//TODO Handle error
+
 
 			}
 
@@ -363,7 +366,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
 		buttonPanel.add(toMapButton);
-		buttonPanel.add(checkallButton);
+		buttonPanel.add(checkAllButton);
 
 		// TODO Assemble favorite tab
 		favoriteTab.add(favoriteTable);
@@ -378,7 +381,7 @@ public class LibraryLocator implements EntryPoint {
 		// TODO Assemble button panel (remove button?)
 		buttonPanelfav.add(removeFavorite);
 		buttonPanelfav.add(toMapButtonfav);
-		buttonPanelfav.add(checkallButtonfav);
+		buttonPanelfav.add(checkAllButtonFav);
 
 		// TODO Assemble main button panel
 		//mainButtonPanel.add(socail1);
@@ -681,6 +684,7 @@ public class LibraryLocator implements EntryPoint {
 	}*/
 
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
+
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
 		}
@@ -765,8 +769,10 @@ public class LibraryLocator implements EntryPoint {
 
 		searchButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				clearSelected();
+				clearCheckBoxList(libCheckBox);
+				setButtonText(checkAllButton, "Check All");
 				cleanTable(librariesFlexTable);
-				System.out.println("search selected lb:" + searchLb);
 				displaySearchLibrary(searchLb);
 				
 				boolean checked = (librariesFlexTable.getRowCount() > 2);
@@ -775,7 +781,6 @@ public class LibraryLocator implements EntryPoint {
 						+ (checked ? " libraries " : " library ")
 						+ "in this city.");
 				searchBox.setFocus(true);
-				checkAllSearch(checkallButton,selectedLb,searchLb, libCheckBox);
 			}
 
 		});
@@ -829,8 +834,6 @@ public class LibraryLocator implements EntryPoint {
 		TabFactory tf = new SearchTab();
 		librariesFlexTable.setWidget(row, 0, tf.nameHyprLink(lb));
 		librariesFlexTable.setText(row, 1, lb.getBranch());
-		checkallButton.setText("Check All");
-
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 		libCheckBox.add(selectButton);
@@ -839,7 +842,8 @@ public class LibraryLocator implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				//				Window.alert("It is " + (checked ? "" : "not ") + "checked");
-				checkallButton.setText("Check All");
+
+
 				if (checked == true) {
 					selectedLb.add(lb);
 					System.out.println(selectedLb + "\n");
@@ -848,6 +852,7 @@ public class LibraryLocator implements EntryPoint {
 					selectedLb.remove(lb);
 					System.out.println(selectedLb + "\n");
 					// Window.alert(selectedLb.toString());
+					setButtonText(checkAllButton, "Check All");
 				}
 			}
 		});
@@ -891,7 +896,7 @@ public class LibraryLocator implements EntryPoint {
 			public void onSelection(SelectionEvent<Integer> event) {
 				// TODO Auto-generated method stub
 				if (event.getSelectedItem() == 1) {
-					System.out.println("favorite tab is selected");
+					System.out.println("favourite tab is selected");
 					removeFavLabel.setText("");
 					refleshFav();
 				}
@@ -909,7 +914,6 @@ public class LibraryLocator implements EntryPoint {
 				removeFav(loid);
 			}
 		});
-		
 
 	}
 
@@ -927,7 +931,7 @@ public class LibraryLocator implements EntryPoint {
 				// TODO Auto-generated method stub
 				System.out.println("remove favorite success");
 				int removeNum = loid.size();
-				selectedFav.clear();
+				clearSelectedFav();
 				removeFavLabel.setText("You have removed " + removeNum
 						+ " favorites.");
 				refleshFav();
@@ -989,15 +993,12 @@ public class LibraryLocator implements EntryPoint {
 
 	private void displayFavorites(ArrayList<Library> lof){
 		System.out.println("display Favorites is running");
-		selectedLb.clear();
-		
 		for(Library lb : lof){
 			displayFavorite(lb);
 		}
 	}
 
 	private void displayFavorite(final Library fav) {
-		//checkAll(checkallButtonfav, selectedFav, selectedLb,favCheckBox);
 		int row = favoriteTable.getRowCount();
 		favoriteTable.setText(row, 0, fav.getName());
 		favoriteTable.setText(row, 1, fav.getBranch());
@@ -1029,84 +1030,92 @@ public class LibraryLocator implements EntryPoint {
 		int row = table.getRowCount();
 		for (int i = row - 1; i >= 1; i--) {
 			table.removeRow(i);
-			checkAllClean(selectedLb,libCheckBox);
 			
 		}
 		// while (librariesFlexTable.getRowCount() > 1) {
 		// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
 		// }
 	}
-	private void checkAllClean(ArrayList<Library> selected, ArrayList<CheckBox> CheckBox){
-		selected.clear();
-		CheckBox.clear();
-	}
-	private void changeButtonText(Button b, String text){
-		b.setText(text);
-	}
-	private void checkAllSearch(final Button b, final ArrayList<Library> selected, final ArrayList<Library> search, final ArrayList<CheckBox> CheckBox){
-		//checkallButton.addClickHandler(checkAllListenerSerach)
-		b.addClickHandler(new ClickHandler() {
+
+	private void checkAll(){
+
+		checkAllButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				boolean allChecked = true;
-				for(CheckBox c: CheckBox){
-					if (c.getValue()== false){
-						allChecked = false;
-					}
+				if (!isAllChecked(libCheckBox)){
+					checkAllItems(libCheckBox,checkAllButton);
+					addSelected(selectedLb, searchLb);
+				}else {
+					uncheckAllItems(libCheckBox,checkAllButton);
+					clearSelected();
 				}
-				if (!allChecked){
-
-					for(CheckBox c: CheckBox){
-						c.setValue(true);
-					}
-					selected.addAll(search);
-					changeButtonText(b,"Uncheck All");
-
-				}
-				if(allChecked){
-					for(CheckBox c: CheckBox){
-						c.setValue(false);
-					}
-					selected.clear();	
-					b.setText("Check All");
-
-				}
+				System.out.println("Check all ran");
 			}
 		});
 	}
-	class checkAllListenerSerch implements ClickHandler{
-		ArrayList<CheckBox> CheckBox= libCheckBox;
-		Button b = checkallButton;
-		ArrayList<Library> selected = selectedLb;
-		ArrayList<Library> search = searchLb;
+	private void checkAllFav(){
 
-
-		@Override
-		public void onClick(ClickEvent event) {
-			boolean allChecked = true;
-			for(CheckBox c: CheckBox){
-				if (c.getValue()== false){
-					allChecked = false;
+		checkAllButtonFav.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (!isAllChecked(favCheckBox)){
+					checkAllItems(favCheckBox,checkAllButtonFav);
+					addSelected(selectedFav, favorites);
+				}else {
+					uncheckAllItems(favCheckBox,checkAllButtonFav);
+					clearSelectedFav();
+					System.out.println("Unchecked all selected in fav");
 				}
-			}
-			if (!allChecked){
-
-				for(CheckBox c: CheckBox){
-					c.setValue(true);
-				}
-				selected.addAll(search);
-				changeButtonText(b,"Uncheck All");
+				System.out.println("Check all ran");
 
 			}
-			if(allChecked){
-				for(CheckBox c: CheckBox){
-					c.setValue(false);
-				}
-				selected.clear();	
-				b.setText("Check All");
-			
+		});
+	}
+
+	private void addSelected(ArrayList<Library> selected, ArrayList<Library> displayedLb) {
+		selected.addAll(displayedLb);
+		for(Library l: displayedLb){
+			System.out.println(l.getBranch()+ "is selected");
 		}
+	}
+
+	private void clearSelected() {
+		selectedLb.clear();
+	}
+
+	private void setButtonText(Button b,String s) {
+		b.setText(s);
+	}
+
+	private void clearCheckBoxList(ArrayList<CheckBox> listOfCheckBox) {
+		listOfCheckBox.clear();
+	}
+
+	private boolean isAllChecked(ArrayList<CheckBox> listOfCheckBox) {
+		for(CheckBox c: libCheckBox){
+			if (c.getValue()== false){
+				return false;
+			}
 		}
-		
+		return true;
 		
 	}
+
+	private void checkAllItems(ArrayList<CheckBox> listOfCheckBox, Button b) {
+		for(CheckBox c: listOfCheckBox){
+			c.setValue(true);
+			setButtonText(b, "Uncheck All");
+		}
+	}
+
+	private void uncheckAllItems(ArrayList<CheckBox> listOfCheckBox,Button b) {
+		for(CheckBox c: listOfCheckBox){
+			c.setValue(false);
+		}
+		setButtonText(b,"Check All");
+	}
+
+	private void clearSelectedFav() {
+		selectedFav.clear();
+	}
+		
+		
 }
