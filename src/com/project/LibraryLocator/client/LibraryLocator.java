@@ -112,7 +112,7 @@ public class LibraryLocator implements EntryPoint {
 	//Buttons
 	private Button removeFavorite = new Button("Remove");
 	private Button checkAllButtonFav = new Button("Check All"); // the one in favorite tab
-	private Button toMapButtonfav = new Button("To Map"); // the one in favorite tab
+	private Button toMapButtonFav = new Button("To Map"); // the one in favorite tab
 
 	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
@@ -380,7 +380,7 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Assemble button panel (remove button?)
 		buttonPanelfav.add(removeFavorite);
-		buttonPanelfav.add(toMapButtonfav);
+		buttonPanelfav.add(toMapButtonFav);
 		buttonPanelfav.add(checkAllButtonFav);
 
 		// TODO Assemble main button panel
@@ -1066,7 +1066,7 @@ public class LibraryLocator implements EntryPoint {
 					clearSelectedFav();
 					System.out.println("Unchecked all selected in fav");
 				}
-				System.out.println("Check all ran");
+				//System.out.println("Check all ran");
 
 			}
 		});
@@ -1118,7 +1118,6 @@ public class LibraryLocator implements EntryPoint {
 
 	private void clearSelectedFav() {
 		selectedFav.clear();
-	}
-		
+	}	
 		
 }
