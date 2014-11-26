@@ -57,14 +57,55 @@ background-attachment: fixed;  */
 
  
 /* the tab panel itself*/
+.scrollPanel{
+	text-align: center;
+	background-color:#fff;
+}
 .tabPanel{
 	text-align: center;
+	background-color: #093570;
+	
 }
 
 /* the main tab bottom part*/
 .mainTab{
 	width: 400px;
 /* 	margin:0px 0px 300px; */
+}
+
+.submit{
+	color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(66, 184, 221);
+}
+
+.submitt{
+	color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(66, 184, 221);
+}
+
+.orange{
+	color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(223, 117, 20);
+}
+
+.maroon{
+	color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(202, 60, 60);
+}
+
+.green{
+	color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	background: rgb(28, 184, 65);
 }
 
 /* .sendButton { */
@@ -109,14 +150,15 @@ background-attachment: fixed;  */
 	}
 	#banner h1 a:hover, #banner h1 a:active {
 		background: none;
-		color: #C74350;
+		color: #e8a007; /* #C74350; */
 		text-shadow: none;
 	}
  
 	#banner h1 strong {font-size: 0.36em; font-weight: normal;}
 	/* Main Nav */
 	#banner nav {
- 	background: #E7F3FF;
+ 	background: #093570;
+ 	   /* #E7F3FF; */
        /*  background: #F4E3E3;  */
  		font-size: 1.143em;
 		height: 40px;
@@ -142,7 +184,7 @@ background-attachment: fixed;  */
 	}
 	#banner nav a:hover, #banner nav a:active,
 	#banner nav .active a:link, #banner nav .active a:visited {
-		background: #C74451;
+		background: #e8a007;
 		color: #fff;
 		text-shadow: none !important;
 	}

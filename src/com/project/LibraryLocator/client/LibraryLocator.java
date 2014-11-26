@@ -101,13 +101,12 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-
 	private Button checkAllButton = new Button("Check All"); 
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
 	private Button addFavoriteButton = new Button("Add Favorite");
 //	private Button AdminLogin = new Button("Admin Access");
 	private AdminLogin adminlogin = new AdminLogin("Admin");
-	private Button adminSubmit = new Button("submit");
+	private Button adminSubmit = new Button("Login as admin");
 	private Button footerButton = new Button("testing");
 
 	// favoriteTab
@@ -209,6 +208,19 @@ public class LibraryLocator implements EntryPoint {
 		
 		mainAdminTab.getTabBar().setVisible(false);
 		
+		//button styling
+		searchButton.addStyleName("green");
+		checkAllButton.addStyleName("maroon");
+		toMapButton.addStyleName("orange");
+		addFavoriteButton.addStyleName("submit");
+//		private Button AdminLogin = new Button("Admin Access");
+		adminlogin .addStyleName("submit");
+		adminSubmit.addStyleName("submitt");
+		
+		removeFavorite.addStyleName("submit");
+		checkAllButtonFav.addStyleName("orange");
+		toMapButtonfav.addStyleName("maroon");
+		
 //		mainAdminTab.setHeight("300px");
 //		Element element = document.getElementById("admin");
 //		element.onclick = function() {
@@ -240,10 +252,10 @@ public class LibraryLocator implements EntryPoint {
 							System.out.println("database added");
 							adminLoginPanel.clear();
 							adminLoginPanel.add(adminlogoutButton);
-							adminlabel.setText("Login succeeded");
+							adminlabel.setText("");
 						}
 						else{
-							adminlabel.setText("Acess denied. Check your password.");
+							adminlabel.setText("Access denied");
 						}
 					}
 					
@@ -406,6 +418,9 @@ public class LibraryLocator implements EntryPoint {
 		// style
 		mainTab.getTabBar().addStyleName("tabPanel");
 		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
+		SearchPanel.addStyleName("scrollPanel");
+		FavPanel.addStyleName("scrollPanel");
+
 		SearchPanel.setHeight("300px");
 
 		// Assemble admin Tab
@@ -540,7 +555,7 @@ public class LibraryLocator implements EntryPoint {
 		//mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
-		RootPanel.get("dialogboxAdmin").add(createDialogBox());
+		RootPanel.get("dialogboxAdmin").add(mainAdminTab);
 		//RootPanel.get("Footer").add(mainButtonPanel);
 		RootPanel.get("libraryLocator").add(mainTab);
 
@@ -560,81 +575,32 @@ public class LibraryLocator implements EntryPoint {
 		});
 
 		
-//		toMapButtonfav.addClickHandler(new ClickHandler(){
-//			public void onClick(ClickEvent event){
-//				for (Library lb : favorites) {
-////					clearMarkers();
-////					addMarkers(lb);
-////					MapMarkers();
-//				}
-//				
-//			}
-//			
-//		});
+		toMapButtonfav.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				clearMarkers();
+				for (Library lb : selectedFav) {
+					addMarkers(lb);
+			}
+				MapMarkers();
+			}
+			
+		});
 		
 		//Listen for mouse events on the ToMap button
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
+				clearMarkers();
 				for (Library lb : selectedLb) {
-					clearMarkers();
 					addMarkers(lb);
-					MapMarkers();
-
-
 			}
-			}
-			
-			
-			//clear all the markers in the marker list
+				MapMarkers();
 
-			public void clearMarkers() {
-				for (Marker mker2 : markers){
-					//mker.setMap(null);
-					mker2 =  null;
-				}
-				markers.clear();
-				
-			}
-
-			// add each maker on the marker list
-			public void addMarkers(final Library lb) {			    
-			    MarkerOptions markerOpts = MarkerOptions.create();
-			    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
-			    markerOpts.setMap(map);
-			    markerOpts.setTitle("UBC");
-			    
-			    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
-
-
-				map.setZoom(10.0);
-			    
-			    final Marker marker = Marker.create(markerOpts);
-			    markers.add(marker);			    
-			    
-			    marker.addDblClickListener(new DblClickHandler() {
-
-		            @Override
-		            public void handle(MouseEvent event) {
-		            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
-
-		            	infowindowOpts.setContent("<header><strong>" + lb.getName() + "</strong></header>" + "<p> Brach Name:" + lb.getName() +"<br />"
-					    		+ "Address:" + lb.getAddress() +"<br />"  +"Postal Code:"+ lb.getPostalCode() +"<br />" 
-					    		+"Phone Number:" + lb.getPhone() +"</p>");
-					    infowindow.setOptions(infowindowOpts);
-		            	infowindow.open(map, marker);
-		            }
-		        });
 			}
 			
-			//map all the markers from selectedlb
-			public void MapMarkers() {
-				for (Marker mker : markers){
-					mker.setMap(map);
-				}
-				
-			}
 
+			
 		});
+		
 		
 		
 
@@ -1342,6 +1308,54 @@ public class LibraryLocator implements EntryPoint {
 	private void clearSelectedFav() {
 		selectedFav.clear();
 	}
+	
+	private void clearMarkers() {
+		for (Marker mker2 : markers){
+			//mker.setMap(null);
+			mker2 =  null;
+		}
+		markers.clear();
+		
+	}
+
+	// add each maker on the marker list
+	private void addMarkers(final Library lb) {			    
+	    MarkerOptions markerOpts = MarkerOptions.create();
+	    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
+	    markerOpts.setMap(map);
+	    markerOpts.setTitle("UBC");
+	    
+	    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
+
+
+		map.setZoom(10.0);
+	    
+	    final Marker marker = Marker.create(markerOpts);
+	    markers.add(marker);			    
+	    
+	    marker.addDblClickListener(new DblClickHandler() {
+
+            @Override
+            public void handle(MouseEvent event) {
+            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
+
+            	infowindowOpts.setContent("<header><strong>" + lb.getName() + "</strong></header>" + "<p> Brach Name:" + lb.getName() +"<br />"
+			    		+ "Address:" + lb.getAddress() +"<br />"  +"Postal Code:"+ lb.getPostalCode() +"<br />" 
+			    		+"Phone Number:" + lb.getPhone() +"</p>");
+			    infowindow.setOptions(infowindowOpts);
+            	infowindow.open(map, marker);
+            }
+        });
+	}
+	
+	//map all the markers from selectedlb
+	private void MapMarkers() {
+		for (Marker mker : markers){
+			mker.setMap(map);
+		}
+		
+	}
+
 		
 		
 }

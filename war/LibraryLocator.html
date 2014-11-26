@@ -96,17 +96,23 @@ var toggle = function() {
   function showcontainer(){
   document.getElementById("container").style.visibility="visible";
   document.getElementById("dialogboxAdmin").style.visibility="hidden";
+    document.getElementById("login").style.visibility="hidden";
+  
   
   }
   
   function showdialogboxAdmin(){
   document.getElementById("container").style.visibility="hidden";
   document.getElementById("dialogboxAdmin").style.visibility="visible";
+      document.getElementById("login").style.visibility="hidden";
+  
   }
   
   function showlogin(){
   document.getElementById("container").style.visibility="hidden";
   document.getElementById("dialogboxAdmin").style.visibility="hidden";
+      document.getElementById("login").style.visibility="visible";
+  
   }
   
 
@@ -150,14 +156,13 @@ var toggle = function() {
 
   
 <div id="container"
-		style="height: auto; width: 450px; background:#fff ;z-index:0; left: 0px; top: -10px; position:absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px;float:left;">
-		<div id="libraryLocator"></div>
-		<input type='button'  value='HIDE/SHOW' onclick="toggle();"></input>
-		<!-- 		Copyright © Paopao.com   -->
+		style="height: auto; width: 430px; background:#fff ;z-index:0; left: 10px; top: -10px; position:absolute;  margin: 60px auto 0; /* border:#000000 */; padding: 15px;float:left;">
+		<div id="libraryLocator" style="width:auto;"></div>
+		<input type='button'  class="pure-button pure-button-primary" value='HIDE/SHOW'  onclick="toggle();" style="background: #e8a007;"></input>
 
 	</div>
 	
-  		<div id="dialogboxAdmin" style="z-index: 3;  padding: 10px; position: absolute; left:0px;top:35px;visibility:hidden;"></div>
+  		<div id="dialogboxAdmin" style="z-index: 3;  padding: 15px; position: absolute; left:10px;top:45px; background:#fff;visibility:hidden;"></div>
   
 
 <div id="map"
@@ -181,34 +186,25 @@ var toggle = function() {
 
 
 
-	<section id="extras"
-		style="z-index: 0; position: absolute; float: bottom; left: 0px; top: 500px;">
-		<div class="social" style="left: 100px;">
-			<h2>Share</h2>
-			<ul>
-				<li><a class="twitter-share-button"
-					href="https://twitter.com/share"> Tweet </a> <script
+
+				<!-- <div class="twitter-share-button"
+					href="https://twitter.com/share" style="position:aboslute; left:600px;top:5px; z-index:3;"> Tweet </div> <script
 						type="text/javascript">
 						window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];
 						if(d.getElementById(id)){return}js=d.createElement(s);
 						js.id=id;js.src="https://platform.twitter.com/widgets.js";
 						fjs.parentNode.insertBefore(js,fjs);
 						return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
-						</script></li>
-				<li><a class="fb-like" href="http://gacktc.appspot.com/"
-					data-layout="standard" data-action="like" data-show-faces="true"
-					data-share="true"> </a></li>
-			</ul>
-		</div>
+						</script> -->
+				<div class="fb-like" href="http://gacktc.appspot.com/"
+					data-layout="standard" data-action="like"  style="position:absolute; left:700px; top:5px; z-index:2;"> </div>
 
-
-	</section>
 
 	<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
     <input type="submit" name="button1" value="Button 1" style="z-index=1; position:absolute;"/> -->
 	
 	<div id="login"
-		style="z-index: 4; padding: 10px; position: absolute; left: /*180*/ 480px; top: -10px;"></div>
+		style="z-index: 4; padding: 10px; position: absolute; background:#fff; left: /*180*/ 10px; top: 50px ;padding:15px;visibility:hidden;"></div>
 
 
 
