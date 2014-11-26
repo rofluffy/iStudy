@@ -98,6 +98,7 @@ public class FavoriteServiceImpl extends RemoteServiceServlet implements
 			}
 		} finally {
 			pm.close();
+			System.out.println("get favorite obj is finished");
 		}
 		return (ArrayList<String>) loid;
 	}
