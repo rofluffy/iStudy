@@ -74,9 +74,7 @@
 	src="librarylocator/librarylocator.nocache.js"></script>
 
 <script>
-	function hideadmin(){
-	document.getElementById("admin").style.visibility="hidden";
-	}
+
 
 var toggle = function() {
   var mydiv = document.getElementById('libraryLocator');
@@ -92,6 +90,30 @@ var toggle = function() {
   else
     mydiv2.style.display = 'block'
   }
+  
+  function showcontainer(){
+  document.getElementById("container").style.visibility="visible";
+  document.getElementById("dialogboxAdmin").style.visibility="hidden";
+    document.getElementById("login").style.visibility="hidden";
+  
+  
+  }
+  
+  function showdialogboxAdmin(){
+  document.getElementById("container").style.visibility="hidden";
+  document.getElementById("dialogboxAdmin").style.visibility="visible";
+      document.getElementById("login").style.visibility="hidden";
+  
+  }
+  
+  function showlogin(){
+  document.getElementById("container").style.visibility="hidden";
+  document.getElementById("dialogboxAdmin").style.visibility="hidden";
+      document.getElementById("login").style.visibility="visible";
+  
+  }
+  
+
 </script>
 
 </head>
@@ -121,44 +143,27 @@ var toggle = function() {
 			application to display correctly.</div>
 	</noscript>
 
-	<header id="banner" style="z-index: 0; position: relative;">
-		<nav>
-			<ul>
-				<li class="active"><a href="#">Map</a></li>
-				<li><a href="#">Login</a></li>
-				<li><a id="admin" onclick="hideadmin()" href="#">Admin</a></li>
-			</ul>
-		</nav>
+	
+	<header id="banner"  style="z-index:0; position:relative;"> 
+	<nav><ul  class="tabs" data-tab>
+		<li class="active"><a href="#mappanel" onclick="showcontainer()">Search</a></li>
+		<li ><a href="#loginpanel" onclick="showlogin()" >Login</a></li>
+		<li ><a href="#adminpanel" onclick="showdialogboxAdmin()" >Admin</a></li>
+	</ul></nav>
+	</header><!-- /#banner -->
 
-
-	</header>
-	<!-- /#banner -->
-
-
-	<div id="container"
-		style="height: auto; width: 450px; background: #fff; left: 10px; top: 0px; z-index: 0; position: absolute; outline: 5px solid #E7F3FF; margin: 60px auto 0; padding: 10px; float: left;">
-		<div id="libraryLocator"></div>
-
-
-		<!-- /#extras -->
-		<footer id="contentinfo">
-			<address id="about" class="vcard body">
-
-				<span class="bio">Please double click the marker on the map
-					for more info about the libraries </span>
-
-			</address>
-
-
-		</footer>
-		<input type='button' value='hide/show' onclick="toggle();"></input>
-
-		<div id="Header"></div>
-		<!-- /#contentinfo -->
-		Copyright © Paopao.com
+  
+<div id="container"
+		style="height: auto; width: 430px; background:#fff ;z-index:0; left: 10px; top: -10px; position:absolute;  margin: 60px auto 0; /* border:#000000 */; padding: 15px;float:left;">
+		<div id="libraryLocator" style="width:auto;"></div>
+		<input type='button' value='HIDE/SHOW'  onclick="toggle();"></input>
 
 	</div>
-	<div id="map"
+	
+  		<div id="dialogboxAdmin" style="z-index: 3;  padding: 15px; position: absolute; left:10px;top:45px; background:#fff;visibility:hidden;"></div>
+  
+
+<div id="map"
 		style="height: 100%; width: 100%; position: absolute; top: 0; bottom: 0px; left: 0; right: 0; z-index: -1;"></div>
 
 
@@ -175,37 +180,30 @@ var toggle = function() {
 	<!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
 	<!--       </tr> -->
 	<!--     </table> -->
+	
 
 
-	<section id="extras"
-		style="z-index: 0; position: absolute; float: bottom; left: 0px; top: 500px;">
-		<div class="social" style="left: 100px;">
-			<h2>Share</h2>
-			<ul>
-				<li><a class="twitter-share-button"
-					href="https://twitter.com/share"> Tweet </a> <script
+
+
+				<!-- <div class="twitter-share-button"
+					href="https://twitter.com/share" style="position:aboslute; left:600px;top:5px; z-index:3;"> Tweet </div> <script
 						type="text/javascript">
 						window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];
 						if(d.getElementById(id)){return}js=d.createElement(s);
 						js.id=id;js.src="https://platform.twitter.com/widgets.js";
 						fjs.parentNode.insertBefore(js,fjs);
 						return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
-						</script></li>
-				<li><a class="fb-like" href="http://gacktc.appspot.com/"
-					data-layout="standard" data-action="like" data-show-faces="true"
-					data-share="true"> </a></li>
-			</ul>
-		</div>
+						</script> -->
+				<div class="fb-like" href="http://gacktc.appspot.com/"
+					data-layout="standard" data-action="like"  style="position:absolute; left:700px; top:5px; z-index:2;"> </div>
 
-
-	</section>
 
 	<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
     <input type="submit" name="button1" value="Button 1" style="z-index=1; position:absolute;"/> -->
-	<div id="dialogboxAdmin"
-		style="z-index: 5; padding: 10px; position: absolute; left: /*180*/ 280px; top: -10px;"></div>
+	
 	<div id="login"
-		style="z-index: 4; padding: 10px; position: absolute; left: /*180*/ 480px; top: -10px;"></div>
+		style="z-index: 4; padding: 10px; position: absolute; background:#fff; left: /*180*/ 10px; top: 50px ;padding:15px;visibility:hidden;"></div>
+
 
 
 </body>
