@@ -540,6 +540,8 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.getCellFormatter().addStyleName(0, 0, "uiTableName");
 		librariesFlexTable.getCellFormatter().addStyleName(0, 1, "uiTableBranch");
 		librariesFlexTable.getCellFormatter().addStyleName(0, 2, "uiSelectButton");
+		
+		librariesFlexTable.setCellPadding(6);
 
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
@@ -1046,6 +1048,11 @@ public class LibraryLocator implements EntryPoint {
 		});
 
 		librariesFlexTable.setWidget(row, 2, selectButton);
+		
+		// add style
+		librariesFlexTable.getCellFormatter().addStyleName(row, 0, "uiTableName");
+		librariesFlexTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
+		librariesFlexTable.getCellFormatter().addStyleName(row, 2, "uiSelectButton");
 	}
 
 

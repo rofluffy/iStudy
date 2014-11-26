@@ -214,16 +214,17 @@ background-attachment: fixed;  */
 
 .uiTableName{
 	text-align: left;
-	width:50px;
+	width: 200px
 }
 
 .uiTableBranch{
-	text-align: right;
-    width:8px;
+	text-align: left;
+    width: 100px
 }
 
 .uiSelectButton{
 	text-align: center;
+	width: 10px;
 }
 
 
