@@ -82,7 +82,6 @@ public class LibraryLocator implements EntryPoint {
 	//private DockPanel mainPanel = new DockPanel();
 	private HorizontalPanel headerPanel = new HorizontalPanel();
 	private TabPanel mainTab = new TabPanel();
-
 	private TabPanel mainAdminTab = new TabPanel();
 
 	// searchTab
@@ -137,23 +136,25 @@ public class LibraryLocator implements EntryPoint {
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
 	private Button loadLibraryButton = new Button("Load Libraries");
-
+    private Button adminlogoutButton = new Button("logout");
 	// Buttons on mainPanel
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
 	private Button socail1 = new Button("Google+");
+	
+	private Label adminlabel = new Label();
 
 	// map
 	static GoogleMap map;
-	private static final int TILE_SIZE = 256;
-	private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
 	private InfoWindow infowindow = InfoWindow.create();
 	static InfoWindowOptions infowindowOpts = InfoWindowOptions.create();
+	private ArrayList<Marker> markers =  new ArrayList<Marker>();
 
 
 	// Service classes
 	private final LibraryServiceAsync libraryService = GWT
 			.create(LibraryService.class);
 	private final FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
+	private AdminServiceAsync AdminService = GWT.create(AdminService.class);
 
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
@@ -175,18 +176,85 @@ public class LibraryLocator implements EntryPoint {
 	public void onModuleLoad() {
 		adminLoginPanel.insert(inputAdmin,0);
 		adminLoginPanel.insert(adminSubmit,1);
+		adminLoginPanel.insert(adminlabel,2);
 		mainAdminTab.add(adminLoginPanel,"Admin Login");
-		ScrollPanel DataPanel = new ScrollPanel(adminTab);
+		
+		final ScrollPanel DataPanel = new ScrollPanel(adminTab);
 		DataPanel.setHeight("500px");
+		DataPanel.setVisible(false);
 		mainAdminTab.add(DataPanel,"Database");
 		mainAdminTab.selectTab(0);
+		
+		mainAdminTab.getTabBar().setVisible(false);
+		
 //		mainAdminTab.setHeight("300px");
 //		Element element = document.getElementById("admin");
 //		element.onclick = function() {
 //		  // onclick stuff
 //		}
 //	
-	
+		addAdmin();
+		adminSubmit.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				String entered = inputAdmin.getText();
+				inputAdmin.setText("");
+				AdminService.submitMatch(entered, new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable error) {
+						// TODO Handle error
+						System.out.println("submit fails");
+						error.printStackTrace();
+
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						// TODO Auto-generated method stub
+						System.out.println(result.toString());
+
+						if (result){
+							mainAdminTab.getTabBar().setVisible(true);
+							System.out.println("database added");
+							adminLoginPanel.clear();
+							adminLoginPanel.add(adminlogoutButton);
+							adminlabel.setText("Login succeeded");
+						}
+						else{
+							adminlabel.setText("Acess denied. Check your password.");
+						}
+					}
+					
+				});
+			}
+		});
+		
+		adminlogoutButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				AdminService.logout(new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable error) {
+						// TODO Handle error
+						System.out.println("logout fails");
+						error.printStackTrace();
+
+					}
+
+					@Override
+					public void onSuccess(Void ignore) {
+						// TODO Auto-generated method stub
+						adminLoginPanel.clear();
+						adminLoginPanel.insert(inputAdmin,0);
+						adminLoginPanel.insert(adminSubmit,1);
+						adminLoginPanel.insert(adminlabel,2);
+						mainAdminTab.getTabBar().setVisible(false);
+							
+						}
+										
+					}
+					
+				);
+			}
+		});
 	   
 	    
         //Element htmlEl = adminlogin.getElement(); 
@@ -247,6 +315,25 @@ public class LibraryLocator implements EntryPoint {
 
 	}
 
+	private void addAdmin() {
+		AdminService.addAdmin(new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+    	    	System.out.println("Adding admin fails");
+
+			}
+
+			@Override
+			public void onSuccess(Void ignore) {
+				// TODO Auto-generated method stub
+    	    	System.out.println("admin is added");
+
+			}
+		});
+		
+	}
+
 	private void loadLogin() {
 		// Assemble login panel.
 		if (loginInfo.isLoggedIn()) {
@@ -287,7 +374,9 @@ public class LibraryLocator implements EntryPoint {
 //		DOM.getElementById("admin").
 		ScrollPanel SearchPanel = new ScrollPanel(searchTab);
 		mainTab.add(SearchPanel, "Search"); // don't think the string after is very necessary, check later!
-		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
+		ScrollPanel FavPanel = new ScrollPanel(favoriteTab);
+		mainTab.add(FavPanel, "Favorite");
+		FavPanel.setHeight("300px");
 		//mainTab.add(new ScrollPanel(adminTab), "Admin");
 		
 		// initialize default display tab
@@ -401,30 +490,54 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 		
+		toMapButtonfav.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				for (Library lb : favorites) {
+//					clearMarkers();
+//					addMarkers(lb);
+//					MapMarkers();
+				}
+				
+			}
+			
+		});
+		
 		//Listen for mouse events on the ToMap button
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
 				for (Library lb : selectedLb) {
-					
-					mapSelectedLibrary(lb);
+					clearMarkers();
+					addMarkers(lb);
+					MapMarkers();
 				}
 				
 			}
+			
+			
+			//clear all the markers in the marker list
 
-			private void mapSelectedLibrary(final Library lb) {
+			public void clearMarkers() {
+				for (Marker mker2 : markers){
+					//mker.setMap(null);
+					mker2 =  null;
+				}
+				markers.clear();
 				
-			  
-//			    final InfoWindow infowindow = InfoWindow.create(infowindowOpts);
-			    
+			}
+
+			// add each maker on the marker list
+			public void addMarkers(final Library lb) {			    
 			    MarkerOptions markerOpts = MarkerOptions.create();
 			    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
 			    markerOpts.setMap(map);
 			    markerOpts.setTitle("UBC");
 			    
-			    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.2)); //center at whole BC
+			    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
 				map.setZoom(10.0);
 			    
 			    final Marker marker = Marker.create(markerOpts);
+			    markers.add(marker);			    
+			    
 			    marker.addDblClickListener(new DblClickHandler() {
 
 		            @Override
@@ -436,16 +549,24 @@ public class LibraryLocator implements EntryPoint {
 					    		+"Phone Number:" + lb.getPhone();
 		            	String[] parts = s.split(", ");
 		            	infowindowOpts.setContent(Arrays.toString(parts));
-//		            	infowindowOpts.setContent("Brach Name:" + lb.getName()
-//					    		+ "Address:" + lb.getAddress() +"Postal Code:"+ lb.getPostalCode()
-//					    		+"Phone Number:" + lb.getPhone());
-		            	//infowindowOpts.setContent(lb.getAllData());
 					    infowindow.setOptions(infowindowOpts);
 		            	infowindow.open(map, marker);
 		            }
 		        });
+			    
 			}
+			
+			//map all the markers from selectedlb
+			public void MapMarkers() {
+				for (Marker mker : markers){
+					mker.setMap(map);
+				}
+				
+			}
+
 		});
+		
+		
 
 		/*// TODO Listen for keyboard events in the (WHAT!)input box.
 		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
@@ -457,6 +578,9 @@ public class LibraryLocator implements EntryPoint {
 		});*/
 		
 		// TODO Listen for mouse event on the Load button
+		
+		
+			
 		loadLibraryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				System.out.println("load library is click");
@@ -702,22 +826,20 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
-//		selectButton.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				boolean checked = ((CheckBox) event.getSource()).getValue();
-//				Window.alert("It is " + (checked ? "" : "not ") + "checked");
-//				if (checked == true) {
-//					selectedLb.add(lb);
-		
-//					System.out.println(selectedLb + "\n");
-//					// Window.alert(selectedLb.toString());
-//				} else {
-//					selectedLb.remove(lb);
-//					System.out.println(selectedLb + "\n");
-//					// Window.alert(selectedLb.toString());
-//				}
-//			}
-//		});
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				if (checked == true) {
+					selectedLb.add(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				} else {
+					selectedLb.remove(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				}
+			}
+		});
 		allLibraries.setWidget(row, 9, selectButton);
 
 	}
@@ -1039,7 +1161,6 @@ public class LibraryLocator implements EntryPoint {
 		// }
 	}
 	private void checkAll(){
-		
 		checkallButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean allChecked = true;

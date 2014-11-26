@@ -38,6 +38,10 @@ a:hover, a:active {
 	text-shadow: 1px 1px 1px #333;
 }
 
+hidden{
+	visibility:hidden;
+}
+
 
 body {
 /* background-image: url(IMG_2867.JPG); You will specify your image path here.
@@ -51,17 +55,6 @@ background-attachment: fixed;  */
 
 }
 
-
-hidden{
-	/*  outline: 5px solid #E7F3FF;
-	background: #E7F3FF; 
-	margin: 10px; */
-/*   color: lightblue;
- */  /* height: 0px;
-  width: 0px; */
-   	display:none;
-   
-}
  
 /* the tab panel itself*/
 .tabPanel{

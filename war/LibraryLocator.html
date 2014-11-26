@@ -86,6 +86,7 @@ var toggle = function() {
   function showcontainer(){
   document.getElementById("container").style.visibility="visible";
   document.getElementById("dialogboxAdmin").style.visibility="hidden";
+  
   }
   
   function showdialogboxAdmin(){
@@ -131,8 +132,8 @@ var toggle = function() {
 	<header id="banner"  style="z-index:0; position:relative;"> 
 	<nav><ul  class="tabs" data-tab>
 		<li class="active"><a href="#mappanel" onclick="showcontainer()">Search</a></li>
-		<li><a href="#loginpanel" onclick="showlogin()">Login</a></li>
-		<li><a href="#adminpanel" onclick="showdialogboxAdmin()">Admin</a></li>
+		<li ><a href="#loginpanel" onclick="showlogin()" >Login</a></li>
+		<li ><a href="#adminpanel" onclick="showdialogboxAdmin()" >Admin</a></li>
 	</ul></nav>
 	</header><!-- /#banner -->
 
