@@ -204,6 +204,7 @@ public class LibraryLocator implements EntryPoint {
 		DataPanel.setHeight("500px");
 		DataPanel.setVisible(false);
 		mainAdminTab.add(DataPanel,"Database");
+
 		mainAdminTab.selectTab(0);
 		
 		mainAdminTab.getTabBar().setVisible(false);
@@ -272,6 +273,7 @@ public class LibraryLocator implements EntryPoint {
 						System.out.println("logout fails");
 						error.printStackTrace();
 
+
 					}
 
 					@Override
@@ -302,6 +304,7 @@ public class LibraryLocator implements EntryPoint {
 	    	    if (event.getSelectedItem() == 1) {
 	    	    	System.out.println("admin tab is selected");
 	    	    	//displayAdminLibrary(libraries);
+	    	    	selectedLb.clear();
 	    	    	subListLb = createSub(libraries);
 	    	    	displayAdminLibrary(subListLb);
 	    	    	System.out.println("print sublist:" + subListLb);
@@ -826,7 +829,7 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
-		/*		selectButton.addClickHandler(new ClickHandler() {
+		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				Window.alert("It is " + (checked ? "" : "not ") + "checked");
@@ -838,7 +841,7 @@ public class LibraryLocator implements EntryPoint {
 					System.out.println(selectedLb + "\n");
 				}
 			}
-		});*/
+		});
 
 		allLibraries.setWidget(row, 9, selectButton);
 
@@ -979,8 +982,9 @@ public class LibraryLocator implements EntryPoint {
 					public void onFailure(Throwable error) {
 						// TODO Handle error
 						System.out.println("add favorite fails");
-						Window.alert("Please Log in to use favorite function");
-						isFavWorking = false;
+//						Window.alert("Please Log in to use favorite function");
+//						isFavWorking = false;
+						handleError(error);
 
 					}
 
@@ -1372,6 +1376,14 @@ public class LibraryLocator implements EntryPoint {
 	
 		l.addDomHandler(handler, ClickEvent.getType());
 		return l;
+	}
+	
+	
+	void handleError(Throwable error) {
+		Window.alert(error.getMessage());
+		if (error instanceof NotLoggedInException) {
+			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
+		}
 	}
 
 		
