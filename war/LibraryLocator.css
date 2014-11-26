@@ -199,10 +199,35 @@ background-attachment: fixed;  */
 		-webkit-border-bottom-left-radius: 5px;
 	}
 	
+/* ==========tables============ */
+.uiTableHeader {
+	background-color:#093570;
+	color: white;
+	font-style: Verdana;
+}
+
+.uiTable{
+	border: 1px solid silver;
+	padding: 2px;
+	margin-bottom: 6px;
+}
+
+.uiTableName{
+	text-align: left;
+	width:50px;
+}
+
+.uiTableBranch{
+	text-align: right;
+    width:8px;
+}
+
+.uiSelectButton{
+	text-align: center;
+}
 
 
-
-     Map
+/*     Map
 ****************/
 
 #map {

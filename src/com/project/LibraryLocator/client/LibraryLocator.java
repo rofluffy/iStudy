@@ -534,6 +534,12 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.setText(0, 0, "Library");
 		librariesFlexTable.setText(0, 1, "Branch");
 		librariesFlexTable.setText(0, 2, "Select");
+		// add style
+		librariesFlexTable.getRowFormatter().addStyleName(0, "uiTableHeader");
+		librariesFlexTable.addStyleName("uiTable");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 0, "uiTableName");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 1, "uiTableBranch");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 2, "uiSelectButton");
 
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
@@ -1382,10 +1388,10 @@ public class LibraryLocator implements EntryPoint {
 	
 	
 	void handleError(Throwable error) {
-		Window.alert(error.getMessage());
 		if (error instanceof NotLoggedInException) {
 			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
 		}
+		Window.alert(error.getMessage());
 	}
 
 		
