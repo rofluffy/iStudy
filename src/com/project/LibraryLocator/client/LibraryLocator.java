@@ -176,7 +176,7 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
 	private ArrayList<Library> favorites = new ArrayList<Library>(); // list of favorites REFACTOR to favorite tab?
-	private ArrayList<Library> clientFav = new ArrayList<Library>();
+	private Set<Library> clientFav = new HashSet<Library>();
 	private ArrayList<Library> selectedFav = new ArrayList<Library>(); // favorite's selected list
 	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
 	private ArrayList<CheckBox> favCheckBox = new ArrayList<CheckBox>();
@@ -204,7 +204,6 @@ public class LibraryLocator implements EntryPoint {
 		DataPanel.setHeight("500px");
 		DataPanel.setVisible(false);
 		mainAdminTab.add(DataPanel,"Database");
-
 		mainAdminTab.selectTab(0);
 		
 		mainAdminTab.getTabBar().setVisible(false);
@@ -304,7 +303,6 @@ public class LibraryLocator implements EntryPoint {
 	    	    if (event.getSelectedItem() == 1) {
 	    	    	System.out.println("admin tab is selected");
 	    	    	//displayAdminLibrary(libraries);
-	    	    	selectedLb.clear();
 	    	    	subListLb = createSub(libraries);
 	    	    	displayAdminLibrary(subListLb);
 	    	    	System.out.println("print sublist:" + subListLb);
@@ -832,7 +830,7 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
-		selectButton.addClickHandler(new ClickHandler() {
+		/*		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				Window.alert("It is " + (checked ? "" : "not ") + "checked");
@@ -844,7 +842,7 @@ public class LibraryLocator implements EntryPoint {
 					System.out.println(selectedLb + "\n");
 				}
 			}
-		});
+		});*/
 
 		allLibraries.setWidget(row, 9, selectButton);
 
@@ -985,9 +983,8 @@ public class LibraryLocator implements EntryPoint {
 					public void onFailure(Throwable error) {
 						// TODO Handle error
 						System.out.println("add favorite fails");
-//						Window.alert("Please Log in to use favorite function");
-//						isFavWorking = false;
-						handleError(error);
+						Window.alert("Please Log in to use favorite function");
+						isFavWorking = false;
 
 					}
 
@@ -1105,14 +1102,14 @@ public class LibraryLocator implements EntryPoint {
 					loid.add(lb.getId());
 				}
 				// remove the library in clientFav	
-				for(int i=0; i<clientFav.size(); i++){
-					for(int j=0; j<selectedFav.size(); j++){
-						if(clientFav.get(i).equals(selectedFav.get(j))){
-							clientFav.remove(i);
-						}
-					}
-				}
-				
+//				for(int i=0; i<clientFav.size(); i++){
+//					for(int j=0; j<selectedFav.size(); j++){
+//						if(clientFav.get(i).equals(selectedFav.get(j))){
+//							clientFav.remove(i);
+//						}
+//					}
+//				}
+				clientFav.removeAll(selectedFav);
 				removeFav(loid);
 				System.out.println("client side fav:" + clientFav);
 				refleshFav();
@@ -1143,6 +1140,7 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void refleshFav(){
+		checkAllButtonFav.setText("Check All");
 		cleanTable(favoriteTable);
 		displayFavorites(clientFav);
 
@@ -1174,7 +1172,7 @@ public class LibraryLocator implements EntryPoint {
 							}
 						}
 						System.out.println("get favorite success: (num)" + favorites.size() + favorites);
-						clientFav = favorites;
+						clientFav.addAll(favorites);
 						System.out.println("client favorite success: (num)" + clientFav.size() + clientFav);
 						//displayFavorites(favorites);
 						//displayFavorites(clientFav);
@@ -1189,12 +1187,12 @@ public class LibraryLocator implements EntryPoint {
 		});
 	}
 
-	private void displayFavorites(ArrayList<Library> lof){
+	private void displayFavorites(Set<Library> clientFav2){
 		System.out.println("display Favorites is running");
 		if(!isFavWorking){
 			Window.alert("Please log in to use favorite funtion");
 		}
-		for(Library lb : lof){
+		for(Library lb : clientFav2){
 			displayFavorite(lb);
 		}
 	}
@@ -1258,7 +1256,7 @@ public class LibraryLocator implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (!isAllChecked(favCheckBox)){
 					checkAllItems(favCheckBox,checkAllButtonFav);
-					addSelected(selectedFav, favorites);
+					addSelected(selectedFav, clientFav);
 				}else {
 					uncheckAllItems(favCheckBox,checkAllButtonFav);
 					clearSelectedFav();
@@ -1276,6 +1274,13 @@ public class LibraryLocator implements EntryPoint {
 			System.out.println(l.getBranch()+ "is selected");
 		}
 	}
+	private void addSelected(ArrayList<Library> selected, Set<Library> displayedLb) {
+		selected.addAll(displayedLb);
+		for(Library l: displayedLb){
+			System.out.println(l.getBranch()+ "is selected");
+		}
+	}
+
 
 	private void clearSelected() {
 		selectedLb.clear();
@@ -1377,14 +1382,6 @@ public class LibraryLocator implements EntryPoint {
 	
 		l.addDomHandler(handler, ClickEvent.getType());
 		return l;
-	}
-	
-	
-	void handleError(Throwable error) {
-		Window.alert(error.getMessage());
-		if (error instanceof NotLoggedInException) {
-			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
-		}
 	}
 
 		
