@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jdo.Query;
+import javax.swing.text.html.HTML;
 
 import com.project.LibraryLocator.shared.FieldVerifier;
 import com.google.appengine.api.users.User;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -45,6 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.maps.gwt.client.ControlPosition;
 import com.google.maps.gwt.client.GoogleMap;
@@ -85,7 +88,6 @@ public class LibraryLocator implements EntryPoint {
 	//private DockPanel mainPanel = new DockPanel();
 	private HorizontalPanel headerPanel = new HorizontalPanel();
 	private TabPanel mainTab = new TabPanel();
-
 	private TabPanel mainAdminTab = new TabPanel();
 
 	// searchTab
@@ -99,12 +101,12 @@ public class LibraryLocator implements EntryPoint {
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
 	// Buttons (for search)
 	private Button searchButton = new Button("Search");
-
 	private Button checkAllButton = new Button("Check All"); 
 	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
 	private Button addFavoriteButton = new Button("Add Favorite");
-	private Button AdminLogin = new Button("Admin Access");
-	private Button adminSubmit = new Button("submit");
+//	private Button AdminLogin = new Button("Admin Access");
+	private AdminLogin adminlogin = new AdminLogin("Admin");
+	private Button adminSubmit = new Button("Login as admin");
 	private Button footerButton = new Button("testing");
 
 	// favoriteTab
@@ -141,6 +143,9 @@ public class LibraryLocator implements EntryPoint {
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
 	private Button loadLibraryButton = new Button("Load Libraries");
+
+    private Button adminlogoutButton = new Button("logout");
+
 	private int pageIndex = 0;
 	private Button prev = new Button("<<<");
 	private Button next = new Button(">>>");
@@ -149,19 +154,24 @@ public class LibraryLocator implements EntryPoint {
 	// Buttons on mainPanel
 	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
 	private Button socail1 = new Button("Google+");
+	
+	private Label adminlabel = new Label();
 
 	// map
 	static GoogleMap map;
-	private static final int TILE_SIZE = 256;
-	private static final LatLng UBC = LatLng.create(41.850033, -87.6500523);
 	private InfoWindow infowindow = InfoWindow.create();
 	static InfoWindowOptions infowindowOpts = InfoWindowOptions.create();
+	private ArrayList<Marker> markers =  new ArrayList<Marker>();
 
 
+
+	// Admin classes
+    private LibraryServiceAsync libraryService = GWT.create(LibraryService.class);
+    private FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
+	private AdminServiceAsync AdminService = GWT.create(AdminService.class);
 	// Service classes	
-	private LibraryServiceAsync libraryService = GWT.create(LibraryService.class);
-//	private FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
-	private FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
+
+
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
@@ -187,43 +197,107 @@ public class LibraryLocator implements EntryPoint {
 	public void onModuleLoad() {
 		adminLoginPanel.insert(inputAdmin,0);
 		adminLoginPanel.insert(adminSubmit,1);
+		adminLoginPanel.insert(adminlabel,2);
 		mainAdminTab.add(adminLoginPanel,"Admin Login");
-		ScrollPanel DataPanel = new ScrollPanel(adminTab);
+		
+		final ScrollPanel DataPanel = new ScrollPanel(adminTab);
 		DataPanel.setHeight("500px");
-		DataPanel.setWidth("1100px");
+		DataPanel.setVisible(false);
 		mainAdminTab.add(DataPanel,"Database");
-		mainAdminTab.selectTab(0);	
-		//create a new dialogBox for admin
-		final AdminDialog dialogBox = createDialogBox();
-	    dialogBox.setGlassEnabled(true);
-	    dialogBox.setAnimationEnabled(true);
-	    //mainAdminTab.getTabBar().setVisible(false);
 
-	    // Create a button to show the dialog Box
-	    AdminLogin.addClickHandler(new ClickHandler() {
-	          public void onClick(ClickEvent sender) {
-	            dialogBox.isAutoHideEnabled();
-	            dialogBox.isGlassEnabled();
-	            dialogBox.center();
-	            dialogBox.show();
-	            //dialogBox.isAutoHideEnabled(); no difference
-	          dialogBox.setAutoHideEnabled(true);
-	          dialogBox.setAnimationEnabled(true);
-	          dialogBox.setGlassEnabled(true);
-	         
-	          }
-	        });
-	    headerPanel.add(AdminLogin);
+		mainAdminTab.selectTab(0);
+		
+		mainAdminTab.getTabBar().setVisible(false);
+		
+		//button styling
+		searchButton.addStyleName("green");
+		checkAllButton.addStyleName("maroon");
+		toMapButton.addStyleName("orange");
+		addFavoriteButton.addStyleName("submit");
+//		private Button AdminLogin = new Button("Admin Access");
+		adminlogin .addStyleName("submit");
+		adminSubmit.addStyleName("submitt");
+		
+		removeFavorite.addStyleName("submit");
+		checkAllButtonFav.addStyleName("orange");
+		toMapButtonFav.addStyleName("maroon");
+		
+//		mainAdminTab.setHeight("300px");
+//		Element element = document.getElementById("admin");
+//		element.onclick = function() {
+//		  // onclick stuff
+//		}
+//	
+		addAdmin();
+		adminSubmit.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				String entered = inputAdmin.getText();
+				inputAdmin.setText("");
+				AdminService.submitMatch(entered, new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable error) {
+						// TODO Handle error
+						System.out.println("submit fails");
+						error.printStackTrace();
 
-	    //DOM.getElementById("admin").appendChild(headerPanel);
+
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						// TODO Auto-generated method stub
+						System.out.println(result.toString());
+
+						if (result){
+							mainAdminTab.getTabBar().setVisible(true);
+							System.out.println("database added");
+							adminLoginPanel.clear();
+							adminLoginPanel.add(adminlogoutButton);
+							adminlabel.setText("");
+						}
+						else{
+							adminlabel.setText("Access denied");
+						}
+					}
+					
+				});
+			}
+		});
+		
+		adminlogoutButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				AdminService.logout(new AsyncCallback<Void>() {
+					@Override
+					public void onFailure(Throwable error) {
+						// TODO Handle error
+						System.out.println("logout fails");
+						error.printStackTrace();
+
+
+					}
+
+					@Override
+					public void onSuccess(Void ignore) {
+						// TODO Auto-generated method stub
+						adminLoginPanel.clear();
+						adminLoginPanel.insert(inputAdmin,0);
+						adminLoginPanel.insert(adminSubmit,1);
+						adminLoginPanel.insert(adminlabel,2);
+						mainAdminTab.getTabBar().setVisible(false);
+							
+						}
+										
+					}
+					
+				);
+			}
+		});
+	   
 	    
-	    //mainButtonPanel.add(footerButton);
-	    
+        //Element htmlEl = adminlogin.getElement(); 
+        adminlogin.addStyleName("adminsubmit");
+        //adminlogin.setVisible(false);
 
-	    //headerPanel.add(loadLibraryButton);
-	    //loadLibraryButton.addStyleName("adminsubmit");
-
-	    AdminLogin.addStyleName("adminsubmit");
 	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
 	    	@Override
 	    	public void onSelection(SelectionEvent<Integer> event) {
@@ -271,6 +345,25 @@ public class LibraryLocator implements EntryPoint {
  				});							
 
 
+	}
+
+	private void addAdmin() {
+		AdminService.addAdmin(new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				// TODO Auto-generated method stub
+    	    	System.out.println("Adding admin fails");
+
+			}
+
+			@Override
+			public void onSuccess(Void ignore) {
+				// TODO Auto-generated method stub
+    	    	System.out.println("admin is added");
+
+			}
+		});
+		
 	}
 
 	private void loadLogin() {
@@ -321,13 +414,18 @@ public class LibraryLocator implements EntryPoint {
 		//		DOM.getElementById("admin").
 		ScrollPanel SearchPanel = new ScrollPanel(searchTab);
 		mainTab.add(SearchPanel, "Search"); // don't think the string after is very necessary, check later!
-		mainTab.add(new ScrollPanel(favoriteTab), "Favorite");
+		ScrollPanel FavPanel = new ScrollPanel(favoriteTab);
+		mainTab.add(FavPanel, "Favorite");
+		FavPanel.setHeight("300px");
 		//mainTab.add(new ScrollPanel(adminTab), "Admin");
 		// initialize default display tab
 		mainTab.selectTab(0); // 2 is the admin one
 		// style
 		mainTab.getTabBar().addStyleName("tabPanel");
 		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
+		SearchPanel.addStyleName("scrollPanel");
+		FavPanel.addStyleName("scrollPanel");
+
 		SearchPanel.setHeight("300px");
 
 		// Assemble admin Tab
@@ -462,7 +560,7 @@ public class LibraryLocator implements EntryPoint {
 		//mainButtonPanel.add(AdminLogin);
 
 		// TODO Associate the Main panel with the HTML host page.
-		RootPanel.get("dialogboxAdmin").add(headerPanel);
+		RootPanel.get("dialogboxAdmin").add(mainAdminTab);
 		//RootPanel.get("Footer").add(mainButtonPanel);
 		RootPanel.get("libraryLocator").add(mainTab);
 
@@ -481,44 +579,35 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 
+		
+		toMapButtonFav.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event){
+				clearMarkers();
+				for (Library lb : selectedFav) {
+					addMarkers(lb);
+			}
+				MapMarkers();
+			}
+			
+		});
+		
+		//Listen for mouse events on the ToMap button
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
+				clearMarkers();
 				for (Library lb : selectedLb) {
-					mapSelectedLibrary(lb);				
-
-				}
+					addMarkers(lb);
+			}
+				MapMarkers();
 
 			}
+			
 
-			private void mapSelectedLibrary(final Library lb) {
-
-
-				//			    final InfoWindow infowindow = InfoWindow.create(infowindowOpts);
-
-				MarkerOptions markerOpts = MarkerOptions.create();
-				markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
-				markerOpts.setMap(map);
-				markerOpts.setTitle("UBC");
-
-				map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.2)); //center at whole BC
-				map.setZoom(10.0);
-			    
-			    final Marker marker = Marker.create(markerOpts);
-			    marker.addDblClickListener(new DblClickHandler() {
-
-		            @Override
-		            public void handle(MouseEvent event) {
-		            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
-		            	infowindowOpts.setContent("<header><strong>" + lb.getName() + "</strong></header>" + "<p> Brach Name:" + lb.getName() +"<br />"
-					    		+ "Address:" + lb.getAddress() +"<br />"  +"Postal Code:"+ lb.getPostalCode() +"<br />" 
-					    		+"Phone Number:" + lb.getPhone() +"</p>");
-					    infowindow.setOptions(infowindowOpts);
-		            	infowindow.open(map, marker);
-		            }
-		        });
-
-			}
+			
 		});
+		
+		
+		
 
 		/*// TODO Listen for keyboard events in the (WHAT!)input box.
 		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
@@ -530,6 +619,9 @@ public class LibraryLocator implements EntryPoint {
 		});*/
 
 		// TODO Listen for mouse event on the Load button
+		
+		
+			
 		loadLibraryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				System.out.println("load library is click");
@@ -802,22 +894,23 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
-		//		selectButton.addClickHandler(new ClickHandler() {
-		//			public void onClick(ClickEvent event) {
-		//				boolean checked = ((CheckBox) event.getSource()).getValue();
-		//				Window.alert("It is " + (checked ? "" : "not ") + "checked");
-		//				if (checked == true) {
-		//					selectedLb.add(lb);
 
-		//					System.out.println(selectedLb + "\n");
-		//					// Window.alert(selectedLb.toString());
-		//				} else {
-		//					selectedLb.remove(lb);
-		//					System.out.println(selectedLb + "\n");
-		//					// Window.alert(selectedLb.toString());
-		//				}
-		//			}
-		//		});
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				if (checked == true) {
+					selectedLb.add(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				} else {
+					selectedLb.remove(lb);
+					System.out.println(selectedLb + "\n");
+					// Window.alert(selectedLb.toString());
+				}
+			}
+		});
+
+	
 		allLibraries.setWidget(row, 9, selectButton);
 
 	}
@@ -952,28 +1045,38 @@ public class LibraryLocator implements EntryPoint {
 
 
 	//dialogbox for AdminTab
-	public AdminDialog createDialogBox() {
-		// Create a dialog box and set the caption text
-		final AdminDialog dialogBox = new AdminDialog();
+	 public AdminDialog createDialogBox() {
+		    // Create a dialog box and set the caption text
+		    final AdminDialog dialogBox = new AdminDialog();
 
-		// Create a table to layout the content
-		VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.setSpacing(4);
-		dialogBox.setWidget(dialogContents);
+		    // Create a table to layout the content
+		    VerticalPanel dialogContents = new VerticalPanel();
+		    dialogContents.setSpacing(4);
+		    dialogBox.setWidget(dialogContents);
+		    
+		    // Add a close button at the bottom of the dialog
+//		    Button closeButton = new Button(
+//		        "close", new ClickHandler() {
+//		          public void onClick(ClickEvent event) {
+//		            dialogBox.hide();
+//		          }
+//		        });
+		    dialogContents.add(mainAdminTab);
+		    //dialogContents.add(closeButton); don't need a close button now
+		    
+		    dialogBox.setGlassEnabled(true);
+		    dialogBox.setAnimationEnabled(true);
+		    dialogBox.isAutoHideEnabled();
+	        dialogBox.isGlassEnabled();
+	        dialogBox.center();
+	        //dialogBox.isAutoHideEnabled(); no difference
+	      dialogBox.setAutoHideEnabled(true);
+	      dialogBox.setAnimationEnabled(true);
+	      dialogBox.setGlassEnabled(true);
+	      return dialogBox;
+	      
+	 }
 
-		// Add a close button at the bottom of the dialog
-		Button closeButton = new Button(
-				"close", new ClickHandler() {
-					public void onClick(ClickEvent event) {
-						dialogBox.hide();
-					}
-				});
-		dialogContents.add(mainAdminTab);
-		dialogContents.add(closeButton);
-
-		// Return the dialog box
-		return dialogBox;
-	}
 
 	/**
 	 * (favorite) Add Library to FlexTable. Executed when the user opens the
@@ -1137,8 +1240,8 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void checkAll(){
-
 		checkAllButton.addClickHandler(new ClickHandler() {
+
 			public void onClick(ClickEvent event) {
 				if (!isAllChecked(libCheckBox)){
 					checkAllItems(libCheckBox,checkAllButton);
@@ -1213,6 +1316,58 @@ public class LibraryLocator implements EntryPoint {
 	private void clearSelectedFav() {
 		selectedFav.clear();
 	}
+
+	
+	private void clearMarkers() {
+		for (Marker mker2 : markers){
+			//mker.setMap(null);
+			mker2 =  null;
+			System.out.println("marker clear");
+
+		}
+		markers.clear();
+		
+	}
+
+	// add each maker on the marker list
+	private void addMarkers(final Library lb) {			    
+	    MarkerOptions markerOpts = MarkerOptions.create();
+	    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
+	    markerOpts.setMap(map);
+	    markerOpts.setTitle("UBC");
+	    
+	   map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
+
+		map.setZoom(10.0);
+	    
+	    final Marker marker = Marker.create(markerOpts);
+	    markers.add(marker);			    
+	    
+	    marker.addDblClickListener(new DblClickHandler() {
+
+            @Override
+            public void handle(MouseEvent event) {
+            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
+
+            	infowindowOpts.setContent("<header><strong>" + lb.getName() + "</strong></header>" + "<p> Brach Name:" + lb.getName() +"<br />"
+			    		+ "Address:" + lb.getAddress() +"<br />"  +"Postal Code:"+ lb.getPostalCode() +"<br />" 
+			    		+"Phone Number:" + lb.getPhone() +"</p>");
+			    infowindow.setOptions(infowindowOpts);
+            	infowindow.open(map, marker);
+            }
+        });
+	}
+	
+	//map all the markers from a list
+	private void MapMarkers() {
+		for (Marker mker : markers){
+			System.out.println("mapping markers");
+			mker.setMap(map);
+		}
+		
+	}
+
+
 	Hyperlink nameHyprLink(final Library lb){
 		final Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
 		ClickHandler handler = new ClickHandler() {

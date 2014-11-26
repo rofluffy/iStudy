@@ -179,7 +179,7 @@ public class SearchTab extends TabFactory {
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
 				for (Library lb : selectedLb) {
-					mapSelectedLibrary(lb);	
+//					mapSelectedLibrary(lb);	
 				}
 				
 			}
@@ -188,43 +188,43 @@ public class SearchTab extends TabFactory {
 	}
 	
 	// TODO extract the buttons!!!!!!
-	private void mapSelectedLibrary(final Library lb) {
-		
-		  
-//	    final InfoWindow infowindow = InfoWindow.create(infowindowOpts);
-	    final GoogleMap map = LibraryLocator.map;
-	    final InfoWindowOptions infowindowOpts = LibraryLocator.infowindowOpts;
-	    final InfoWindow infowindow = InfoWindow.create();
-		
-	    MarkerOptions markerOpts = MarkerOptions.create();
-	    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
-	    markerOpts.setMap(map);
-	    markerOpts.setTitle("UBC");
-	    
-	    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.2)); //center at whole BC
-		map.setZoom(10.0);
-	    
-	    final Marker marker = Marker.create(markerOpts);
-	    marker.addDblClickListener(new DblClickHandler() {
-
-            @Override
-            public void handle(MouseEvent event) {
-            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
-            	String s = "Brach Name:" + lb.getName()+", "
-			    		+ "Address:"+ lb.getAddress()+ ", "+"Postal Code:"+
-            			lb.getPostalCode()+", "
-			    		+"Phone Number:" + lb.getPhone();
-            	String[] parts = s.split(", ");
-            	infowindowOpts.setContent(Arrays.toString(parts));
-//            	infowindowOpts.setContent("Brach Name:" + lb.getName()
-//			    		+ "Address:" + lb.getAddress() +"Postal Code:"+ lb.getPostalCode()
-//			    		+"Phone Number:" + lb.getPhone());
-            	//infowindowOpts.setContent(lb.getAllData());
-			    infowindow.setOptions(infowindowOpts);
-            	infowindow.open(map, marker);
-            }
-        });
-	}
+//	private void mapSelectedLibrary(final Library lb) {
+//		
+//		  
+////	    final InfoWindow infowindow = InfoWindow.create(infowindowOpts);
+//	    final GoogleMap map = LibraryLocator.map;
+//	    final InfoWindowOptions infowindowOpts = LibraryLocator.infowindowOpts;
+//	    final InfoWindow infowindow = InfoWindow.create();
+//		
+//	    MarkerOptions markerOpts = MarkerOptions.create();
+//	    markerOpts.setPosition(LatLng.create(lb.getLat(),lb.getLon()));
+//	    markerOpts.setMap(map);
+//	    markerOpts.setTitle("UBC");
+//	    
+//	    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.2)); //center at whole BC
+//		map.setZoom(10.0);
+//	    
+//	    final Marker marker = Marker.create(markerOpts);
+//	    marker.addDblClickListener(new DblClickHandler() {
+//
+//            @Override
+//            public void handle(MouseEvent event) {
+//            	map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1));
+//            	String s = "Brach Name:" + lb.getName()+", "
+//			    		+ "Address:"+ lb.getAddress()+ ", "+"Postal Code:"+
+//            			lb.getPostalCode()+", "
+//			    		+"Phone Number:" + lb.getPhone();
+//            	String[] parts = s.split(", ");
+//            	infowindowOpts.setContent(Arrays.toString(parts));
+////            	infowindowOpts.setContent("Brach Name:" + lb.getName()
+////			    		+ "Address:" + lb.getAddress() +"Postal Code:"+ lb.getPostalCode()
+////			    		+"Phone Number:" + lb.getPhone());
+//            	//infowindowOpts.setContent(lb.getAllData());
+//			    infowindow.setOptions(infowindowOpts);
+//            	infowindow.open(map, marker);
+//            }
+//        });
+//	}
 
 	@Override
 	void displayLibrary(ArrayList<Library> lolb) {

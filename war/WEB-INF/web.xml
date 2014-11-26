@@ -33,6 +33,11 @@
     <servlet-name>FavoriteService</servlet-name>
     <servlet-class>com.project.LibraryLocator.server.FavoriteServiceImpl</servlet-class>
   </servlet>
+  
+    <servlet>
+    <servlet-name>AdminService</servlet-name>
+    <servlet-class>com.project.LibraryLocator.server.AdminServiceImpl</servlet-class>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>loginService</servlet-name>
@@ -47,6 +52,11 @@
   <servlet-mapping>
     <servlet-name>FavoriteService</servlet-name>
     <url-pattern>/librarylocator/Favorite</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>AdminService</servlet-name>
+    <url-pattern>/librarylocator/Admin</url-pattern>
   </servlet-mapping>
 
 
