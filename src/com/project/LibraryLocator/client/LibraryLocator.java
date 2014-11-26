@@ -196,6 +196,7 @@ public class LibraryLocator implements EntryPoint {
 		final AdminDialog dialogBox = createDialogBox();
 	    dialogBox.setGlassEnabled(true);
 	    dialogBox.setAnimationEnabled(true);
+	    //mainAdminTab.getTabBar().setVisible(false);
 
 	    // Create a button to show the dialog Box
 	    AdminLogin.addClickHandler(new ClickHandler() {
