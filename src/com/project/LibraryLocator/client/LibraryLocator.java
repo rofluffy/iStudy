@@ -197,7 +197,6 @@ public class LibraryLocator implements EntryPoint {
 		final AdminDialog dialogBox = createDialogBox();
 	    dialogBox.setGlassEnabled(true);
 	    dialogBox.setAnimationEnabled(true);
-	    //mainAdminTab.getTabBar().setVisible(false);
 
 	    // Create a button to show the dialog Box
 	    AdminLogin.addClickHandler(new ClickHandler() {
@@ -230,7 +229,6 @@ public class LibraryLocator implements EntryPoint {
 	    	    if (event.getSelectedItem() == 1) {
 	    	    	System.out.println("admin tab is selected");
 	    	    	//displayAdminLibrary(libraries);
-	    	    	selectedLb.clear();
 	    	    	subListLb = createSub(libraries);
 	    	    	displayAdminLibrary(subListLb);
 	    	    	System.out.println("print sublist:" + subListLb);
@@ -737,7 +735,7 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
-		selectButton.addClickHandler(new ClickHandler() {
+		/*		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				Window.alert("It is " + (checked ? "" : "not ") + "checked");
@@ -749,7 +747,7 @@ public class LibraryLocator implements EntryPoint {
 					System.out.println(selectedLb + "\n");
 				}
 			}
-		});
+		});*/
 
 		allLibraries.setWidget(row, 9, selectButton);
 
@@ -889,9 +887,8 @@ public class LibraryLocator implements EntryPoint {
 					public void onFailure(Throwable error) {
 						// TODO Handle error
 						System.out.println("add favorite fails");
-//						Window.alert("Please Log in to use favorite function");
-//						isFavWorking = false;
-						handleError(error);
+						Window.alert("Please Log in to use favorite function");
+						isFavWorking = false;
 
 					}
 
@@ -1221,14 +1218,6 @@ public class LibraryLocator implements EntryPoint {
 	
 		l.addDomHandler(handler, ClickEvent.getType());
 		return l;
-	}
-	
-	
-	void handleError(Throwable error) {
-		Window.alert(error.getMessage());
-		if (error instanceof NotLoggedInException) {
-			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
-		}
 	}
 
 		
