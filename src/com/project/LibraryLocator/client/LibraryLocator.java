@@ -644,7 +644,9 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void run() {
+						mainTab.clear();
 						loadLibraryLocator();
+						//onModuleLoad();
 					}
 
 				};
