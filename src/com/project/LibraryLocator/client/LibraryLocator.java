@@ -1316,6 +1316,8 @@ public class LibraryLocator implements EntryPoint {
 		for (Marker mker2 : markers){
 			//mker.setMap(null);
 			mker2 =  null;
+			System.out.println("marker clear");
+
 		}
 		markers.clear();
 		
@@ -1328,8 +1330,7 @@ public class LibraryLocator implements EntryPoint {
 	    markerOpts.setMap(map);
 	    markerOpts.setTitle("UBC");
 	    
-	    map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
-
+	   map.setCenter(LatLng.create(lb.getLat(),lb.getLon()-0.1)); //center at whole BC
 
 		map.setZoom(10.0);
 	    
@@ -1351,9 +1352,10 @@ public class LibraryLocator implements EntryPoint {
         });
 	}
 	
-	//map all the markers from selectedlb
+	//map all the markers from a list
 	private void MapMarkers() {
 		for (Marker mker : markers){
+			System.out.println("mapping markers");
 			mker.setMap(map);
 		}
 		
