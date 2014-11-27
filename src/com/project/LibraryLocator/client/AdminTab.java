@@ -22,7 +22,7 @@ public class AdminTab extends TabFactory {
 	// adminTab (testing atleast?), display all library and able to add new
 	// library
 	// things inside admin page
-	//VerticalPanel adminTab = new VerticalPanel();
+	VerticalPanel adminTab = new VerticalPanel();
 	//private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
 	//private TextBox inputAdmin = new TextBox();
@@ -57,9 +57,9 @@ public class AdminTab extends TabFactory {
 	@Override
 	void buildTab(){
 		// Assemble admin Tab
-		LibraryLocator.adminTab.add(pagePanel);
-		LibraryLocator.adminTab.add(allLibraries);
-		LibraryLocator.adminTab.add(addLibraryPanel);
+		adminTab.add(pagePanel);
+		adminTab.add(allLibraries);
+		adminTab.add(addLibraryPanel);
 
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);

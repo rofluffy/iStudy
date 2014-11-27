@@ -200,6 +200,7 @@ background-attachment: fixed;  */
 	}
 	
 /* ==========tables============ */
+/* ===ui=== */
 .uiTableHeader {
 	background-color:#093570;
 	color: white;
@@ -222,9 +223,23 @@ background-attachment: fixed;  */
     width: 100px
 }
 
-.uiSelectButton{
+.selectButton{
 	text-align: center;
 	width: 10px;
+}
+
+/* ===admin=== */
+.adminTableHeader{
+	background-color:#940005;
+	color: white;
+	font-style: Verdana;
+}
+
+.adminTable{
+	border: 1px solid silver;
+	padding: 2px;
+	margin-bottom: 6px;
+	text-align: left;
 }
 
 
