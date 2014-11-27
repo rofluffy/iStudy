@@ -59,6 +59,7 @@ public class LibraryLocator implements EntryPoint {
 	static LoginInfo loginInfo = new LoginInfo();
 	// panel for login and logout
 	private VerticalPanel loginPanel = new VerticalPanel();
+	private VerticalPanel logoutPanel = new VerticalPanel();
 	// label and link for login
 	private Label loginLabel = new Label(
 			"Please sign in to your Google Account to access your Favorite library list.");
@@ -115,6 +116,9 @@ public class LibraryLocator implements EntryPoint {
 	private Button addLibraryButton = new Button("Add");
 	private Button removeLibraryButton = new Button("Remove");
 	private Button loadLibraryButton = new Button("Load Libraries");
+	private Button adminCheckAll = new Button("Check All");
+	private Button adminToMap = new Button("To Map");
+	private Button allToMap = new Button("ALL TO MAP");
 	private Button adminlogoutButton = new Button("logout");
 	private int pageIndex = 0;
 	private int pageSize = 20;
@@ -302,6 +306,11 @@ public class LibraryLocator implements EntryPoint {
 		loginPanel.add(logoutLabel);
 		loginPanel.add(signOutLink);
 		RootPanel.get("login").add(loginPanel);
+		
+//		signOutLink.setHref(loginInfo.getLogoutUrl());
+//		logoutPanel.add(logoutLabel);
+//		logoutPanel.add(signOutLink);
+//		RootPanel.get("login").add(logoutPanel);
 	}
 
 	private void loadLibraryLocator() {
@@ -357,7 +366,10 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
-		addLibraryPanel.add(removeLibraryButton);
+		//addLibraryPanel.add(removeLibraryButton);
+//		addLibraryPanel.add(adminCheckAll);
+//		addLibraryPanel.add(adminToMap);
+//		addLibraryPanel.add(allToMap);
 		addLibraryPanel.add(loadLibraryButton);
 
 		// create the table for adding library attributes
@@ -454,15 +466,20 @@ public class LibraryLocator implements EntryPoint {
 		buttonPanel.add(checkAllButton);
 
 		// TODO Assemble favorite tab
-		if (loginInfo.isLoggedIn()) {
+		
+		//if (loginInfo.isLoggedIn()) {
 
 			favoriteTab.add(favoriteTable);
 			favoriteTab.add(removeFavLabel);
 			favoriteTab.add(buttonPanelfav);
-
+/*
 		} else {
+			signInLink.setHref(loginInfo.getLoginUrl());
+			loginPanel.add(loginLabel);
+			loginPanel.add(signInLink);
 			favoriteTab.add(loginPanel);
 		}
+*/
 
 		// TODO create table for displaying libraries (favorite tab)
 		favoriteTable.setText(0, 0, "Library");
@@ -1191,7 +1208,7 @@ public class LibraryLocator implements EntryPoint {
 						+ lb.getAddress() + "<br />" + "Postal Code: "
 						+ lb.getPostalCode() + "<br />" + "Phone Number: "
 						+ lb.getPhone() + "</p>");
-				infowindowOpts.setMaxWidth(300.0);
+				infowindowOpts.setMaxWidth(500.00);
 				infowindow.setOptions(infowindowOpts);
 				infowindow.open(map, marker);
 			}
