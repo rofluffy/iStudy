@@ -70,6 +70,7 @@ import com.google.maps.gwt.client.ZoomControlOptions;
  */
 public class LibraryLocator implements EntryPoint {
 
+	ArrayList<Library> adminSelectedLb = new ArrayList<Library>();
 	// panel for login and logout
 	static LoginInfo loginInfo = new LoginInfo();
 	// panel for login and logout
@@ -142,8 +143,8 @@ public class LibraryLocator implements EntryPoint {
 	private Label pageMessage = new Label();
 	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
+	private Button removeLibraryButton = new Button("Remove");
 	private Button loadLibraryButton = new Button("Load Libraries");
-
     private Button adminlogoutButton = new Button("logout");
 
 	private int pageIndex = 0;
@@ -238,8 +239,6 @@ public class LibraryLocator implements EntryPoint {
 						// TODO Handle error
 						System.out.println("submit fails");
 						error.printStackTrace();
-
-
 					}
 
 					@Override
@@ -452,6 +451,7 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
+		addLibraryPanel.add(removeLibraryButton);
 		addLibraryPanel.add(loadLibraryButton);
 
 
@@ -597,7 +597,7 @@ public class LibraryLocator implements EntryPoint {
 				addLibrary();
 			}
 		});
-
+		removeLibraryClickHandler(adminSelectedLb);
 		
 		toMapButtonFav.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
@@ -834,7 +834,6 @@ public class LibraryLocator implements EntryPoint {
 			return;
 		}
 
-
 		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
 		libraries.add(newLibrary);
@@ -880,20 +879,35 @@ public class LibraryLocator implements EntryPoint {
 			@Override
 			public void onFailure(Throwable error) {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void onSuccess(Void ignore) {
-				// display new lb when adding success
-				displayAdminLibrary(lib);
+				if(!libraries.contains(lib)){
+					displayAdminLibrary(lib);
+				}
+				//displayAdminLibrary(lib);
 			}
 		});
+	}
+	private void removeLibrary(final ArrayList<Library> adminSelectList){
+		final ArrayList<Library> temp = new ArrayList<Library>();
+		temp.removeAll(adminSelectList);
+		libraryService.removeLibrary(adminSelectList, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				System.out.println("remove lib fail");
+			}
 
+			@Override
+			public void onSuccess(Void ignore) {
+				adminSelectList.clear();
+				displayAdminLibrary(temp);
+			}
+		});
 	}
 	
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
-
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
 		}
@@ -921,11 +935,11 @@ public class LibraryLocator implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				if (checked == true) {
-					selectedLb.add(lb);
+					adminSelectedLb.add(lb);
 					System.out.println(selectedLb + "\n");
 					// Window.alert(selectedLb.toString());
 				} else {
-					selectedLb.remove(lb);
+					adminSelectedLb.remove(lb);
 					System.out.println(selectedLb + "\n");
 					// Window.alert(selectedLb.toString());
 				}
@@ -1408,7 +1422,6 @@ public class LibraryLocator implements EntryPoint {
 		
 	}
 
-
 	Hyperlink nameHyprLink(final Library lb){
 		final Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
 		ClickHandler handler = new ClickHandler() {
@@ -1429,5 +1442,13 @@ public class LibraryLocator implements EntryPoint {
 		Window.alert(error.getMessage());
 	}
 
-		
+	private void removeLibraryClickHandler(final ArrayList<Library> adminSelectList){
+		removeLibraryButton.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				removeLibrary(adminSelectList);
+				
+			}
+		});
+	}
 }

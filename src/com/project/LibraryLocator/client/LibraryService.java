@@ -14,7 +14,7 @@ public interface LibraryService extends RemoteService {
 	
 	public void addLibrary(Library lb);
 
-	public void removeLibrary(String lid);
+	public void removeLibrary(ArrayList<Library> lb);
 
 	public ArrayList<Library> getLibraries();
 
