@@ -56,7 +56,8 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		PersistenceManager pm = getPersistenceManager();
 		try{
 			long deleteCount = 0;
-			Query q= pm.newQuery(Library.class);
+			Query q= pm.newQuery(Library.class, "entity == s");
+			q.declareParameters(getServletName() + "s");;
 	        List<Library> lolb= (List<Library>) q.execute();
 	        for(Library l:lolb) {
 	        	String temp = lb.getId();
@@ -112,6 +113,11 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 		pm.makePersistentAll(loAllLibraries);
 
 	}
+	
+/*	private User getUser() {
+		UserService userService = UserServiceFactory.getUserService();
+		return userService.getCurrentUser();
+	}*/
 
 	private PersistenceManager getPersistenceManager() {
 		return PMF.getPersistenceManager();
