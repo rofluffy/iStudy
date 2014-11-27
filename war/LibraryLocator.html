@@ -143,67 +143,62 @@ var toggle = function() {
 			application to display correctly.</div>
 	</noscript>
 
-	
-	<header id="banner"  style="z-index:0; position:relative; width: 100%;"> 
-	<nav style="width: 100%;"><ul  class="tabs" data-tab>
-	<li style="padding:4px; font-size: 25px; font: Arial; color: #e8a007;"> <strong>iStudy</strong> </li>
-		<li ><a href="#mappanel" onclick="showcontainer()">Search</a></li>
-		<li ><a href="#loginpanel" onclick="showlogin()" >Login</a></li>
-		<li ><a href="#adminpanel" onclick="showdialogboxAdmin()" >Admin</a></li>
-	</ul></nav>
-	</header><!-- /#banner -->
 
-  
-<div id="container"
-		style="height: auto; width: 430px; background:#fff ;z-index:0; left: 10px; top: -10px; position:absolute;  margin: 60px auto 0; /* border:#000000 */; padding: 15px;float:left;">
-		<div id="libraryLocator" style="width:auto;"></div>
-		<input type='button' value='HIDE/SHOW'  onclick="toggle();"></input>
+	<header id="banner"
+		style="z-index: 0; position: relative; width: 100%;">
+		<nav style="width: 100%;">
+			<ul class="tabs" data-tab>
+				<li
+					style="padding: 4px; font-size: 25px; font: Arial; color: #e8a007;">
+					<strong>iStudy</strong>
+				</li>
+				<li><a href="#mappanel" onclick="showcontainer()">Search</a></li>
+				<li><a href="#loginpanel" onclick="showlogin()">Login</a></li>
+				<li><a href="#adminpanel" onclick="showdialogboxAdmin()">Admin</a></li>
+			</ul>
+			<div style="position: absolute; right: 0px; top: 4px; z-index: 2;">
+				<object>
+					<a class="twitter-share-button" href="https://twitter.com/share">
+						Tweet</a>
+				</object>
+				<object class="fb-like" href="http://gacktc.appspot.com/"
+					data-layout="standard" data-action="like" data-share="true"
+					style="left: -20px; top: -5px;"> </object>
+			</div>
+		</nav>
+	</header>
+	<!-- /#banner -->
+
+
+	<div id="container"
+		style="height: auto; width: 430px; background: #fff; z-index: 0; left: 10px; top: -10px; position: absolute; margin: 60px auto 0; /* border:#000000 */; padding: 15px; float: left;">
+		<div id="libraryLocator" style="width: auto;"></div>
+		<input type='button' value='HIDE/SHOW' onclick="toggle();"></input>
 
 	</div>
-	
-  		<div id="dialogboxAdmin" style="z-index: 3;  padding: 15px; position: absolute; left:10px;top:45px; background:#fff;visibility:hidden;"></div>
-  
 
-<div id="map"
+	<div id="dialogboxAdmin"
+		style="z-index: 3; padding: 15px; position: absolute; left: 10px; top: 45px; background: #fff; visibility: hidden;"></div>
+
+
+	<div id="map"
 		style="height: 100%; width: 100%; position: absolute; top: 0; bottom: 0px; left: 0; right: 0; z-index: -1;"></div>
 
 
-
-	<!--     <table align="center"> -->
-	<!--       <tr> -->
-	<!--         <td colspan="2" style="font-weight:bold;">Please enter your name:</td>         -->
-	<!--       </tr> -->
-	<!--       <tr> -->
-	<!--         <td id="nameFieldContainer"></td> -->
-	<!--         <td id="sendButtonContainer"></td> -->
-	<!--       </tr> -->
-	<!--       <tr> -->
-	<!--         <td colspan="2" style="color:red;" id="errorLabelContainer"></td> -->
-	<!--       </tr> -->
-	<!--     </table> -->
-	
-
-
-
-
-				<!-- <div class="twitter-share-button"
-					href="https://twitter.com/share" style="position:aboslute; left:600px;top:5px; z-index:3;"> Tweet </div> <script
-						type="text/javascript">
+	<script type="text/javascript">
 						window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];
 						if(d.getElementById(id)){return}js=d.createElement(s);
 						js.id=id;js.src="https://platform.twitter.com/widgets.js";
 						fjs.parentNode.insertBefore(js,fjs);
 						return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
-						</script> -->
-				<div class="fb-like" href="http://gacktc.appspot.com/"
-					data-layout="standard" data-action="like"  style="position:absolute; left:700px; top:5px; z-index:2;"> </div>
+						</script>
 
 
 	<!-- <form action="${pageContext.request.contextPath}/myservlet" method="post">
     <input type="submit" name="button1" value="Button 1" style="z-index=1; position:absolute;"/> -->
-	
+
 	<div id="login"
-		style="z-index: 4; padding: 10px; position: absolute; background:#fff; left: /*180*/ 10px; top: 50px ;padding:15px;visibility:hidden;"></div>
+		style="z-index: 4; padding: 10px; position: absolute; background: #fff; left: /*180*/ 10px; top: 50px; padding: 15px; visibility: hidden;"></div>
 
 
 

@@ -397,13 +397,16 @@ public class LibraryLocator implements EntryPoint {
 		MapOptions myOptions = MapOptions.create();
 		PanControlOptions panOptions = PanControlOptions.create();
 		ZoomControlOptions zoomOptions = ZoomControlOptions.create();
-		StreetViewControlOptions streetViewOptions = StreetViewControlOptions.create();
+		//StreetViewControlOptions streetViewOptions = StreetViewControlOptions.create();
 		panOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
-		streetViewOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
+		//streetViewOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
 		zoomOptions.setPosition(ControlPosition.RIGHT_BOTTOM);
 		myOptions.setZoom(8.0);
 		myOptions.setCenter(myLatLng);
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
+		myOptions.setPanControlOptions(panOptions);
+		myOptions.setStreetViewControl(false);
+		myOptions.setZoomControlOptions(zoomOptions);
 
 		//myOptions.setDisableDefaultUi(true);//disabling map ui
 		map = GoogleMap.create(Document.get().getElementById("map"),
@@ -520,6 +523,8 @@ public class LibraryLocator implements EntryPoint {
 			}
 			
 		});
+		// add style
+		pagePanel.addStyleName("pagePanel");
 
 		// TODO Assemble search tab
 		searchTab.add(searchPanel);
@@ -935,7 +940,7 @@ public class LibraryLocator implements EntryPoint {
 	
 		allLibraries.setWidget(row, 9, selectButton);
 		//add style
-		allLibraries.getCellFormatter().addStyleName(row, 9, "selectButton");
+		//allLibraries.getCellFormatter().addStyleName(row, 9, "selectButton");
 
 	}
 
