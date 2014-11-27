@@ -161,6 +161,7 @@ public class LibraryLocator implements EntryPoint {
 		removeFavorite.addStyleName("submit");
 		checkAllButtonFav.addStyleName("orange");
 		toMapButtonFav.addStyleName("maroon");
+		
 		addAdmin();
 		adminSubmit.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -201,8 +202,6 @@ public class LibraryLocator implements EntryPoint {
 					public void onFailure(Throwable error) {
 						System.out.println("logout fails");
 						error.printStackTrace();
-
-
 					}
 
 					@Override
@@ -213,7 +212,6 @@ public class LibraryLocator implements EntryPoint {
 						adminLoginPanel.insert(adminlabel,2);
 						mainAdminTab.getTabBar().setVisible(false);
 						addAdmin();
-						
 						
 						}
 										
@@ -246,12 +244,14 @@ public class LibraryLocator implements EntryPoint {
  					public void onSuccess(LoginInfo result) {
  						loginInfo = result;
  						if (loginInfo.isLoggedIn()) {
-
+                            
  							getFavoriteLb();
  							loadLogout();
+ 							loadLibraryLocator();
  							
  						} else {
  							loadLogin();
+ 							loadLibraryLocator();
  						}
  					}
  				});							
