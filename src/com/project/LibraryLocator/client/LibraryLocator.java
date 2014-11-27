@@ -138,29 +138,12 @@ public class LibraryLocator implements EntryPoint {
 	private AdminServiceAsync AdminService = GWT.create(AdminService.class);
 
 	// list
-	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of
-																		// library
-																		// object
-	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when
-																		// refactoring,
-																		// each
-																		// tab
-																		// has
-																		// its
-																		// own
-																		// selected
-																		// list
+	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
+	private ArrayList<Library> selectedLb = new ArrayList<Library>(); 
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
-	private ArrayList<Library> favorites = new ArrayList<Library>(); // list of
-																		// favorites
-																		// REFACTOR
-																		// to
-																		// favorite
-																		// tab?
+	private ArrayList<Library> favorites = new ArrayList<Library>(); 
 	private Set<Library> clientFav = new HashSet<Library>();
-	private ArrayList<Library> selectedFav = new ArrayList<Library>(); // favorite's
-																		// selected
-																		// list
+	private ArrayList<Library> selectedFav = new ArrayList<Library>();
 	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
 	private ArrayList<CheckBox> favCheckBox = new ArrayList<CheckBox>();
 
@@ -903,8 +886,9 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 		libCheckBox.add(selectButton);
+		onSelect(selectButton, lb, selectedLb, checkAllButton);
 
-		selectButton.addClickHandler(new ClickHandler() {
+		/*selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 
@@ -917,7 +901,7 @@ public class LibraryLocator implements EntryPoint {
 					setButtonText(checkAllButton, "Check All");
 				}
 			}
-		});
+		});*/
 
 		librariesFlexTable.setWidget(row, 2, selectButton);
 
@@ -1049,25 +1033,29 @@ public class LibraryLocator implements EntryPoint {
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 		favCheckBox.add(selectButton);
-
-		selectButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				boolean checked = ((CheckBox) event.getSource()).getValue();
-				if (checked == true) {
-					selectedFav.add(fav);
-					System.out.println("selectedFav: " + selectedFav + "\n");
-				} else {
-					selectedFav.remove(fav);
-					System.out.println("selectedFav: " + selectedFav + "\n");
-					checkAllButtonFav.setText("Check all");
-				}
-			}
-		});
+		onSelect(selectButton, fav, selectedFav, checkAllButtonFav);
 		favoriteTable.setWidget(row, 2, selectButton);
+		
 		favoriteTable.getCellFormatter().addStyleName(row, 0, "uiTableName");
 		favoriteTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
 		favoriteTable.getCellFormatter().addStyleName(row, 2, "selectButton");
 
+	}
+
+	private void onSelect(CheckBox selectButton, final Library lb, final ArrayList<Library> selectList, final Button checkall) {
+		selectButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				boolean checked = ((CheckBox) event.getSource()).getValue();
+				if (checked == true) {
+					selectList.add(lb);
+					System.out.println("selected : " + selectList + "\n");
+				} else {
+					selectList.remove(lb);
+					System.out.println("selected : " + selectList + "\n");
+					checkall.setText("Check All");
+				}
+			}
+		});
 	}
 
 	private void cleanTable(FlexTable table) {
@@ -1198,11 +1186,12 @@ public class LibraryLocator implements EntryPoint {
 				map.setCenter(LatLng.create(lb.getLat(), lb.getLon() - 0.1));
 
 				infowindowOpts.setContent("<header><strong>" + lb.getName()
-						+ "</strong></header>" + "<p> Brach Name:"
-						+ lb.getName() + "<br />" + "Address:"
-						+ lb.getAddress() + "<br />" + "Postal Code:"
-						+ lb.getPostalCode() + "<br />" + "Phone Number:"
+						+ "</strong></header>" + "<p> Brach Name: "
+						+ lb.getBranch() + "<br />" + "Address: "
+						+ lb.getAddress() + "<br />" + "Postal Code: "
+						+ lb.getPostalCode() + "<br />" + "Phone Number: "
 						+ lb.getPhone() + "</p>");
+				infowindowOpts.setMaxWidth(300.0);
 				infowindow.setOptions(infowindowOpts);
 				infowindow.open(map, marker);
 			}
