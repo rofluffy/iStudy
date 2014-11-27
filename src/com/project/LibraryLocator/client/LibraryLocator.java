@@ -1328,10 +1328,11 @@ public class LibraryLocator implements EntryPoint {
 			for(Marker mk: markers){
 			mk.setVisible(false);
 			mk = null;
+			infowindow.close();
+			
 		}
 		System.out.println("marker cleared");
 
-		
 	}
 
 	// add each maker on the marker list

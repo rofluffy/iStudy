@@ -172,7 +172,7 @@ background-attachment: fixed;  */
 		-webkit-border-radius: 5px;
 	}
 	
-	#banner nav ul {list-style: none; margin: 0 auto; width: 1440px;}
+	#banner nav ul {list-style: none; margin: 0 auto; width: 1600px;}
 	#banner nav li {float: left; display: inline; margin: 0;}
 	
 	#banner nav a:link, #banner nav a:visited {
