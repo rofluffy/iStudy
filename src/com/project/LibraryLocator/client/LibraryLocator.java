@@ -357,7 +357,7 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
-		addLibraryPanel.add(removeLibraryButton);
+		//addLibraryPanel.add(removeLibraryButton);
 		addLibraryPanel.add(loadLibraryButton);
 
 		// create the table for adding library attributes
@@ -455,7 +455,6 @@ public class LibraryLocator implements EntryPoint {
 
 		// TODO Assemble favorite tab
 		if (loginInfo.isLoggedIn()) {
-
 			favoriteTab.add(favoriteTable);
 			favoriteTab.add(removeFavLabel);
 			favoriteTab.add(buttonPanelfav);
