@@ -56,16 +56,15 @@ public class AdminServiceImpl extends RemoteServiceServlet implements
 			List<Admin> adm = (List<Admin>) q.execute();
 			if ( adm.get(0).getStatus()==false){
 				System.out.println("ready to sign in");
-
 				if (submit.matches(adm.get(0).getpassword())){
 					match = true;
 					adm.get(0).setlogedStatus();
 					System.out.println("login success");
 				}
 				
+			}else{
+			Window.alert("admin already login");
 			}
-			System.out.println("admin already login");
-			
 		} finally {
 			pm.close();
 		}
@@ -83,7 +82,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements
 	
 	 public void addAdmin(){
 		PersistenceManager pm = getPersistenceManager();
-		String psw = new String("whosyourdaddy");
+		String psw = new String("andrewcares");
 		try{
 			String id= new String("0");
 			pm.makePersistent(new Admin(id,psw,false));
@@ -92,6 +91,8 @@ public class AdminServiceImpl extends RemoteServiceServlet implements
 		}
 		
 	}
+	 
+	
 	 
 	
 

@@ -239,7 +239,6 @@ public class LibraryLocator implements EntryPoint {
 						System.out.println("submit fails");
 						error.printStackTrace();
 
-
 					}
 
 					@Override
@@ -283,7 +282,9 @@ public class LibraryLocator implements EntryPoint {
 						adminLoginPanel.insert(adminSubmit,1);
 						adminLoginPanel.insert(adminlabel,2);
 						mainAdminTab.getTabBar().setVisible(false);
-							
+						addAdmin();
+						
+						
 						}
 										
 					}
@@ -330,7 +331,6 @@ public class LibraryLocator implements EntryPoint {
  						loginInfo = result;
  						if (loginInfo.isLoggedIn()) {
  							// TODO deal with this later
- 							
  							//loadLibraryLocator();
  							getFavoriteLb();
  							loadLogout();
@@ -404,6 +404,10 @@ public class LibraryLocator implements EntryPoint {
 		myOptions.setZoom(8.0);
 		myOptions.setCenter(myLatLng);
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
+		myOptions.setPanControlOptions(panOptions);
+		myOptions.setZoomControlOptions(zoomOptions);
+		myOptions.setStreetViewControlOptions(streetViewOptions);
+
 
 		//myOptions.setDisableDefaultUi(true);//disabling map ui
 		map = GoogleMap.create(Document.get().getElementById("map"),
@@ -1070,42 +1074,6 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
 		librariesFlexTable.getCellFormatter().addStyleName(row, 2, "selectButton");
 	}
-
-
-
-	//dialogbox for AdminTab
-	 public AdminDialog createDialogBox() {
-		    // Create a dialog box and set the caption text
-		    final AdminDialog dialogBox = new AdminDialog();
-
-		    // Create a table to layout the content
-		    VerticalPanel dialogContents = new VerticalPanel();
-		    dialogContents.setSpacing(4);
-		    dialogBox.setWidget(dialogContents);
-		    
-		    // Add a close button at the bottom of the dialog
-//		    Button closeButton = new Button(
-//		        "close", new ClickHandler() {
-//		          public void onClick(ClickEvent event) {
-//		            dialogBox.hide();
-//		          }
-//		        });
-		    dialogContents.add(mainAdminTab);
-		    //dialogContents.add(closeButton); don't need a close button now
-		    
-		    dialogBox.setGlassEnabled(true);
-		    dialogBox.setAnimationEnabled(true);
-		    dialogBox.isAutoHideEnabled();
-	        dialogBox.isGlassEnabled();
-	        dialogBox.center();
-	        //dialogBox.isAutoHideEnabled(); no difference
-	      dialogBox.setAutoHideEnabled(true);
-	      dialogBox.setAnimationEnabled(true);
-	      dialogBox.setGlassEnabled(true);
-	      return dialogBox;
-	      
-	 }
-
 
 	/**
 	 * (favorite) Add Library to FlexTable. Executed when the user opens the
