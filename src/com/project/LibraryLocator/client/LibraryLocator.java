@@ -466,9 +466,7 @@ public class LibraryLocator implements EntryPoint {
 		buttonPanel.add(checkAllButton);
 
 		// TODO Assemble favorite tab
-		
 		//if (loginInfo.isLoggedIn()) {
-
 			favoriteTab.add(favoriteTable);
 			favoriteTab.add(removeFavLabel);
 			favoriteTab.add(buttonPanelfav);
