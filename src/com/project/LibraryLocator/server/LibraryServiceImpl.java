@@ -43,7 +43,7 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void removeLibrary(ArrayList<Library> lib) {
-		System.out.println("try running remove admin libraries");
+		System.out.println("try running remove admin librariesit ");
 		for(Library l:lib){
 			removeLb(l);
 		}
