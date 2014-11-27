@@ -21,8 +21,8 @@ import com.project.LibraryLocator.shared.Library;
 
 public class LibraryServiceImpl extends RemoteServiceServlet implements
 		LibraryService {
-	// private static final Logger LOG =
-	// Logger.getLogger(LibraryServiceImpl.class.getName());
+	 private static final Logger LOG =
+	 Logger.getLogger(LibraryServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
 
@@ -42,21 +42,37 @@ public class LibraryServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void removeLibrary(String lid) {
-		// TODO Auto-generated method stub
-		PersistenceManager pm = getPersistenceManager();
-		try{
-			Query q= pm.newQuery(Library.class, "id == lid");
-			List<Library> lb= (List<Library>) q.execute();
-			for(Library l :loAllLibraries){
-				if(l.getId()==lid)
-					pm.deletePersistent(lb);
-			}
-		}finally {
-			pm.close();
+	public void removeLibrary(ArrayList<Library> lib) {
+		System.out.println("try running remove admin libraries");
+		for(Library l:lib){
+			removeLb(l);
 		}
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void removeLb(Library lb){
+		System.out.println("try running remove admin library");
+		PersistenceManager pm = getPersistenceManager();
+		try{
+			long deleteCount = 0;
+			Query q= pm.newQuery(Library.class);
+	        List<Library> lolb= (List<Library>) q.execute();
+	        for(Library l:lolb) {
+	        	String temp = lb.getId();
+	        	if(temp.equals(l.getId())){
+	        		deleteCount++;
+	        		pm.deletePersistent(lb);
+	        	}
+	        }
+	        if (deleteCount != 1){
+	        	LOG.log(Level.WARNING, "remove admin Library deleted" + deleteCount + "Libraries");
+	        }
+		}finally {
+			pm.close();
+		}
+	}
+	
 
 	private ArrayList<Library> getLibrariesFromParse() {
 		//System.out.println("getLibraries is runing(Parse)");
