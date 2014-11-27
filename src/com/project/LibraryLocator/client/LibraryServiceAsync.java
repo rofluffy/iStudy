@@ -10,7 +10,7 @@ public interface LibraryServiceAsync {
 
 	public void addLibrary(Library lb, AsyncCallback<Void> async);
 
-	public void removeLibrary(String lid, AsyncCallback<Void> async);
+	public void removeLibrary(ArrayList<Library> lb, AsyncCallback<Void> async);
 
 	public void getLibraries(AsyncCallback<ArrayList<Library>> async);
 

@@ -1,20 +1,12 @@
 package com.project.LibraryLocator.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.jdo.Query;
-import javax.swing.text.html.HTML;
-//testing
-import com.project.LibraryLocator.shared.FieldVerifier;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.project.LibraryLocator.shared.Library;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -24,7 +16,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -32,23 +23,18 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.maps.gwt.client.Marker;
 import com.google.maps.gwt.client.MarkerOptions;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.maps.gwt.client.ControlPosition;
 import com.google.maps.gwt.client.GoogleMap;
 import com.google.maps.gwt.client.InfoWindow;
@@ -59,8 +45,6 @@ import com.google.maps.gwt.client.MapTypeId;
 import com.google.maps.gwt.client.Marker.DblClickHandler;
 import com.google.maps.gwt.client.MouseEvent;
 import com.google.maps.gwt.client.PanControlOptions;
-import com.google.maps.gwt.client.Point;
-import com.google.maps.gwt.client.ScaleControlOptions;
 import com.google.maps.gwt.client.StreetViewControlOptions;
 import com.google.maps.gwt.client.ZoomControlOptions;
 
@@ -70,6 +54,7 @@ import com.google.maps.gwt.client.ZoomControlOptions;
  */
 public class LibraryLocator implements EntryPoint {
 
+	ArrayList<Library> adminSelectedLb = new ArrayList<Library>();
 	// panel for login and logout
 	static LoginInfo loginInfo = new LoginInfo();
 	// panel for login and logout
@@ -82,53 +67,34 @@ public class LibraryLocator implements EntryPoint {
 	private Label logoutLabel = new Label(
 			"Logout here if you want to stop using this amazing app, but seriously, why would you?");
 	private Anchor signOutLink = new Anchor("Sign Out");
-
-	// set hyperlink in library class? when display in flextable?
-
-	//private DockPanel mainPanel = new DockPanel();
-	private HorizontalPanel headerPanel = new HorizontalPanel();
 	private TabPanel mainTab = new TabPanel();
 	private TabPanel mainAdminTab = new TabPanel();
-
-	// searchTab
-	// things inside the search tab
 	private VerticalPanel searchTab = new VerticalPanel();
 	private HorizontalPanel searchPanel = new HorizontalPanel();
-	private TextBox searchInputBox = new TextBox(); // may use Suggest Box
+	private TextBox searchInputBox = new TextBox(); 
 	private FlexTable librariesFlexTable = new FlexTable();
 	private ListBox searchBox = new ListBox();
 	private Label numLb = new Label("");
 	private HorizontalPanel buttonPanel = new HorizontalPanel();
-	// Buttons (for search)
 	private Button searchButton = new Button("Search");
 	private Button checkAllButton = new Button("Check All"); 
-	private Button toMapButton = new Button("To Map"); // also able to use in favorite?
+	private Button toMapButton = new Button("To Map"); 
 	private Button addFavoriteButton = new Button("Add Favorite");
-//	private Button AdminLogin = new Button("Admin Access");
 	private AdminLogin adminlogin = new AdminLogin("Admin");
 	private Button adminSubmit = new Button("Login as admin");
-	private Button footerButton = new Button("testing");
-
-	// favoriteTab
-	// things inside favorite
 	private VerticalPanel favoriteTab = new VerticalPanel();
 	private FlexTable favoriteTable = new FlexTable();
 	private Label removeFavLabel = new Label();
 	private HorizontalPanel buttonPanelfav = new HorizontalPanel();
-	//Buttons
 	private Button removeFavorite = new Button("Remove");
-	private Button checkAllButtonFav = new Button("Check All"); // the one in favorite tab
-	private Button toMapButtonFav = new Button("To Map"); // the one in favorite tab
-
-	// adminTab (testing atleast?), display all library and able to add new library
-	// things inside admin page
+	private Button checkAllButtonFav = new Button("Check All");
+	private Button toMapButtonFav = new Button("To Map"); 
 	private VerticalPanel adminTab = new VerticalPanel();
 	private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
 	private TextBox inputAdmin = new TextBox();
-	private TextBox inputLibraryID = new TextBox(); //
-	private TextBox inputLibraryName = new TextBox(); // need input box for
-	// every attributes?
+	private TextBox inputLibraryID = new TextBox();
+	private TextBox inputLibraryName = new TextBox();
 	private TextBox inputLibraryBranch = new TextBox();
 	private TextBox inputLibraryPhone = new TextBox();
 	private TextBox inputLibraryAddress = new TextBox();
@@ -140,38 +106,22 @@ public class LibraryLocator implements EntryPoint {
 	private FlexTable allLibraries = new FlexTable();
 	private HorizontalPanel pagePanel = new HorizontalPanel();
 	private Label pageMessage = new Label();
-	// Buttons (for admin)
 	private Button addLibraryButton = new Button("Add");
+	private Button removeLibraryButton = new Button("Remove");
 	private Button loadLibraryButton = new Button("Load Libraries");
-
     private Button adminlogoutButton = new Button("logout");
-
 	private int pageIndex = 0;
 	private Button prev = new Button("<<<");
 	private Button next = new Button(">>>");
 	private ArrayList<Button> loPage = new ArrayList<Button>();
-
-	// Buttons on mainPanel
-	private HorizontalPanel mainButtonPanel = new HorizontalPanel();
-	private Button socail1 = new Button("Google+");
-	
 	private Label adminlabel = new Label();
-
-	// map
 	static GoogleMap map;
 	private InfoWindow infowindow = InfoWindow.create();
 	static InfoWindowOptions infowindowOpts = InfoWindowOptions.create();
 	private ArrayList<Marker> markers =  new ArrayList<Marker>();
-
-
-
-	// Admin classes
     private LibraryServiceAsync libraryService = GWT.create(LibraryService.class);
     private FavoriteServiceAsync favoriteService = GWT.create(FavoriteService.class);
 	private AdminServiceAsync AdminService = GWT.create(AdminService.class);
-	// Service classes	
-
-
 	private ArrayList<Library> libraries = new ArrayList<Library>(); // list of library object
 	private ArrayList<Library> selectedLb = new ArrayList<Library>(); // when refactoring, each tab has its own selected list
 	private ArrayList<Library> searchLb = new ArrayList<Library>();
@@ -181,16 +131,10 @@ public class LibraryLocator implements EntryPoint {
 	private ArrayList<CheckBox> libCheckBox = new ArrayList<CheckBox>();
 	private ArrayList<CheckBox> favCheckBox = new ArrayList<CheckBox>();
 	int pageSize = 20;
-
-	ArrayList<Library> subListLb = new ArrayList<Library>();
-	
+	private ArrayList<Library> subListLb = new ArrayList<Library>();
 	private long start;
 	private boolean isFavWorking =true;
-	// private Label refleshLabel = new Label(); // not sure about this, do we
-	// need it? maybe for hyperlink part...
-
-
-
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -207,26 +151,16 @@ public class LibraryLocator implements EntryPoint {
 		mainAdminTab.selectTab(0);
 		
 		mainAdminTab.getTabBar().setVisible(false);
-		
-		//button styling
 		searchButton.addStyleName("green");
 		checkAllButton.addStyleName("maroon");
 		toMapButton.addStyleName("orange");
 		addFavoriteButton.addStyleName("submit");
-//		private Button AdminLogin = new Button("Admin Access");
 		adminlogin .addStyleName("submit");
 		adminSubmit.addStyleName("submitt");
 		
 		removeFavorite.addStyleName("submit");
 		checkAllButtonFav.addStyleName("orange");
 		toMapButtonFav.addStyleName("maroon");
-		
-//		mainAdminTab.setHeight("300px");
-//		Element element = document.getElementById("admin");
-//		element.onclick = function() {
-//		  // onclick stuff
-//		}
-//	
 		addAdmin();
 		adminSubmit.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -235,7 +169,6 @@ public class LibraryLocator implements EntryPoint {
 				AdminService.submitMatch(entered, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable error) {
-						// TODO Handle error
 						System.out.println("submit fails");
 						error.printStackTrace();
 
@@ -243,7 +176,6 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void onSuccess(Boolean result) {
-						// TODO Auto-generated method stub
 						System.out.println(result.toString());
 
 						if (result){
@@ -267,7 +199,6 @@ public class LibraryLocator implements EntryPoint {
 				AdminService.logout(new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable error) {
-						// TODO Handle error
 						System.out.println("logout fails");
 						error.printStackTrace();
 
@@ -276,7 +207,6 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void onSuccess(Void ignore) {
-						// TODO Auto-generated method stub
 						adminLoginPanel.clear();
 						adminLoginPanel.insert(inputAdmin,0);
 						adminLoginPanel.insert(adminSubmit,1);
@@ -293,51 +223,35 @@ public class LibraryLocator implements EntryPoint {
 			}
 		});
 	   
-	    
-        //Element htmlEl = adminlogin.getElement(); 
         adminlogin.addStyleName("adminsubmit");
-        //adminlogin.setVisible(false);
-
 	    mainAdminTab.addSelectionHandler(new SelectionHandler<Integer>() {
 	    	@Override
 	    	public void onSelection(SelectionEvent<Integer> event) {
 	    	    if (event.getSelectedItem() == 1) {
 	    	    	System.out.println("admin tab is selected");
-	    	    	//displayAdminLibrary(libraries);
 	    	    	subListLb = createSub(libraries);
 	    	    	displayAdminLibrary(subListLb);
 	    	    	System.out.println("print sublist:" + subListLb);
 	    	    }
 	    	  }
 	    });
-	    
-	    // load libraries anyway
 	    loadLibraries();
 	    checkAll();
-	   
-	    // TODO load favorite when login
-	    //getFavoriteLb();
-	    
-	 // Check login status using login service.
  		LoginServiceAsync loginService = GWT.create(LoginService.class);
  		loginService.login(GWT.getHostPageBaseURL(),
  				new AsyncCallback<LoginInfo>() {
  					public void onFailure(Throwable error) {
- 						//TODO Handle error
-
  					}
 
  					public void onSuccess(LoginInfo result) {
  						loginInfo = result;
  						if (loginInfo.isLoggedIn()) {
- 							// TODO deal with this later
- 							//loadLibraryLocator();
+
  							getFavoriteLb();
  							loadLogout();
  							
  						} else {
  							loadLogin();
- 							//loadLibraryLocator();
  						}
  					}
  				});							
@@ -349,14 +263,12 @@ public class LibraryLocator implements EntryPoint {
 		AdminService.addAdmin(new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable error) {
-				// TODO Auto-generated method stub
     	    	System.out.println("Adding admin fails");
 
 			}
 
 			@Override
 			public void onSuccess(Void ignore) {
-				// TODO Auto-generated method stub
     	    	System.out.println("admin is added");
 
 			}
@@ -365,34 +277,21 @@ public class LibraryLocator implements EntryPoint {
 	}
 
 	private void loadLogin() {
-		// Assemble login panel.
-//		if (loginInfo.isLoggedIn()) {
-//			// if already logged in, show logout button and link
-//			signOutLink.setHref(loginInfo.getLogoutUrl());
-//			loginPanel.add(logoutLabel);
-//			loginPanel.add(signOutLink);
-//		} else {
 			signInLink.setHref(loginInfo.getLoginUrl());
 			loginPanel.add(loginLabel);
 			loginPanel.add(signInLink);
-//		}
+
 		RootPanel.get("login").add(loginPanel);
 	}
 	
 	private void loadLogout() {
 		signOutLink.setHref(loginInfo.getLogoutUrl());
-		// replace login label and link with logout label and link
 		loginPanel.add(logoutLabel);
 		loginPanel.add(signOutLink);
-		// still load loginPanel, which now shows the logout label and link
 		RootPanel.get("login").add(loginPanel);
 }
 
 	private void loadLibraryLocator() {
-		// TODO Assemble Main panel.
-		//mainPanel.add(mainButtonPanel, DockPanel.NORTH);
-		//mainPanel.add(mainTab, DockPanel.WEST);
-
 		final LatLng myLatLng = LatLng.create(49.269893, -123.253268);
 		MapOptions myOptions = MapOptions.create();
 		PanControlOptions panOptions = PanControlOptions.create();
@@ -408,35 +307,23 @@ public class LibraryLocator implements EntryPoint {
 		myOptions.setZoomControlOptions(zoomOptions);
 		myOptions.setStreetViewControlOptions(streetViewOptions);
 
-
-		//myOptions.setDisableDefaultUi(true);//disabling map ui
 		map = GoogleMap.create(Document.get().getElementById("map"),
 				myOptions);
-
-		//		DOM.getElementById("admin").
 		ScrollPanel SearchPanel = new ScrollPanel(searchTab);
-		mainTab.add(SearchPanel, "Search"); // don't think the string after is very necessary, check later!
+		mainTab.add(SearchPanel, "Search"); 
 		ScrollPanel FavPanel = new ScrollPanel(favoriteTab);
 		mainTab.add(FavPanel, "Favorite");
 		FavPanel.setHeight("300px");
-		//mainTab.add(new ScrollPanel(adminTab), "Admin");
-		// initialize default display tab
-		mainTab.selectTab(0); // 2 is the admin one
-		// style
+		mainTab.selectTab(0); 
 		mainTab.getTabBar().addStyleName("tabPanel");
-		mainTab.getDeckPanel().addStyleName("mainTab"); // dont see difference so far haha...
+		mainTab.getDeckPanel().addStyleName("mainTab"); 
 		SearchPanel.addStyleName("scrollPanel");
 		FavPanel.addStyleName("scrollPanel");
-
 		SearchPanel.setHeight("300px");
-
-		// Assemble admin Tab
 		adminTab.add(pagePanel);
 		adminTab.add(allLibraries);
 		adminTab.add(addLibraryPanel);
 
-		// create table for libraries (other attributes are still needed to
-		// develop) (A,B,C,H,I,J,L,M,N)(lower case on first letter)
 		allLibraries.setText(0, 0, "ID");
 		allLibraries.setText(0, 1, "Name");
 		allLibraries.setText(0, 2, "Branch");
@@ -447,6 +334,7 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setText(0, 7, "Latitude");
 		allLibraries.setText(0, 8, "Longitude");
 		allLibraries.setText(0, 9, "Select");
+		
 		// add style
 		allLibraries.getRowFormatter().addStyleName(0, "adminTableHeader");
 		allLibraries.addStyleName("adminTable");
@@ -456,8 +344,8 @@ public class LibraryLocator implements EntryPoint {
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
 		addLibraryPanel.add(addLibraryButton);
+		addLibraryPanel.add(removeLibraryButton);
 		addLibraryPanel.add(loadLibraryButton);
-
 
 		// create the table for adding library attributes
 		addLibraryTable.setText(0, 0, "ID:");
@@ -493,7 +381,6 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				if (pageIndex == 0){
 					pageMessage.setText("It's already the front page =)");
 				}else{
@@ -510,7 +397,6 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				if ((pageIndex + pageSize) >= libraries.size()-1){
 					pageMessage.setText("It's already the last page =)");
 				}else{
@@ -524,20 +410,13 @@ public class LibraryLocator implements EntryPoint {
 			}
 			
 		});
-
-		// TODO Assemble search tab
 		searchTab.add(searchPanel);
 		searchTab.add(librariesFlexTable);
 		searchTab.add(numLb);
 		searchTab.add(buttonPanel);
-
-		//		searchTab.setHeight("200px");
-
-		// TODO Assemble search panel
 		searchPanel.add(searchBox);
 		searchPanel.add(searchButton);
 
-		// TODO create table for displaying libraries (search tab)
 		librariesFlexTable.setText(0, 0, "Library");
 		librariesFlexTable.setText(0, 1, "Branch");
 		librariesFlexTable.setText(0, 2, "Select");
@@ -547,7 +426,6 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.getCellFormatter().addStyleName(0, 0, "uiTableName");
 		librariesFlexTable.getCellFormatter().addStyleName(0, 1, "uiTableBranch");
 		librariesFlexTable.getCellFormatter().addStyleName(0, 2, "selectButton");
-		
 		librariesFlexTable.setCellPadding(6);
 
 		// TODO Assemble button panel
@@ -564,6 +442,7 @@ public class LibraryLocator implements EntryPoint {
 		favoriteTable.setText(0, 0, "Library");
 		favoriteTable.setText(0, 1, "Branch");
 		favoriteTable.setText(0, 2, "Select");
+		
 		// add style
 		favoriteTable.getRowFormatter().addStyleName(0, "uiTableHeader");
 		favoriteTable.addStyleName("uiTable");
@@ -578,22 +457,14 @@ public class LibraryLocator implements EntryPoint {
 		buttonPanelfav.add(toMapButtonFav);
 		buttonPanelfav.add(checkAllButtonFav);
 
-		// TODO Assemble main button panel
-		//mainButtonPanel.add(socail1);
-		//mainButtonPanel.add(AdminLogin);
-
 		// TODO Associate the Main panel with the HTML host page.
 		RootPanel.get("dialogboxAdmin").add(mainAdminTab);
 		//RootPanel.get("Footer").add(mainButtonPanel);
 		RootPanel.get("libraryLocator").add(mainTab);
 
-		//RootPanel.get("dialogboxAdmin").add(AdminLogin);
-		//RootPanel.get("SocialPanel").add(mainButtonPanel);
-
 		// TODO Move cursor focus to ALL input box.
 		inputLibraryID.setFocus(true);
 		searchInputBox.setFocus(true);
-
 
 		// Listen for mouse events on the Add button
 		addLibraryButton.addClickHandler(new ClickHandler() {
@@ -601,7 +472,7 @@ public class LibraryLocator implements EntryPoint {
 				addLibrary();
 			}
 		});
-
+		removeLibraryClickHandler(adminSelectedLb);
 		
 		toMapButtonFav.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
@@ -627,51 +498,28 @@ public class LibraryLocator implements EntryPoint {
 				MapMarkers();
 
 			}
-			
-
-			
+						
 		});
-		
-		
-		
-
-		/*// TODO Listen for keyboard events in the (WHAT!)input box.
-		addLibraryButton.addKeyDownHandler(new KeyDownHandler() {
-			public void onKeyDown(KeyDownEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					addLibrary();
-				}
-			}
-		});*/
-
-		// TODO Listen for mouse event on the Load button
-		
-		
-			
+	
 		loadLibraryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				System.out.println("load library is click");
 				libraries.clear();
 				addToDataStore();
-				//loadLibraries();
 			}
 		});
 
-		//addToDataStore();
-		//loadLibraries();
 		System.out.println("check libraries:" + libraries);
 
 		Timer t = new Timer(){
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				SearchFunc();
 				FavoriteFunc();
 			}
 
 		};
-		
 		// delay for 3 seconds
 		t.schedule(3000);
 		
@@ -702,7 +550,6 @@ public class LibraryLocator implements EntryPoint {
 
 				@Override
 				public void onClick(ClickEvent event) {
-					// TODO Auto-generated method stub
 					System.out.println("Page " + tempI + " is clicked");
 					pageIndex = (tempI -1)*pageSize;
 					System.out.println("PageIndex is " + pageIndex);
@@ -724,8 +571,6 @@ public class LibraryLocator implements EntryPoint {
 			@Override
 			public void onFailure(Throwable error) {
 				System.out.println("populateTable Failed");
-				// TODO handle error
-
 			}
 
 			@Override
@@ -740,23 +585,18 @@ public class LibraryLocator implements EntryPoint {
 	private void loadLibraries() {
 
 		start = System.currentTimeMillis();
-		//System.out.println("populateTable (main class) success");
 		libraryService.getLibraries(new AsyncCallback<ArrayList<Library>>() {
 
 			@Override
 			public void onFailure(Throwable error) {
-				// TODO Auto-generated method stub
 				System.out.println("loadLibraries fail");
 
 			}
 
 			@Override
 			public void onSuccess(ArrayList<Library> lolb) {
-				// TODO Auto-generated method stub
 				System.out.println("loadLibraries success" + (System.currentTimeMillis() - start));
 				libraries = lolb;
-				//displayAdminLibrary(lolb);
-				//SearchBoxForLibary();
 				System.out.println("loadLibraries: " + libraries);
 				Timer t = new Timer(){
 
@@ -764,7 +604,7 @@ public class LibraryLocator implements EntryPoint {
 					public void run() {
 						mainTab.clear();
 						loadLibraryLocator();
-						//onModuleLoad();
+
 					}
 
 				};
@@ -795,8 +635,6 @@ public class LibraryLocator implements EntryPoint {
 		final Library newLibrary = new Library(newID, newName, newBranch,
 				newPhone, newAddress, newCity, newPostCode, newLat, newLon);
 
-		// TODO Check if all the input box is not empty otherwise not able to add library and pop out an message to warn
-		// TODO check if the input text is valid
 		ArrayList<TextBox> lotb = new ArrayList<TextBox>();
 		lotb.add(inputLibraryID);
 		lotb.add(inputLibraryName);
@@ -807,11 +645,7 @@ public class LibraryLocator implements EntryPoint {
 		lotb.add(inputLibraryPostCode);
 		lotb.add(inputLibraryLat);
 		lotb.add(inputLibraryLon);
-		for (TextBox tb : lotb) {
-			//checkValid(tb);
-		}
-
-		// TODO clean the input box (refactor?)
+		
 		inputLibraryID.setText("");
 		inputLibraryName.setText("");
 		inputLibraryBranch.setText("");
@@ -821,11 +655,8 @@ public class LibraryLocator implements EntryPoint {
 		inputLibraryPostCode.setText("");
 		inputLibraryLat.setText("");
 		inputLibraryLon.setText("");
-
 		inputLibraryID.setFocus(true);
 
-		// Don't add library if the ID is already exist
-		// Don't add library if lat and lon is already exist
 		ArrayList<String> loid = new ArrayList<String>();
 		ArrayList<LatLng> loLatlng = new ArrayList<LatLng>();
 		for (Library lb : libraries) {
@@ -838,8 +669,6 @@ public class LibraryLocator implements EntryPoint {
 			return;
 		}
 
-
-		// TODO Add the Library to table (store in app-engien later?)
 		int row = allLibraries.getRowCount();
 		libraries.add(newLibrary);
 		allLibraries.setText(row, 0, newID);
@@ -852,29 +681,9 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setText(row, 7, newLat.toString());
 		allLibraries.setText(row, 8, newLon.toString());
 
-		// TODO add the select button (using checkbox?) and deal with the click
-		// reaction
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
-
-		/*		selectButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				boolean checked = ((CheckBox) event.getSource()).getValue();
-				Window.alert("It is " + (checked ? "" : "not ") + "checked");
-				if (checked == true) {
-					selectedLb.add(newLibrary);
-					System.out.println(selectedLb + "\n");
-				} else {
-					selectedLb.remove(newLibrary);
-					System.out.println(selectedLb + "\n");
-				}
-			}
-		});*/
-
 		allLibraries.setWidget(row, 9, selectButton);
-
-		// TODO Don't know if we want to have remove method here?
-
 		addLibrary(newLibrary);
 
 	}
@@ -884,27 +693,40 @@ public class LibraryLocator implements EntryPoint {
 			@Override
 			public void onFailure(Throwable error) {
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void onSuccess(Void ignore) {
-				// display new lb when adding success
-				displayAdminLibrary(lib);
+				if(!libraries.contains(lib)){
+					displayAdminLibrary(lib);
+				}
 			}
 		});
+	}
+	private void removeLibrary(final ArrayList<Library> adminSelectList){
+		final ArrayList<Library> temp = new ArrayList<Library>();
+		temp.removeAll(adminSelectList);
+		libraryService.removeLibrary(adminSelectList, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable error) {
+				System.out.println("remove lib fail");
+			}
 
+			@Override
+			public void onSuccess(Void ignore) {
+				adminSelectList.clear();
+				displayAdminLibrary(temp);
+			}
+		});
 	}
 	
 	private void displayAdminLibrary(ArrayList<Library> lolb) {
-
 		for (Library lb : lolb) {
 			displayAdminLibrary(lb);
 		}
 	}
 
 	private void displayAdminLibrary(final Library lb) {
-		// Add the stock to the table.
 		int row = allLibraries.getRowCount();
 		allLibraries.setText(row, 0, lb.getId());
 		allLibraries.setText(row, 1, lb.getName());
@@ -916,7 +738,6 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setText(row, 7, lb.getLat().toString());
 		allLibraries.setText(row, 8, lb.getLon().toString());
 
-		// add the selection button
 		CheckBox selectButton = new CheckBox();
 		selectButton.setValue(false);
 
@@ -925,20 +746,15 @@ public class LibraryLocator implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
 				if (checked == true) {
-					selectedLb.add(lb);
+					adminSelectedLb.add(lb);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				} else {
-					selectedLb.remove(lb);
+					adminSelectedLb.remove(lb);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				}
 			}
 		});
-
-	
 		allLibraries.setWidget(row, 9, selectButton);
-		//add style
 		allLibraries.getCellFormatter().addStyleName(row, 9, "selectButton");
 
 	}
@@ -949,7 +765,6 @@ public class LibraryLocator implements EntryPoint {
 	 */
 	private void SearchFunc(){
 		System.out.println("search function is runing:" + libraries);
-		//System.out.println("search function is runing");
 		searchBox.setFocus(true);
 		searchBox.addItem("----Please Selet a City----");
 		Set<String> allCity = new HashSet<String>();
@@ -1010,10 +825,7 @@ public class LibraryLocator implements EntryPoint {
 				favoriteService.addFavorites(loid, new AsyncCallback<Void>() {
 					@Override
 					public void onFailure(Throwable error) {
-						// TODO Handle error
 						System.out.println("add favorite fails");
-//						Window.alert("Please Log in to use favorite function");
-//						isFavWorking = false;
 						handleError(error);
 
 					}
@@ -1041,7 +853,6 @@ public class LibraryLocator implements EntryPoint {
 	private void displaySearchLibrary(final Library lb) {
 
 		int row = librariesFlexTable.getRowCount();
-		//TabFactory tf = new TabFactory();
 		librariesFlexTable.setWidget(row, 0, nameHyprLink(lb));
 		librariesFlexTable.setText(row, 1, lb.getBranch());
 		CheckBox selectButton = new CheckBox();
@@ -1051,17 +862,13 @@ public class LibraryLocator implements EntryPoint {
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
-				//				Window.alert("It is " + (checked ? "" : "not ") + "checked");
-
-
+				
 				if (checked == true) {
 					selectedLb.add(lb);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 				} else {
 					selectedLb.remove(lb);
 					System.out.println(selectedLb + "\n");
-					// Window.alert(selectedLb.toString());
 					setButtonText(checkAllButton, "Check All");
 				}
 			}
@@ -1074,6 +881,7 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
 		librariesFlexTable.getCellFormatter().addStyleName(row, 2, "selectButton");
 	}
+
 
 	/**
 	 * (favorite) Add Library to FlexTable. Executed when the user opens the
@@ -1100,14 +908,6 @@ public class LibraryLocator implements EntryPoint {
 				for (Library lb : selectedFav){
 					loid.add(lb.getId());
 				}
-				// remove the library in clientFav	
-//				for(int i=0; i<clientFav.size(); i++){
-//					for(int j=0; j<selectedFav.size(); j++){
-//						if(clientFav.get(i).equals(selectedFav.get(j))){
-//							clientFav.remove(i);
-//						}
-//					}
-//				}
 				clientFav.removeAll(selectedFav);
 				removeFav(loid);
 				System.out.println("client side fav:" + clientFav);
@@ -1122,7 +922,6 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onFailure(Throwable error) {
-				// TODO Handle error
 				System.out.println("remove favorite fails");
 			}
 
@@ -1133,7 +932,6 @@ public class LibraryLocator implements EntryPoint {
 				clearSelectedFav();
 				removeFavLabel.setText("You have removed " + removeNum
 						+ " favorites.");
-				//refleshFav();
 			}
 		});
 	}
@@ -1150,7 +948,6 @@ public class LibraryLocator implements EntryPoint {
 
 			@Override
 			public void onFailure(Throwable error) {
-				// TODO Handle error
 				System.out.println("get favorite fails");
 
 			}
@@ -1173,9 +970,6 @@ public class LibraryLocator implements EntryPoint {
 						System.out.println("get favorite success: (num)" + favorites.size() + favorites);
 						clientFav.addAll(favorites);
 						System.out.println("client favorite success: (num)" + clientFav.size() + clientFav);
-						//displayFavorites(favorites);
-						//displayFavorites(clientFav);
-
 					}
 
 				};
@@ -1198,7 +992,6 @@ public class LibraryLocator implements EntryPoint {
 
 	private void displayFavorite(final Library fav) {
 		int row = favoriteTable.getRowCount();
-		//TODO add hyperlink
 		favoriteTable.setWidget(row, 0, nameHyprLink(fav));
 		favoriteTable.setText(row, 1, fav.getBranch());
 
@@ -1209,22 +1002,17 @@ public class LibraryLocator implements EntryPoint {
 		selectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				boolean checked = ((CheckBox) event.getSource()).getValue();
-				//Window.alert("It is " + (checked ? "" : "not ") + "checked");
 				if (checked == true) {
 					selectedFav.add(fav);
 					System.out.println("selectedFav: "+ selectedFav + "\n");
-					// Window.alert(selectedLb.toString());
 				} else {
 					selectedFav.remove(fav);
 					System.out.println("selectedFav: "+ selectedFav + "\n");
 					checkAllButtonFav.setText("Check all");
-					// Window.alert(selectedLb.toString());
 				}
 			}
 		});
-		favoriteTable.setWidget(row, 2, selectButton);	
-		
-		// add style
+		favoriteTable.setWidget(row, 2, selectButton);
 		favoriteTable.getCellFormatter().addStyleName(row, 0, "uiTableName");
 		favoriteTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
 		favoriteTable.getCellFormatter().addStyleName(row, 2, "selectButton");
@@ -1235,11 +1023,7 @@ public class LibraryLocator implements EntryPoint {
 		int row = table.getRowCount();
 		for (int i = row - 1; i >= 1; i--) {
 			table.removeRow(i);
-			
 		}
-		// while (librariesFlexTable.getRowCount() > 1) {
-		// librariesFlexTable.removeRow(librariesFlexTable.getRowCount()-1);
-		// }
 	}
 
 	private void checkAll(){
@@ -1253,7 +1037,6 @@ public class LibraryLocator implements EntryPoint {
 					uncheckAllItems(libCheckBox,checkAllButton);
 					clearSelected();
 				}
-				System.out.println("Check all ran");
 			}
 		});
 		checkAllButtonFav.addClickHandler(new ClickHandler() {
@@ -1266,7 +1049,6 @@ public class LibraryLocator implements EntryPoint {
 					clearSelectedFav();
 					System.out.println("Unchecked all selected in fav");
 				}
-				//System.out.println("Check all ran");
 
 			}
 		});
@@ -1376,7 +1158,6 @@ public class LibraryLocator implements EntryPoint {
 		
 	}
 
-
 	Hyperlink nameHyprLink(final Library lb){
 		final Hyperlink l = new Hyperlink(lb.getName(), "http://lmgtfy.com/?q=" +lb.getName());
 		ClickHandler handler = new ClickHandler() {
@@ -1397,5 +1178,13 @@ public class LibraryLocator implements EntryPoint {
 		Window.alert(error.getMessage());
 	}
 
-		
+	private void removeLibraryClickHandler(final ArrayList<Library> adminSelectList){
+		removeLibraryButton.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				removeLibrary(adminSelectList);
+				
+			}
+		});
+	}
 }
