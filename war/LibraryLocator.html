@@ -57,7 +57,7 @@
 <!-- be added before this line.                -->
 <!--                                           -->
 
-<div id="fb-root"></div>
+<!-- <div id="fb-root"></div> -->
 
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -144,9 +144,10 @@ var toggle = function() {
 	</noscript>
 
 	
-	<header id="banner"  style="z-index:0; position:relative;"> 
-	<nav><ul  class="tabs" data-tab>
-		<li class="active"><a href="#mappanel" onclick="showcontainer()">Search</a></li>
+	<header id="banner"  style="z-index:0; position:relative; width: 100%;"> 
+	<nav style="width: 100%;"><ul  class="tabs" data-tab>
+	<li style="padding:4px; font-size: 25px; font: Arial; color: #e8a007;"> <strong>iStudy</strong> </li>
+		<li ><a href="#mappanel" onclick="showcontainer()">Search</a></li>
 		<li ><a href="#loginpanel" onclick="showlogin()" >Login</a></li>
 		<li ><a href="#adminpanel" onclick="showdialogboxAdmin()" >Admin</a></li>
 	</ul></nav>

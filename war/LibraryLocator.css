@@ -199,10 +199,51 @@ background-attachment: fixed;  */
 		-webkit-border-bottom-left-radius: 5px;
 	}
 	
+/* ==========tables============ */
+/* ===ui=== */
+.uiTableHeader {
+	background-color:#093570;
+	color: white;
+	font-style: Verdana;
+}
+
+.uiTable{
+	border: 1px solid silver;
+	padding: 2px;
+	margin-bottom: 6px;
+}
+
+.uiTableName{
+	text-align: left;
+	width: 200px
+}
+
+.uiTableBranch{
+	text-align: left;
+    width: 100px
+}
+
+.selectButton{
+	text-align: center;
+	width: 10px;
+}
+
+/* ===admin=== */
+.adminTableHeader{
+	background-color:#940005;
+	color: white;
+	font-style: Verdana;
+}
+
+.adminTable{
+	border: 1px solid silver;
+	padding: 2px;
+	margin-bottom: 6px;
+	text-align: left;
+}
 
 
-
-     Map
+/*     Map
 ****************/
 
 #map {

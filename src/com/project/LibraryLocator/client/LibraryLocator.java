@@ -122,7 +122,7 @@ public class LibraryLocator implements EntryPoint {
 
 	// adminTab (testing atleast?), display all library and able to add new library
 	// things inside admin page
-	static VerticalPanel adminTab = new VerticalPanel();
+	private VerticalPanel adminTab = new VerticalPanel();
 	private VerticalPanel adminLoginPanel = new VerticalPanel();
 	private HorizontalPanel addLibraryPanel = new HorizontalPanel();
 	private TextBox inputAdmin = new TextBox();
@@ -443,6 +443,11 @@ public class LibraryLocator implements EntryPoint {
 		allLibraries.setText(0, 7, "Latitude");
 		allLibraries.setText(0, 8, "Longitude");
 		allLibraries.setText(0, 9, "Select");
+		// add style
+		allLibraries.getRowFormatter().addStyleName(0, "adminTableHeader");
+		allLibraries.addStyleName("adminTable");
+		allLibraries.getCellFormatter().addStyleName(0, 9, "selectButton");
+		allLibraries.setCellPadding(6);
 
 		// Assemble Add library panel.
 		addLibraryPanel.add(addLibraryTable);
@@ -532,6 +537,14 @@ public class LibraryLocator implements EntryPoint {
 		librariesFlexTable.setText(0, 0, "Library");
 		librariesFlexTable.setText(0, 1, "Branch");
 		librariesFlexTable.setText(0, 2, "Select");
+		// add style
+		librariesFlexTable.getRowFormatter().addStyleName(0, "uiTableHeader");
+		librariesFlexTable.addStyleName("uiTable");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 0, "uiTableName");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 1, "uiTableBranch");
+		librariesFlexTable.getCellFormatter().addStyleName(0, 2, "selectButton");
+		
+		librariesFlexTable.setCellPadding(6);
 
 		// TODO Assemble button panel
 		buttonPanel.add(addFavoriteButton);
@@ -547,6 +560,14 @@ public class LibraryLocator implements EntryPoint {
 		favoriteTable.setText(0, 0, "Library");
 		favoriteTable.setText(0, 1, "Branch");
 		favoriteTable.setText(0, 2, "Select");
+		// add style
+		favoriteTable.getRowFormatter().addStyleName(0, "uiTableHeader");
+		favoriteTable.addStyleName("uiTable");
+		favoriteTable.getCellFormatter().addStyleName(0, 0, "uiTableName");
+		favoriteTable.getCellFormatter().addStyleName(0, 1, "uiTableBranch");
+		favoriteTable.getCellFormatter().addStyleName(0, 2, "selectButton");
+		
+		favoriteTable.setCellPadding(6);
 
 		// TODO Assemble button panel (remove button?)
 		buttonPanelfav.add(removeFavorite);
@@ -737,7 +758,9 @@ public class LibraryLocator implements EntryPoint {
 
 					@Override
 					public void run() {
+						mainTab.clear();
 						loadLibraryLocator();
+						//onModuleLoad();
 					}
 
 				};
@@ -911,6 +934,8 @@ public class LibraryLocator implements EntryPoint {
 
 	
 		allLibraries.setWidget(row, 9, selectButton);
+		//add style
+		allLibraries.getCellFormatter().addStyleName(row, 9, "selectButton");
 
 	}
 
@@ -983,8 +1008,9 @@ public class LibraryLocator implements EntryPoint {
 					public void onFailure(Throwable error) {
 						// TODO Handle error
 						System.out.println("add favorite fails");
-						Window.alert("Please Log in to use favorite function");
-						isFavWorking = false;
+//						Window.alert("Please Log in to use favorite function");
+//						isFavWorking = false;
+						handleError(error);
 
 					}
 
@@ -1038,6 +1064,11 @@ public class LibraryLocator implements EntryPoint {
 		});
 
 		librariesFlexTable.setWidget(row, 2, selectButton);
+		
+		// add style
+		librariesFlexTable.getCellFormatter().addStyleName(row, 0, "uiTableName");
+		librariesFlexTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
+		librariesFlexTable.getCellFormatter().addStyleName(row, 2, "selectButton");
 	}
 
 
@@ -1223,7 +1254,12 @@ public class LibraryLocator implements EntryPoint {
 				}
 			}
 		});
-		favoriteTable.setWidget(row, 2, selectButton);	 
+		favoriteTable.setWidget(row, 2, selectButton);	
+		
+		// add style
+		favoriteTable.getCellFormatter().addStyleName(row, 0, "uiTableName");
+		favoriteTable.getCellFormatter().addStyleName(row, 1, "uiTableBranch");
+		favoriteTable.getCellFormatter().addStyleName(row, 2, "selectButton");
 
 	}
 
@@ -1383,6 +1419,14 @@ public class LibraryLocator implements EntryPoint {
 	
 		l.addDomHandler(handler, ClickEvent.getType());
 		return l;
+	}
+	
+	
+	void handleError(Throwable error) {
+		if (error instanceof NotLoggedInException) {
+			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
+		}
+		Window.alert(error.getMessage());
 	}
 
 		
