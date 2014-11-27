@@ -198,7 +198,7 @@ public class LibraryLocator implements EntryPoint {
 		adminLoginPanel.insert(inputAdmin,0);
 		adminLoginPanel.insert(adminSubmit,1);
 		adminLoginPanel.insert(adminlabel,2);
-		mainAdminTab.add(adminLoginPanel,"Admin Login");
+		mainAdminTab.add(adminLoginPanel,"Welcome");
 		
 		final ScrollPanel DataPanel = new ScrollPanel(adminTab);
 		DataPanel.setHeight("500px");
@@ -406,7 +406,7 @@ public class LibraryLocator implements EntryPoint {
 		myOptions.setMapTypeId(MapTypeId.ROADMAP);
 
 		//myOptions.setDisableDefaultUi(true);//disabling map ui
-		final GoogleMap map = GoogleMap.create(Document.get().getElementById("map"),
+		map = GoogleMap.create(Document.get().getElementById("map"),
 				myOptions);
 
 		//		DOM.getElementById("admin").
@@ -601,9 +601,11 @@ public class LibraryLocator implements EntryPoint {
 		
 		toMapButtonFav.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
+				System.out.println(selectedFav);
 				clearMarkers();
 				for (Library lb : selectedFav) {
 					addMarkers(lb);
+					System.out.println(markers);
 			}
 				MapMarkers();
 			}
@@ -613,6 +615,7 @@ public class LibraryLocator implements EntryPoint {
 		//Listen for mouse events on the ToMap button
 		toMapButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event){
+				System.out.println(selectedLb);
 				clearMarkers();
 				for (Library lb : selectedLb) {
 					addMarkers(lb);
@@ -1358,13 +1361,12 @@ public class LibraryLocator implements EntryPoint {
 
 	
 	private void clearMarkers() {
-		for (Marker mker2 : markers){
-			//mker.setMap(null);
-			mker2 =  null;
-			System.out.println("marker clear");
-
+			for(Marker mk: markers){
+			mk.setVisible(false);
+			mk = null;
 		}
-		markers.clear();
+		System.out.println("marker cleared");
+
 		
 	}
 
@@ -1400,7 +1402,6 @@ public class LibraryLocator implements EntryPoint {
 	//map all the markers from a list
 	private void MapMarkers() {
 		for (Marker mker : markers){
-			System.out.println("mapping markers");
 			mker.setMap(map);
 		}
 		
