@@ -59,7 +59,7 @@ public class LibraryLocator implements EntryPoint {
 	static LoginInfo loginInfo = new LoginInfo();
 	// panel for login and logout
 	private VerticalPanel loginPanel = new VerticalPanel();
-	private VerticalPanel logoutPanel = new VerticalPanel();
+	//private VerticalPanel logoutPanel = new VerticalPanel();
 	// label and link for login
 	private Label loginLabel = new Label(
 			"Please sign in to your Google Account to access your Favorite library list.");
@@ -68,6 +68,7 @@ public class LibraryLocator implements EntryPoint {
 	private Label logoutLabel = new Label(
 			"Logout here if you want to stop using this amazing app, but seriously, why would you?");
 	private Anchor signOutLink = new Anchor("Sign Out");
+	private Label favLogin = new Label();
 	private TabPanel mainTab = new TabPanel();
 	private TabPanel mainAdminTab = new TabPanel();
 
@@ -466,18 +467,26 @@ public class LibraryLocator implements EntryPoint {
 		buttonPanel.add(checkAllButton);
 
 		// TODO Assemble favorite tab
-		//if (loginInfo.isLoggedIn()) {
+/*		if (loginInfo.isLoggedIn()) {
 			favoriteTab.add(favoriteTable);
 			favoriteTab.add(removeFavLabel);
 			favoriteTab.add(buttonPanelfav);
-/*
+
 		} else {
-			signInLink.setHref(loginInfo.getLoginUrl());
-			loginPanel.add(loginLabel);
-			loginPanel.add(signInLink);
+			loadLogin();
+			RootPanel.get("login").remove(loginPanel);
 			favoriteTab.add(loginPanel);
 		}
 */
+		if (loginInfo.isLoggedIn()) {
+			favLogin.setText("");
+		} else {
+			favLogin.setText("You are not login! login to view your favorite libraries ;)");
+		}
+		favoriteTab.add(favoriteTable);
+		favoriteTab.add(removeFavLabel);
+		favoriteTab.add(buttonPanelfav);
+		favoriteTab.add(favLogin);
 
 		// TODO create table for displaying libraries (favorite tab)
 		favoriteTable.setText(0, 0, "Library");
@@ -1182,7 +1191,7 @@ public class LibraryLocator implements EntryPoint {
 		MarkerOptions markerOpts = MarkerOptions.create();
 		markerOpts.setPosition(LatLng.create(lb.getLat(), lb.getLon()));
 		markerOpts.setMap(map);
-		markerOpts.setTitle("UBC");
+		markerOpts.setTitle(lb.getBranch());
 
 		map.setCenter(LatLng.create(lb.getLat(), lb.getLon() - 0.1)); // center
 																		// at
@@ -1238,7 +1247,7 @@ public class LibraryLocator implements EntryPoint {
 	void handleError(Throwable error) {
 		if (error instanceof NotLoggedInException) {
 			// Window.alert("not login!");
-			Window.Location.replace(LibraryLocator.loginInfo.getLogoutUrl());
+			Window.Location.replace(LibraryLocator.loginInfo.getLoginUrl());
 		}
 		Window.alert(error.getMessage());
 	}
